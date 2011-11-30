@@ -1,0 +1,34 @@
+@CHARSET "UTF-8";
+
+
+
+#wrapper{
+	height: 800px;
+	width: 800px;
+	
+	margin: 0 auto;
+	
+	background: red;		
+}
+
+#header{
+	height: 150px;
+	width: 100%;
+	background: blue;
+}
+
+#top-scroll {
+	height: 20px;
+	width: 100%;
+	background: green;
+}
+
+#content {
+	
+}
+
+#footer {
+	height: 300px;
+	width: 100%;
+	background: yellow;
+}
