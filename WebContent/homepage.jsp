@@ -16,11 +16,11 @@
 
 	<jsp:include page="partials/header.jsp" />
 	
-	<div id="top-scroll"></div><!-- #top-scroll -->
+	<jsp:include page="partials/top-scroll.jsp" />
 	
 	<div id="content"></div><!-- #content -->
 	
-	<div id="footer"></div><!-- #footer -->
+	<jsp:include page="partials/footer.jsp" />
 
 
 </div> <!-- #wrapper -->
