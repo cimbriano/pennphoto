@@ -17,6 +17,20 @@
 	background: blue;
 }
 
+#login-wrapper {
+	float: right;	
+}
+
+#login-wrapper label {
+	float: left;	
+}
+
+#login-wrapper input {
+	float: right;	
+}
+
+
+
 #top-scroll {
 	height: 90px;
 	width: 100%;
@@ -33,4 +47,9 @@
 	height: 300px;
 	width: 100%;
 	background: yellow;
+}
+
+
+.clear{
+	clear: both;	
 }
