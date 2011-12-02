@@ -9,6 +9,8 @@ public class Photo {
 	
 	private ArrayList<Integer> viewCircleIDs;
 	private ArrayList<Integer> viewUserIDs;
+	private ArrayList<Tag> tags;
+	private ArrayList<Rating> ratings;
 	
 	public Photo(int photoID, String url, boolean isPrivate) {
 		super();
@@ -72,6 +74,39 @@ public class Photo {
 	
 	public boolean removeViewCircleID(Integer circleID){
 		return viewCircleIDs.remove(circleID);
-	}	
+	}
+	
+	public boolean addTag(Tag tag){
+		return tags.add(tag);
+	}
+	
+	public boolean removeTag(Tag tag){
+		return tags.remove(tag);
+	}
+	
+	public boolean addRating(Rating rating){
+		return ratings.add(rating);
+	}
+	
+	public boolean removeRating(Rating rating){
+		return ratings.remove(rating);
+	}
+
+	public ArrayList<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(ArrayList<Tag> tags) {
+		this.tags = tags;
+	}
+
+	public ArrayList<Rating> getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(ArrayList<Rating> ratings) {
+		this.ratings = ratings;
+	}
+	
 	
 }

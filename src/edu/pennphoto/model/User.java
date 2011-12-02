@@ -19,8 +19,24 @@ public class User {
 	private String zip;
 	private ArrayList<Attendance> attendances;
 	private ArrayList<Circle> circles;
+	private ArrayList<Integer> interestIDs;
 	
+	public boolean addInterestID(Integer id){
+		return interestIDs.add(id);
+	}
 	
+	public boolean removeInterestID(Integer id){
+		return interestIDs.remove(id);
+	}
+	
+	public ArrayList<Integer> getInterestIDs() {
+		return interestIDs;
+	}
+
+	public void setInterestIDs(ArrayList<Integer> interestIDs) {
+		this.interestIDs = interestIDs;
+	}
+
 	public int getUserID() {
 		return userID;
 	}
@@ -186,6 +202,8 @@ public class User {
 			this.startYear = startYear;
 			this.endYear = endYear;
 		}
+		
+		
 		
 	}
 	
