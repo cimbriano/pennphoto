@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+
+#main-nav-wrap {
+	float: right;
+	position: absolute;
+	
+	bottom: 0;
+	right: 0;
+}
+
+#main-nav-wrap ul {
+	list-style: none;
+}
+
+#main-nav-wrap ul li {
+	float: left;
+	padding: 0 20px;
+}
+
+#main-nav-wrap ul li a {
+	text-decoration: none;
+	color: black;
+}
+
+#main-nav-wrap ul li a:hover {
+	text-decoration: underline;
+	color: white;	
+}
+
