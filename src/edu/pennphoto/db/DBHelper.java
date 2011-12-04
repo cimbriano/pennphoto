@@ -38,7 +38,7 @@ public class DBHelper {
 			Connection conn = getConnection();
 			Statement statement = conn.createStatement();
 			
-			if (statement.execute("select * from user")) {
+			if (statement.execute("select * from User")) {
 			
 				ResultSet rs = statement.getResultSet();
 				

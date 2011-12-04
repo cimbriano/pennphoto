@@ -3,11 +3,12 @@ package edu.pennphoto.model;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class User {
+public abstract class User {
 
 	public enum Gender{ MALE, FEMALE}
 	
 	private int userID;
+	private String password;
 	private String email;
 	private String firstName;
 	private String lastName;
@@ -16,7 +17,9 @@ public class User {
 	private String address;
 	private String city;
 	private String state;
+	private int stateId;
 	private String zip;
+
 	private ArrayList<Attendance> attendances;
 	private ArrayList<Circle> circles;
 	private ArrayList<Integer> interestIDs;
@@ -149,6 +152,10 @@ public class User {
 		this.circles = circles;
 	}	
 	
+	public User(){
+		super();
+	}
+	
 	public User(int userID, String email, String firstName, String lastName,
 			Date dob, Gender gender, String address, String city, String state,
 			String zip) {
@@ -205,6 +212,22 @@ public class User {
 		
 		
 		
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public int getStateId() {
+		return stateId;
+	}
+
+	public void setStateId(int stateId) {
+		this.stateId = stateId;
 	}
 	
 	

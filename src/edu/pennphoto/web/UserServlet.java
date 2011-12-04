@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.pennphoto.db.DBHelper;
+import edu.pennphoto.db.UserDAO;
 
 /**
  * Servlet implementation class UserServlet
@@ -34,11 +35,10 @@ public class UserServlet extends HttpServlet {
 		String msg = "";
 		try {
 			msg = DBHelper.getInstance().testConnection();
-			msg = DBHelper.getInstance().testConnection();
-			msg = DBHelper.getInstance().testConnection();
-			msg = DBHelper.getInstance().testConnection();
-			
-		} catch (NamingException e) {
+
+			//UserDAO.testCreateUser();
+			//msg = "Done!";
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			msg = e.getMessage();
