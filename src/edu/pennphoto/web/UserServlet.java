@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.pennphoto.db.DBHelper;
 import edu.pennphoto.db.UserDAO;
+import edu.pennphoto.model.User;
 
 /**
  * Servlet implementation class UserServlet
@@ -34,10 +35,10 @@ public class UserServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String msg = "";
 		try {
-			msg = DBHelper.getInstance().testConnection();
-
+			//msg = DBHelper.getInstance().testConnection();
 			//UserDAO.testCreateUser();
-			//msg = "Done!";
+			User user = UserDAO.login("test@penn.edu", "test");
+			msg = ""+user;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

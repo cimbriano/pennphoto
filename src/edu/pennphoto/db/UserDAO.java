@@ -5,8 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.mysql.jdbc.Statement;
+import java.sql.Statement;
 
 import edu.pennphoto.model.Professor;
 import edu.pennphoto.model.Student;
@@ -73,6 +72,60 @@ public class UserDAO {
 		}	
 	}
 	
+	public static User login(String username, String password) throws SQLException{
+		Connection conn = null;
+		PreparedStatement userStmt = null;
+		Statement spStmt = null;
+		User user = null;
+		try{
+		String userQuery = "select * from User where email=? and password=?";
+		conn = DBHelper.getInstance().getConnection();
+		userStmt = conn.prepareStatement(userQuery);
+		userStmt.setString(1, username);
+		userStmt.setString(2, password);
+		ResultSet rs = userStmt.executeQuery();
+		if(rs.next()){
+			boolean isProfessor = rs.getBoolean("is_professor");
+			user = isProfessor?new Professor():new Student();
+			user.setEmail(rs.getString("email"));
+			user.setUserID(rs.getInt("id"));
+			user.setFirstName(rs.getString("first_name"));
+			user.setLastName(rs.getString("last_name"));
+			user.setDob(rs.getDate("dob"));
+			user.setAddress(rs.getString("street_address"));
+			user.setStateId(rs.getInt("state_id"));
+			user.setCity(rs.getString("city"));
+			user.setZip(rs.getString("zip_code"));
+			user.setGender("m".equalsIgnoreCase(rs.getString("gender"))?Gender.MALE:Gender.FEMALE);
+		
+			spStmt = conn.createStatement();
+			if(isProfessor){
+				Professor professor = (Professor)user;
+				ResultSet prs = spStmt.executeQuery("select * from Professor where user_id="+user.getUserID());
+				if(prs.next()){
+					professor.setTitle(prs.getString("title"));
+					professor.setResearchArea(prs.getString("research_area"));
+				}
+				
+			}else{
+				Student student = (Student)user;
+				ResultSet prs = spStmt.executeQuery("select * from Student where user_id="+user.getUserID());
+				if(prs.next()){
+					student.setMajor(prs.getString("major"));
+					student.setGpa(prs.getDouble("gpa"));
+				}
+			}
+		}
+		}catch(Exception ex){
+			user = null;
+			ex.printStackTrace();
+		} finally {
+				if(conn !=null){conn.close();}
+		      if (userStmt != null) { userStmt.close(); }
+		      if (spStmt != null) { spStmt.close(); }
+		}
+		return user;
+	}
 	public static void testCreateUser() throws SQLException{
 		Student student = new Student();
 		student.setEmail("test@penn.edu");

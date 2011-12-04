@@ -20,4 +20,7 @@ public class Professor extends User {
 		this.title = title;
 	}
 
+	public String toString(){
+		return super.toString() + "\n" + title + "\n"+researchArea;
+	}
 }

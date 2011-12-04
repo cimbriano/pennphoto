@@ -24,6 +24,22 @@ public abstract class User {
 	private ArrayList<Circle> circles;
 	private ArrayList<Integer> interestIDs;
 	
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(userID).append("\n").
+		append(email).append("\n").
+		append(password).append("\n").
+		append(firstName).append("\n").
+		append(lastName).append("\n").
+		append(dob).append("\n").
+		append(gender).append("\n").
+		append(address).append("\n").
+		append(city).append("\n").
+		append(stateId).append("\n").
+		append(zip).append("\n");
+		
+		return sb.toString();
+	}
 	public boolean addInterestID(Integer id){
 		return interestIDs.add(id);
 	}

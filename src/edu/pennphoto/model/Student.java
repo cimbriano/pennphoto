@@ -20,6 +20,9 @@ public class Student extends User {
 	public void setGpa(double gpa) {
 		this.gpa = gpa;
 	}
-
+	
+	public String toString(){
+		return super.toString() + "\n" + major + "\n"+gpa;
+	}
 	
 }
