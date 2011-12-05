@@ -1,6 +1,7 @@
 package edu.pennphoto.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.pennphoto.db.DBHelper;
 import edu.pennphoto.db.UserDAO;
+import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.User;
 
 /**
@@ -19,26 +21,33 @@ import edu.pennphoto.model.User;
 @WebServlet("/UserServlet")
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public UserServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public UserServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String msg = "";
 		try {
-			//msg = DBHelper.getInstance().testConnection();
-			//UserDAO.testCreateUser();
+			// msg = DBHelper.getInstance().testConnection();
+			// UserDAO.testCreateUser();
+			// Circle circle = UserDAO.createCircle(17001, "test_circle2");
+			ArrayList<Circle> circles = UserDAO.getUserCircles(17001);
+			// UserDAO.addFriendToCircle(17001, 17002);
 			User user = UserDAO.login("test@penn.edu", "test");
-			msg = ""+user;
+			msg = "" + user;
+			user = UserDAO.getUserById(17002);
+			msg += "\n\n" + user;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,9 +57,11 @@ public class UserServlet extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
 
