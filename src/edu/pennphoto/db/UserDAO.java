@@ -228,6 +228,28 @@ public class UserDAO {
 		}
 		return false;
 	}
+	
+	public static int removeFriendFromCircle(int circleId, int friendId) {
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			String query = "delete from In_Circle where circle_id="+circleId+" and friend_id="+friendId;
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			int rowsNum = stmt.executeUpdate(query);
+			return rowsNum;
+		} catch (Exception ex) {
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			ex.printStackTrace();
+		}
+		return 0;
+	}
 
 	public static ArrayList<Circle> getUserCircles(int userId) {
 		String query = "select * from Circle c left join In_Circle ic on c.id = ic.circle_id where c.owner_id="
