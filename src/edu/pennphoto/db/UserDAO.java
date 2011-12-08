@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-
 import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.Professor;
 import edu.pennphoto.model.Student;
@@ -18,7 +16,7 @@ import edu.pennphoto.model.User.Gender;
 
 public class UserDAO {
 
-	public static void createUser(User user) throws SQLException {
+	public static boolean createUser(User user) throws SQLException {
 		Connection conn = null;
 		PreparedStatement userStmt = null;
 		PreparedStatement spStmt = null;
@@ -62,6 +60,7 @@ public class UserDAO {
 			}
 			spStmt.execute();
 			user.setUserID(userId);
+			return true;
 		} catch (Exception ex) {
 			if (conn != null) {
 				try {
@@ -72,14 +71,15 @@ public class UserDAO {
 				}
 			}
 			ex.printStackTrace();
+			return false;
 		} finally {
+			conn.setAutoCommit(true);
 			if (userStmt != null) {
 				userStmt.close();
 			}
 			if (spStmt != null) {
 				spStmt.close();
 			}
-			conn.setAutoCommit(true);
 		}
 	}
 
