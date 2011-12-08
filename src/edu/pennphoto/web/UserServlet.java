@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import edu.pennphoto.db.DBHelper;
+import edu.pennphoto.db.PhotoDAO;
 import edu.pennphoto.db.UserDAO;
 import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.User;
@@ -43,12 +44,16 @@ public class UserServlet extends HttpServlet {
 			// msg = DBHelper.getInstance().testConnection();
 			// UserDAO.testCreateUser();
 			// Circle circle = UserDAO.createCircle(17001, "test_circle2");
-			ArrayList<Circle> circles = UserDAO.getUserCircles(17001);
-			// UserDAO.addFriendToCircle(17001, 17002);
+			//ArrayList<Circle> circles = UserDAO.getUserCircles(17001);
+			//UserDAO.addFriendToCircle(17000, 17002);
+			
+			//UserDAO.removeFriendFromCircle(17000, 17002);
 			User user = UserDAO.login("test@penn.edu", "test");
 			msg = "" + user;
 			user = UserDAO.getUserById(17002);
 			msg += "\n\n" + user;
+			
+			PhotoDAO.testPostPhoto();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

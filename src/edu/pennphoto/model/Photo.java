@@ -6,17 +6,23 @@ public class Photo {
 	private int photoID;
 	private String url;
 	private boolean isPrivate;
+	private int ownerId;
 	
 	private ArrayList<Integer> viewCircleIDs;
 	private ArrayList<Integer> viewUserIDs;
 	private ArrayList<Tag> tags;
 	private ArrayList<Rating> ratings;
 	
-	public Photo(int photoID, String url, boolean isPrivate) {
+	public Photo(String url, boolean isPrivate, int ownerId){
+		this(0, url, isPrivate, ownerId);
+	}
+	
+	public Photo(int photoID, String url, boolean isPrivate, int ownerId) {
 		super();
 		this.photoID = photoID;
 		this.url = url;
 		this.isPrivate = isPrivate;
+		this.ownerId = ownerId;
 		viewCircleIDs = new ArrayList<Integer>();
 		viewUserIDs = new ArrayList<Integer>();
 	}
@@ -106,6 +112,14 @@ public class Photo {
 
 	public void setRatings(ArrayList<Rating> ratings) {
 		this.ratings = ratings;
+	}
+
+	public int getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(int ownerId) {
+		this.ownerId = ownerId;
 	}
 	
 	

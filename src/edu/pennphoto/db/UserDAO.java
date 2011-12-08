@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-
 import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.Professor;
 import edu.pennphoto.model.Student;
@@ -18,7 +16,7 @@ import edu.pennphoto.model.User.Gender;
 
 public class UserDAO {
 
-	public static void createUser(User user) throws SQLException {
+	public static boolean createUser(User user) throws SQLException {
 		Connection conn = null;
 		PreparedStatement userStmt = null;
 		PreparedStatement spStmt = null;
@@ -62,6 +60,7 @@ public class UserDAO {
 			}
 			spStmt.execute();
 			user.setUserID(userId);
+			return true;
 		} catch (Exception ex) {
 			if (conn != null) {
 				try {
@@ -72,14 +71,15 @@ public class UserDAO {
 				}
 			}
 			ex.printStackTrace();
+			return false;
 		} finally {
+			conn.setAutoCommit(true);
 			if (userStmt != null) {
 				userStmt.close();
 			}
 			if (spStmt != null) {
 				spStmt.close();
 			}
-			conn.setAutoCommit(true);
 		}
 	}
 
@@ -227,6 +227,28 @@ public class UserDAO {
 			ex.printStackTrace();
 		}
 		return false;
+	}
+	
+	public static int removeFriendFromCircle(int circleId, int friendId) {
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			String query = "delete from In_Circle where circle_id="+circleId+" and friend_id="+friendId;
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			int rowsNum = stmt.executeUpdate(query);
+			return rowsNum;
+		} catch (Exception ex) {
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			ex.printStackTrace();
+		}
+		return 0;
 	}
 
 	public static ArrayList<Circle> getUserCircles(int userId) {
