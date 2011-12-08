@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import edu.pennphoto.db.DBHelper;
 import edu.pennphoto.db.UserDAO;
@@ -62,7 +63,42 @@ public class UserServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		String action = request.getParameter("action");
+		
+		if (action.equals("login")) {
+			handleLogin(request, response);
+		} else if (action.equals("register")) {
+			handleRegistration(request, response);
+		}
+
+	}
+	
+	protected void handleLogin(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		String email = request.getParameter("email-login");
+		String password = request.getParameter("pwd");
+		User user = UserDAO.login(email, password);
+
+		if (user == null) {
+			response.sendRedirect("login.jsp?error=1");
+		} else {
+			HttpSession session = request.getSession(true);
+			session.setAttribute("user", user);
+			response.sendRedirect("homepage.jsp");
+		}		
+	}
+	
+	protected void handleRegistration(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		String email = request.getParameter("email-login");
+		String password = request.getParameter("pwd");
+		User user = UserDAO.login(email, password);
+
+		if (user == null) {
+			response.sendRedirect("registration.jsp?error=1");
+		} else {
+			response.sendRedirect("login.jsp");
+		}		
 	}
 
 }
