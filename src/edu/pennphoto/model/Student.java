@@ -9,13 +9,13 @@ public class Student extends User {
 	private String major;
 	private double gpa;
 	
-	Student(int userID, String email, String firstName, String lastName,
+	public Student(int userID, String email, String firstName, String lastName,
 			Date dob, Gender gender, String address, String city, String state,
 			String zip){
 		super(userID, email, firstName, lastName, dob, gender, address, city, state, zip);
 	}
 	
-	Student(){
+	public Student(){
 		super();
 	}
 
