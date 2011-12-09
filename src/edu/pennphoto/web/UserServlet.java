@@ -17,6 +17,7 @@ import edu.pennphoto.db.DBHelper;
 import edu.pennphoto.db.PhotoDAO;
 import edu.pennphoto.db.UserDAO;
 import edu.pennphoto.model.Circle;
+import edu.pennphoto.model.Photo;
 import edu.pennphoto.model.User;
 
 /**
@@ -103,12 +104,27 @@ public class UserServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String privacy = request.getParameter("privacy");
 		String url = request.getParameter("url");
+		String rating = request.getParameter("rating");
+		
+		Photo photo = new Photo( String url, boolean isPrivate, int ownerId){
+		
+		
+		
+		boolean photo_posted = PhotoDAO.postPhoto(photo);
+		
+		if(photo_posted){
+			
+		} else{
+			
+		}
+		
+		
+		
 		
 		
 	}
 
-	protected void handleLogin(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	protected void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String email = request.getParameter("email-login");
 		String password = request.getParameter("pwd");
 		User user = UserDAO.login(email, password);
@@ -122,8 +138,7 @@ public class UserServlet extends HttpServlet {
 		}		
 	}
 	
-	protected void handleRegistration(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	protected void handleRegistration(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String email = request.getParameter("email-login");
 		String password = request.getParameter("pwd");
 		User user = UserDAO.login(email, password);
