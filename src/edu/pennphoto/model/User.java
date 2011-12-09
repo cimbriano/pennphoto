@@ -22,7 +22,7 @@ public abstract class User {
 
 	private ArrayList<Attendance> attendances;
 	private ArrayList<Circle> circles;
-	private ArrayList<Integer> interestIDs;
+	private ArrayList<Integer> interestIds;
 	
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
@@ -41,19 +41,19 @@ public abstract class User {
 		return sb.toString();
 	}
 	public boolean addInterestID(Integer id){
-		return interestIDs.add(id);
+		return interestIds.add(id);
 	}
 	
 	public boolean removeInterestID(Integer id){
-		return interestIDs.remove(id);
+		return interestIds.remove(id);
 	}
 	
 	public ArrayList<Integer> getInterestIDs() {
-		return interestIDs;
+		return interestIds;
 	}
 
 	public void setInterestIDs(ArrayList<Integer> interestIDs) {
-		this.interestIDs = interestIDs;
+		this.interestIds = interestIDs;
 	}
 
 	public int getUserID() {
@@ -188,6 +188,7 @@ public abstract class User {
 		this.zip = zip;
 		attendances = new ArrayList<Attendance>();
 		circles = new ArrayList<Circle>();
+		interestIds = new ArrayList<Integer>();
 	}
 	
 	public class Attendance{

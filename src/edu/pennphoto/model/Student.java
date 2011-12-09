@@ -2,8 +2,6 @@ package edu.pennphoto.model;
 
 import java.util.Date;
 
-import edu.pennphoto.model.User.Gender;
-
 public class Student extends User {
 	
 	private String major;
