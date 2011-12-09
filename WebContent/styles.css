@@ -1,14 +1,24 @@
 @CHARSET "UTF-8";
+/*
 
+Font Set:
+
+font-family: 'Astloch', cursive;
+font-family: 'Lancelot', cursive;
+font-family: 'Vast Shadow', cursive;
+font-family: 'Meddon', cursive;
+font-family: 'Buda', sans-serif;
+font-family: 'Megrim', cursive;
+font-family: 'Monoton', cursive;
+
+*/
 
 
 #wrapper{
-	height: 800px;
+	height: 100%;
 	width: 800px;
 	
-	margin: 0 auto;
-	
-	background: red;		
+	margin: 0 auto;		
 }
 
 #header{
@@ -20,19 +30,83 @@
 	background: rgba(0, 0, 120, 0.5);
 }
 
-#login-wrapper {
+/* Begin Login Page */
+
+#login-content {
+	height: 400px;
+	width: 800px;
+	
+	position: relative;
+	margin-top: 100px;
+	
+	border-radius: 10px 10px 0 0;
+	background: lightBlue;	
+}
+
+#login-info {
+	height: 300px;
+	width: 400px;
+	background: LightGreen;
+	float: left;	
+}
+
+#login-form-wrapper {
+	position: relative;
+	float: left;
+	
+	height: 50%;
+	width: 40%;
+	
+	top: 60px;
+}
+
+
+
+#login-content input{
+	margin: 10px 0;
+	
+	height: 30px;
+	width: 200px;
+	float: right;
+	
+	font-size: 100%;
+	
+	text-align: center;
+}
+
+
+#login-content .submit {
+	width: 150px;
 	float: right;	
-}
-
-#login-wrapper label {
-		
-}
-
-#login-wrapper input {
-		
+	
+	position: relative;
+	right: 21px;
 }
 
 
+#login-content h1 {
+	font-family: 'Monoton', cursive;
+	font-size: 64px;
+	
+	margin: 0;
+	
+	text-align: center;	
+}
+
+#login-form-wrapper .error {
+	background: #FFBAAC;
+	border-radius: 6px;
+	
+	margin: 0 auto;
+    text-align: center;
+    width: 400px;
+}
+
+#login-content .error p{
+	font-size: 24px;	
+}
+
+/* End Login Page */
 
 #top-scroll {
 	height: 90px;
@@ -49,9 +123,14 @@
 #footer {
 	height: 150px;
 	width: 100%;
-	background: yellow;
+	background: Darkorange;
+	
+	border-radius: 0 0 10px 10px;
 }
 
+p {
+font-family: 'Lancelot', cursive;	
+}
 
 .clear{
 	clear: both;	
