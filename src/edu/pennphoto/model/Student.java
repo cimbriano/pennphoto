@@ -8,6 +8,7 @@ public class Student extends User {
 	
 	private String major;
 	private double gpa;
+	private int advisorId;
 	
 	public Student(int userID, String email, String firstName, String lastName,
 			Date dob, Gender gender, String address, String city, String state,
@@ -17,6 +18,16 @@ public class Student extends User {
 	
 	public Student(){
 		super();
+	}
+	
+	
+
+	public int getAdvisorId() {
+		return advisorId;
+	}
+
+	public void setAdvisorId(int advisorId) {
+		this.advisorId = advisorId;
 	}
 
 	public String getMajor() {
