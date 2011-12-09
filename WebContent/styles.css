@@ -18,7 +18,9 @@ font-family: 'Monoton', cursive;
 	height: 100%;
 	width: 800px;
 	
-	margin: 0 auto;		
+	margin: 0 auto;
+	
+	border-radius: 10px;
 }
 
 /* Begin Page header */
@@ -43,6 +45,11 @@ font-family: 'Monoton', cursive;
 /* End Page Header */
 
 /* Begin Login Page */
+
+#login-wrapper{
+	border-radius: 10px;
+	box-shadow: 8px 13px 30px black;	
+}
 
 #login-content {
 	height: 400px;
@@ -103,6 +110,7 @@ font-family: 'Monoton', cursive;
 	margin: 0;
 	
 	text-align: center;	
+	text-shadow: 5px 5px 8px grey;
 }
 
 #login-form-wrapper .error {
@@ -164,7 +172,7 @@ font-family: 'Monoton', cursive;
 #footer {
 	height: 150px;
 	width: 100%;
-	background: Darkorange;
+	background: #FFB965;
 	
 	border-radius: 0 0 10px 10px;
 }

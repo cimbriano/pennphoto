@@ -1,5 +1,6 @@
 <jsp:include page="partials/html-head.jsp" />
 
+<div id="login-wrapper">
 
 	<div id="login-content">
 	
@@ -60,4 +61,6 @@
 		<% } %>
 	</div>
 
-<jsp:include page="partials/footer.jsp" />		
+<jsp:include page="partials/footer.jsp" />
+
+</div><!-- #login-wraper -->
