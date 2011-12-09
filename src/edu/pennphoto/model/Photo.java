@@ -3,7 +3,7 @@ package edu.pennphoto.model;
 import java.util.ArrayList;
 
 public class Photo {
-	private Integer photoID;
+	private Integer photoId;
 	private String url;
 	private boolean isPrivate;
 	private int ownerId;
@@ -17,9 +17,9 @@ public class Photo {
 		this(null, url, isPrivate, ownerId);
 	}
 	
-	public Photo(Integer photoID, String url, boolean isPrivate, int ownerId) {
+	public Photo(Integer photoId, String url, boolean isPrivate, int ownerId) {
 		super();
-		this.photoID = photoID;
+		this.photoId = photoId;
 		this.url = url;
 		this.isPrivate = isPrivate;
 		this.ownerId = ownerId;
@@ -27,12 +27,12 @@ public class Photo {
 		viewUserIDs = new ArrayList<Integer>();
 	}
 
-	public int getPhotoID() {
-		return photoID;
+	public int getPhotoId() {
+		return photoId;
 	}
 
-	public void setPhotoID(int photoID) {
-		this.photoID = photoID;
+	public void setPhotoId(int photoId) {
+		this.photoId = photoId;
 	}
 
 	public String getUrl() {
