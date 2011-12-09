@@ -14,6 +14,7 @@
 	
 	<div id="content">
 			<jsp:include page="partials/submit-photo.jsp" />
+			<jsp:include page="partials/create-circle.jsp" />
 		
 	</div><!-- #content -->
 	

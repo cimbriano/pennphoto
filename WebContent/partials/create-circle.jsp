@@ -25,18 +25,4 @@
 		
 	</form>
 	
-</div><!-- #submit-photo-wrapper -->
-
-<!-- 
-
-<element name="url" type="string"></element>
-<element name="is_private" type="boolean"></element>
-
-<element name="rating" type="tns:ratingType" maxOccurs="unbounded"
-minOccurs="0">
-</element>
-
-<element name="tag" type="tns:tagType" maxOccurs="unbounded"
-minOccurs="0"></element>
-
- -->
+</div>
