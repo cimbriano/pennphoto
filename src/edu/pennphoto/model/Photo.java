@@ -3,7 +3,7 @@ package edu.pennphoto.model;
 import java.util.ArrayList;
 
 public class Photo {
-	private int photoID;
+	private Integer photoID;
 	private String url;
 	private boolean isPrivate;
 	private int ownerId;
@@ -14,10 +14,10 @@ public class Photo {
 	private ArrayList<Rating> ratings;
 	
 	public Photo(String url, boolean isPrivate, int ownerId){
-		this(0, url, isPrivate, ownerId);
+		this(null, url, isPrivate, ownerId);
 	}
 	
-	public Photo(int photoID, String url, boolean isPrivate, int ownerId) {
+	public Photo(Integer photoID, String url, boolean isPrivate, int ownerId) {
 		super();
 		this.photoID = photoID;
 		this.url = url;
