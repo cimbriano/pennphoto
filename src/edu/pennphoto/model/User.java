@@ -5,7 +5,15 @@ import java.util.Date;
 
 public abstract class User {
 
-	public enum Gender{ MALE, FEMALE}
+	public enum Gender{ 
+		MALE{
+			public String toString(){ return "m";}
+		},
+		FEMALE{
+			public String toString(){ return "f"; }
+		}
+		
+	}
 	
 	private int userID;
 	private String password;
