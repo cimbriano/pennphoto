@@ -155,6 +155,16 @@ font-family: 'Monoton', cursive;
 }
 
 /* End Submit Photo Form */
+
+/* Begin Create Circle Form */
+
+#create-circle-wrapper{
+	width: 400px;	
+}	
+
+/* End Create Circle Form */
+	
+
 	
 
 #top-scroll {
