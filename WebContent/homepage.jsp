@@ -12,7 +12,10 @@
 
 	<jsp:include page="partials/top-scroll.jsp" />
 	
-	<div id="content"></div><!-- #content -->
+	<div id="content">
+			<jsp:include page="partials/submit-photo.jsp" />
+		
+	</div><!-- #content -->
 	
 	<jsp:include page="partials/footer.jsp" />
 
