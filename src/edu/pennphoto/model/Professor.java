@@ -1,8 +1,22 @@
 package edu.pennphoto.model;
 
+import java.util.Date;
+
+import edu.pennphoto.model.User.Gender;
+
 public class Professor extends User {
 	String researchArea;
 	String title;
+	
+	Professor(int userID, String email, String firstName, String lastName,
+			Date dob, Gender gender, String address, String city, String state,
+			String zip){
+		super(userID, email, firstName, lastName, dob, gender, address, city, state, zip);
+	}
+	
+	Professor(){
+		super();
+	}
 
 	public String getResearchArea() {
 		return researchArea;
