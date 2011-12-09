@@ -39,8 +39,7 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String msg = request.getPathInfo();
 		
@@ -89,39 +88,42 @@ public class UserServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		
-		//
+		// TODO - Put is_logged in validation here.
 		if (action.equals("login")) {
 			handleLogin(request, response);
 		} else if (action.equals("register")) {
 			handleRegistration(request, response);
 		} else if (action.equals("photo")){
 			handleSubmitPhoto(request,response);
+		} else if (action.equals("create-circle")){
+			handleCreateCircle(request, response);
 		}
 
 	}
 	
+	protected void handleCreateCircle(HttpServletRequest request, HttpServletResponse response) {
+		//Do some create circle stuff
+		
+		//TODO - Success or failure : redirect? AJAX?  
+		
+	}
+
 	protected void handleSubmitPhoto(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
 		String privacy = request.getParameter("privacy");
+		boolean isPrivate = privacy.equals("private") ? true : false; 
+		
+		
+		
 		String url = request.getParameter("url");
 		String rating = request.getParameter("rating");
+		//TODO - Finish creating Photo
 		
-		Photo photo = new Photo( String url, boolean isPrivate, int ownerId){
+		//int ownerId = ;
 		
+		//Photo photo = new Photo(url, isPrivate, ownerId);
+		//boolean photo_posted = PhotoDAO.postPhoto(photo);
 		
-		
-		boolean photo_posted = PhotoDAO.postPhoto(photo);
-		
-		if(photo_posted){
-			
-		} else{
-			
-		}
-		
-		
-		
-		
-		
+		//TODO - Success or failure : redirect? AJAX?
 	}
 
 	protected void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -129,6 +131,7 @@ public class UserServlet extends HttpServlet {
 		String password = request.getParameter("pwd");
 		User user = UserDAO.login(email, password);
 
+		// TODO - Remove logged in validation form here in place of in doPost method
 		if (user == null) {
 			response.sendRedirect("login.jsp?error=1");
 		} else {
@@ -143,6 +146,7 @@ public class UserServlet extends HttpServlet {
 		String password = request.getParameter("pwd");
 		User user = UserDAO.login(email, password);
 
+		// TODO - Remove logged in validation form here in place of in doPost method
 		if (user == null) {
 			response.sendRedirect("registration.jsp?error=1");
 		} else {

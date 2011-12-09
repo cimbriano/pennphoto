@@ -2,7 +2,7 @@
 
 	<div id="logo"></div>
 	
-	<div id="">
+	<div id="user-actions">
 		<ul>
 			<li><a href="userServlet/logout">Logout</a></li>
 		</ul>

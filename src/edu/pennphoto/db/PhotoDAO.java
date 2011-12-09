@@ -29,7 +29,7 @@ public class PhotoDAO {
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
 			int photoId = rs.getInt(1);
-			photo.setPhotoID(photoId);
+			photo.setPhotoId(photoId);
 			if (photo.isPrivate()) {
 				ArrayList<Integer> viewCircleIDs = photo.getViewCircleIDs();
 				if(viewCircleIDs.size() > 0){
