@@ -43,12 +43,17 @@ public class UserServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String msg = request.getPathInfo();
 		
+		// Checks for /logout 
+		
 		if(msg == null) {
+			// Error
 			response.sendRedirect("login.jsp?error=bp");
 		} else if (msg.equals("/logout")){
+			// Logout
 			request.getSession().invalidate();
 			response.sendRedirect(request.getServletContext().getContextPath()+ "/login.jsp");
 		} else {
+			// Any other 
 			response.getWriter().write(msg);			
 		}
 		
@@ -83,14 +88,25 @@ public class UserServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		
+		//
 		if (action.equals("login")) {
 			handleLogin(request, response);
 		} else if (action.equals("register")) {
 			handleRegistration(request, response);
+		} else if (action.equals("photo")){
+			handleSubmitPhoto(request,response);
 		}
 
 	}
 	
+	protected void handleSubmitPhoto(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		String privacy = request.getParameter("privacy");
+		String url = request.getParameter("url");
+		
+		
+	}
+
 	protected void handleLogin(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String email = request.getParameter("email-login");
