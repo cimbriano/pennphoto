@@ -1,40 +1,63 @@
-<%@ page language="java" contentType="text/html; charset=US-ASCII"
-    pageEncoding="US-ASCII"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<jsp:include page="partials/html-head.jsp" />
 
-<!-- Stylesheets -->
-<link rel="stylesheet" type="text/css" media="all" href="styles.css" />
-<link rel="stylesheet" type="text/css" media="all" href="main-nav.css" />
 
-<title>Welcome to PennPhoto</title>
-
-</head>
-<body>
-	<div id="wrapper">
-
-		<div id="header">
-			<div id="logo"></div>
-			<div class="clear"></div>
-		</div><!-- #header -->
-
-		<div id="content">
+	<div id="login-content">
+	
+		<h1>Penn Photo Login!</h1>
+		
+		<div id="login-info">
+				<ul>
+					<li>Penn photo is awesome</li>
+					<li>Its also really cool</li>
+					<li>You'll be the talk of the town</li>
+				</ul>
+			</div>
+	
+		<div id="login-form-wrapper">
+		
 			<form action="userServlet" method="post">
 				<input type="hidden" name="action" value="login" />
-				<label>Email</label> <input type="text" name="email-login" />
-				<label>Password</label> <input type="password" name="pwd" />
-				<input type="submit" value="Login"/>
-
-				<% if (request.getParameter("error") != null) { %>
-					<div class="error">Please check your information and try again.</div>
-				<% } %>
+				<input 	value="Email" 
+						onclick="if (this.value=='Email') { this.value='' }" 
+						onblur="if (this.value=='') { this.value='Email' }"
+						type="text" 
+						name="email-login" /> </br>
+				
+				<input 	value="password" 
+						onclick="if (this.value=='password') { this.value='' }" 
+						onblur="if (this.value=='') { this.value='password' }"
+						type="password" 
+						name="pwd" /> </br>
+						
+				<input class="submit" type="submit" value="Login"/>
 			</form>
-		</div>
-
-		<jsp:include page="partials/footer.jsp" />		
+			
+			<div class="clear"></div>
+			
+			<% 	String error = request.getParameter("error");
+				if (error != null) { 
+			%>
+				<div class="error">
+				
+					<% if(error.equals("2")) { %> 
+						<p>Error: sent here from homepage</p>
+					<% } else if(error.equals("bl")) { %>
+						<p>Invalid login/password combination</p>
+					<% } else if(error.equals("bp")){ %>
+						<p>Bag page request</p>
+					<% } %>
+				</div> <!-- #error-->
+				
+			<% } %>
 		
-	</div><!--  #wrapper -->
-</body>
-</html>
+		</div><!-- #login-form-wrapper -->
+		
+		<% 	if (session.getAttribute("user") == null) {
+				//response.sendRedirect("login.jsp?error=redirectedFromLoginPage");
+			} else{	%>
+			
+			<p>ALERT: USER IS STIL LOGGED IN</p>		
+		<% } %>
+	</div>
+
+<jsp:include page="partials/footer.jsp" />		

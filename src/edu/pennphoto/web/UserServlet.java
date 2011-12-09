@@ -11,10 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.Session;
+
 import edu.pennphoto.db.DBHelper;
 import edu.pennphoto.db.PhotoDAO;
 import edu.pennphoto.db.UserDAO;
 import edu.pennphoto.model.Circle;
+import edu.pennphoto.model.Photo;
 import edu.pennphoto.model.User;
 
 /**
@@ -39,27 +42,43 @@ public class UserServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String msg = "";
-		try {
-			// msg = DBHelper.getInstance().testConnection();
-			// UserDAO.testCreateUser();
-			// Circle circle = UserDAO.createCircle(17001, "test_circle2");
-			//ArrayList<Circle> circles = UserDAO.getUserCircles(17001);
-			//UserDAO.addFriendToCircle(17000, 17002);
-			
-			//UserDAO.removeFriendFromCircle(17000, 17002);
-			User user = UserDAO.login("test@penn.edu", "test");
-			msg = "" + user;
-			user = UserDAO.getUserById(17002);
-			msg += "\n\n" + user;
-			
-			PhotoDAO.testPostPhoto();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			msg = e.getMessage();
+		String msg = request.getPathInfo();
+		
+		// Checks for /logout 
+		
+		if(msg == null) {
+			// Error
+			response.sendRedirect("login.jsp?error=bp");
+		} else if (msg.equals("/logout")){
+			// Logout
+			request.getSession().invalidate();
+			response.sendRedirect(request.getServletContext().getContextPath()+ "/login.jsp");
+		} else {
+			// Any other 
+			response.getWriter().write(msg);			
 		}
-		response.getWriter().write(msg);
+		
+//		String msg = "";
+//		try {
+//			// msg = DBHelper.getInstance().testConnection();
+//			// UserDAO.testCreateUser();
+//			// Circle circle = UserDAO.createCircle(17001, "test_circle2");
+//			//ArrayList<Circle> circles = UserDAO.getUserCircles(17001);
+//			//UserDAO.addFriendToCircle(17000, 17002);
+//			
+//			//UserDAO.removeFriendFromCircle(17000, 17002);
+//			User user = UserDAO.login("test@penn.edu", "test");
+//			msg = "" + user;
+//			user = UserDAO.getUserById(17002);
+//			msg += "\n\n" + user;
+//			
+//			PhotoDAO.testPostPhoto();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			msg = e.getMessage();
+//		}
+//		response.getWriter().write(msg);
 	}
 
 	/**
@@ -70,16 +89,42 @@ public class UserServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		
+		//
 		if (action.equals("login")) {
 			handleLogin(request, response);
 		} else if (action.equals("register")) {
 			handleRegistration(request, response);
+		} else if (action.equals("photo")){
+			handleSubmitPhoto(request,response);
 		}
 
 	}
 	
-	protected void handleLogin(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	protected void handleSubmitPhoto(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		String privacy = request.getParameter("privacy");
+		String url = request.getParameter("url");
+		String rating = request.getParameter("rating");
+		
+		Photo photo = new Photo( String url, boolean isPrivate, int ownerId){
+		
+		
+		
+		boolean photo_posted = PhotoDAO.postPhoto(photo);
+		
+		if(photo_posted){
+			
+		} else{
+			
+		}
+		
+		
+		
+		
+		
+	}
+
+	protected void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String email = request.getParameter("email-login");
 		String password = request.getParameter("pwd");
 		User user = UserDAO.login(email, password);
@@ -93,8 +138,7 @@ public class UserServlet extends HttpServlet {
 		}		
 	}
 	
-	protected void handleRegistration(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	protected void handleRegistration(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String email = request.getParameter("email-login");
 		String password = request.getParameter("pwd");
 		User user = UserDAO.login(email, password);
