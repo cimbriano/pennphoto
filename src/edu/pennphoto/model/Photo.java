@@ -1,6 +1,7 @@
 package edu.pennphoto.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Photo {
 	private Integer photoId;
@@ -12,17 +13,18 @@ public class Photo {
 	private ArrayList<Integer> viewUserIDs;
 	private ArrayList<Tag> tags;
 	private ArrayList<Rating> ratings;
+	private Date uploadDate;
 	
 	public Photo(String url, boolean isPrivate, int ownerId){
-		this(null, url, isPrivate, ownerId);
+		this(null, url, isPrivate, ownerId, new Date());
 	}
 	
-	public Photo(Integer photoId, String url, boolean isPrivate, int ownerId) {
-		super();
+	public Photo(Integer photoId, String url, boolean isPrivate, int ownerId, Date uploadDate) {
 		this.photoId = photoId;
 		this.url = url;
 		this.isPrivate = isPrivate;
 		this.ownerId = ownerId;
+		this.uploadDate = uploadDate;
 		viewCircleIDs = new ArrayList<Integer>();
 		viewUserIDs = new ArrayList<Integer>();
 	}
@@ -120,6 +122,18 @@ public class Photo {
 
 	public void setOwnerId(int ownerId) {
 		this.ownerId = ownerId;
+	}
+
+	public Date getUploadDate() {
+		return uploadDate;
+	}
+
+	public void setUploadDate(Date uploadDate) {
+		this.uploadDate = uploadDate;
+	}
+
+	public void setPhotoId(Integer photoId) {
+		this.photoId = photoId;
 	}
 	
 	
