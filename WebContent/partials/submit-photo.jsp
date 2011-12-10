@@ -9,6 +9,7 @@
 					value="Image URL" 
 					onclick="if (this.value=='Image URL') { this.value='' }" 
 					onblur="if (this.value=='') { this.value='Image URL' }"
+					onkeydown="if (this.value=='Image URL') { this.value='' }"
 					type="url" 
 					name="url"
 					required />
