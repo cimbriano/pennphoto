@@ -12,11 +12,53 @@ font-family: 'Megrim', cursive;
 font-family: 'Monoton', cursive;
 
 */
+body{
+	margin: 0;
+	padding: 0;	
+}
 
+/* Begin Top-bar */
+
+
+
+#top-bar {
+	height: 30px;
+	width: 100%;
+	
+	background: black;
+	color: white;	
+}
+
+#user-actions{
+	float: right;	
+	margin-right: 20px;
+}
+
+#user-actions li {
+	float: left;
+	padding: 0 10px;
+		
+}
+
+#user-actions ul {
+	list-style: none;	
+	margin: 0;
+}
+
+#top-bar a{
+	color: white;
+	text-decoration: none;	
+}
+
+#top-bar a:hover {
+	text-decoration: underline;	
+}
+
+/* End Top-bar */
 
 #wrapper{
 	height: 100%;
-	width: 800px;
+	width: 1200px;
 	
 	margin: 0 auto;
 	
@@ -32,14 +74,6 @@ font-family: 'Monoton', cursive;
 	position: relative;
 	
 	background: rgba(0, 0, 120, 0.5);
-}
-
-#user-actions {
-	float: right;
-}
-
-#user-actions ul {
-	list-style: none;	
 }
 
 /* End Page Header */
@@ -166,12 +200,15 @@ font-family: 'Monoton', cursive;
 	
 
 	
-
+/* Begin Top Bar "Below Header" */
 #top-scroll {
 	height: 90px;
 	width: 100%;
 	background: green;
 }
+
+
+/* End Top Bar "Below Header" */
 
 #content {
 	height: 600px;
