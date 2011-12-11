@@ -6,10 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.Photo;
 import edu.pennphoto.model.Rating;
 import edu.pennphoto.model.Tag;
@@ -93,7 +91,7 @@ public class PhotoDAO {
 		}
 	}
 
-	public static boolean createTag(Tag tag){
+	public static boolean createTag(Tag tag) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -124,8 +122,8 @@ public class PhotoDAO {
 			return false;
 		}
 	}
-	
-	public static boolean createRating(Rating rating){
+
+	public static boolean createRating(Rating rating) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -156,12 +154,13 @@ public class PhotoDAO {
 			return false;
 		}
 	}
-	public static List<Photo> searchPhotosByTag(String keyword, int userId){
-		
-		String query = "select * from Photo p left join Tag t on p.id=t.photo_id where t.tag=? and"+
-		" p.id IN (select distinct p.id from Photo p left join Photo_Visible_To_Circle vcr on p.id=vcr.photo_id left join Photo_Visible_To_User vu on p.id=vu.photo_id"+
-				" left join In_Circle ic on vcr.circle_id = ic.circle_id where is_private = 0 or vu.user_id = ? or ic.friend_id=? or p.owner_id=?)";
-		
+
+	public static List<Photo> searchPhotosByTag(String keyword, int userId) {
+
+		String query = "select * from Photo p left join Tag t on p.id=t.photo_id where t.tag=? and"
+				+ " p.id IN (select distinct p.id from Photo p left join Photo_Visible_To_Circle vcr on p.id=vcr.photo_id left join Photo_Visible_To_User vu on p.id=vu.photo_id"
+				+ " left join In_Circle ic on vcr.circle_id = ic.circle_id where is_private = 0 or vu.user_id = ? or ic.friend_id=? or p.owner_id=?)";
+
 		PreparedStatement stmt = null;
 		Connection conn = null;
 		try {
@@ -172,53 +171,128 @@ public class PhotoDAO {
 			stmt.setInt(3, userId);
 			stmt.setInt(4, userId);
 			ResultSet rs = stmt.executeQuery();
-			ArrayList<Photo> photos = new ArrayList<Photo>();
-			Photo photo = null;
-			while (rs.next()) {
-				// photoId, String url, boolean isPrivate, int ownerId, Date uploadDate
-				photo = new Photo(rs.getInt("id"), rs.getString("url"), rs.getBoolean("is_private"), rs.getInt("owner_id"),  rs.getDate("upload_date"));
-				photos.add(photo);
-			}
-			return photos;
+			return generatePhotoList(rs);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
-	/*private static ArrayList<Photo> getPhotos(int userId) {
-		String query = "select * from Circle c left join In_Circle ic on c.id = ic.circle_id where c.owner_id="
-				+ userId;
+
+	public static List<Photo> getUserPhoto(int userId) {
+		String query = "select * from Photo where owner_id=" + userId;
 		Statement stmt = null;
 		Connection conn = null;
 		try {
 			conn = DBHelper.getInstance().getConnection();
 			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
-			ArrayList<Circle> circles = new ArrayList<Circle>();
-			Circle circle = null;
-			while (rs.next()) {
-				if (circle == null || circle.getCircleID() != rs.getInt("id")) {
-					circle = new Circle(rs.getInt("id"), rs.getString("name"));
-					circles.add(circle);
-				}
-				circle.addFriendID(rs.getInt("friend_id"));
-			}
-			return circles;
+			return generatePhotoList(rs);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
-
-	}*/
-public static void testSearchPhoto(){
-	List<Photo> photos = searchPhotosByTag("tag from 17009", 17002);
-	for (Photo photo : photos) {
-		System.out.println(photo.getPhotoId() + " " + photo.getUrl());
 	}
-}
+
+	public static List<Integer> getPhotoVisibleToCircles(int photoId) {
+		String query = "select distinct(circle_id) from Photo_Visible_To_Circle where photo_id="
+				+ photoId;
+		return getIntList(query);
+	}
+
+	public static List<Integer> getPhotoVisibleToUsers(int photoId) {
+		String query = "select distinct(user_id) from Photo_Visible_To_User where photo_id="
+				+ photoId;
+		return getIntList(query);
+	}
+
+	public static List<Tag> getPhotoTags(int photoId) {
+		String query = "select * from tag where photo_id=" + photoId;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			ArrayList<Tag> tags = new ArrayList<Tag>();
+			Tag tag = null;
+			while (rs.next()) {
+				// int photoID, int userID, String tagText
+				tag = new Tag(rs.getInt("photo_id"), rs.getInt("user_id"),
+						rs.getString("tag"));
+				tags.add(tag);
+			}
+			return tags;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static List<Rating> getPhotoRatings(int photoId) {
+		String query = "select * from Rating where photo_id=" + photoId;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			ArrayList<Rating> ratings = new ArrayList<Rating>();
+			Rating rating = null;
+			while (rs.next()) {
+				// int photoID, int userID, String tagText
+				rating = new Rating(rs.getInt("photo_id"),
+						rs.getInt("user_id"), rs.getInt("rating"));
+				ratings.add(rating);
+			}
+			return ratings;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private static List<Integer> getIntList(String query) {
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			ArrayList<Integer> result = new ArrayList<Integer>();
+			while (rs.next()) {
+				result.add(rs.getInt(1));
+			}
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private static List<Photo> generatePhotoList(ResultSet rs)
+			throws SQLException {
+		ArrayList<Photo> photos = new ArrayList<Photo>();
+		Photo photo = null;
+		while (rs.next()) {
+			// photoId, String url, boolean isPrivate, int ownerId, Date
+			// uploadDate
+			photo = new Photo(rs.getInt("id"), rs.getString("url"),
+					rs.getBoolean("is_private"), rs.getInt("owner_id"),
+					rs.getDate("upload_date"));
+			photos.add(photo);
+		}
+		return photos;
+	}
+
+	public static void testSearchPhoto() {
+		List<Photo> photos = searchPhotosByTag("tag from 17009", 17002);
+		for (Photo photo : photos) {
+			System.out.println(photo.getPhotoId() + " " + photo.getUrl());
+		}
+	}
+
 	public static void testPostPhoto() {
-		try{
+		try {
 			Photo photo = new Photo(
 					"http://www.discoverlife.org/IM/I_JP/0005/320/Dichelostemma_capitatum,_flowers,I_JP523.jpg",
 					true, 17001);
@@ -227,7 +301,7 @@ public static void testSearchPhoto(){
 			photo.addViewUserID(17001);
 			photo.addViewUserID(17006);
 			photo.addViewUserID(17009);
-			if(postPhoto(photo)){
+			if (postPhoto(photo)) {
 				System.out.println("posting some tags");
 				Tag tag = new Tag(photo.getPhotoId(), 17009, "tag from 17009");
 				createTag(tag);
@@ -235,7 +309,7 @@ public static void testSearchPhoto(){
 				createTag(tag);
 				tag = new Tag(photo.getPhotoId(), 17011, "tag from 17011");
 				createTag(tag);
-						
+
 				System.out.println("rate photo");
 				Rating rating = new Rating(photo.getPhotoId(), 17009, 1);
 				createRating(rating);
@@ -243,10 +317,10 @@ public static void testSearchPhoto(){
 				createRating(rating);
 				rating = new Rating(photo.getPhotoId(), 17011, 3);
 				createRating(rating);
-			};
-			
-			
-		}catch(SQLException ex){
+			}
+			;
+
+		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
 	}
