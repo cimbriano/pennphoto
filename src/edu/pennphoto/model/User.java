@@ -178,12 +178,15 @@ public abstract class User {
 	
 	public User(){
 		super();
+		attendances = new ArrayList<Attendance>();
+		circles = new ArrayList<Circle>();
+		interestIds = new ArrayList<Integer>();
 	}
 	
 	public User(int userID, String email, String firstName, String lastName,
 			Date dob, Gender gender, String address, String city, String state,
 			String zip) {
-		super();
+		this();
 		this.userID = userID;
 		this.email = email;
 		this.firstName = firstName;
@@ -194,12 +197,10 @@ public abstract class User {
 		this.city = city;
 		this.state = state;
 		this.zip = zip;
-		attendances = new ArrayList<Attendance>();
-		circles = new ArrayList<Circle>();
-		interestIds = new ArrayList<Integer>();
 	}
 	
-	public class Attendance{
+	public static class Attendance{
+		private int institutionId;
 		private String institution;
 		private int startYear;
 		private int endYear;
@@ -228,6 +229,14 @@ public abstract class User {
 			this.endYear = endYear;
 		}
 
+		public int getInstitutionId() {
+			return institutionId;
+		}
+
+		public void setInstitutionId(int institutionId) {
+			this.institutionId = institutionId;
+		}
+
 		public Attendance(String institution, int startYear, int endYear) {
 			super();
 			this.institution = institution;
@@ -235,8 +244,10 @@ public abstract class User {
 			this.endYear = endYear;
 		}
 		
-		
-		
+		public Attendance(int institutionId, String institution, int startYear, int endYear) {
+			this(institution,startYear, endYear);
+			this.institutionId = institutionId;
+		}
 	}
 
 	public String getPassword() {
