@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.Photo;
@@ -154,6 +156,67 @@ public class PhotoDAO {
 			return false;
 		}
 	}
+	public static List<Photo> searchPhotosByTag(String keyword, int userId){
+		
+		String query = "select * from Photo p left join Tag t on p.id=t.photo_id where t.tag=? and"+
+		" p.id IN (select distinct p.id from Photo p left join Photo_Visible_To_Circle vcr on p.id=vcr.photo_id left join Photo_Visible_To_User vu on p.id=vu.photo_id"+
+				" left join In_Circle ic on vcr.circle_id = ic.circle_id where is_private = 0 or vu.user_id = ? or ic.friend_id=? or p.owner_id=?)";
+		
+		PreparedStatement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, keyword);
+			stmt.setInt(2, userId);
+			stmt.setInt(3, userId);
+			stmt.setInt(4, userId);
+			ResultSet rs = stmt.executeQuery();
+			ArrayList<Photo> photos = new ArrayList<Photo>();
+			Photo photo = null;
+			while (rs.next()) {
+				// photoId, String url, boolean isPrivate, int ownerId, Date uploadDate
+				photo = new Photo(rs.getInt("id"), rs.getString("url"), rs.getBoolean("is_private"), rs.getInt("owner_id"),  rs.getDate("upload_date"));
+				photos.add(photo);
+			}
+			return photos;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/*private static ArrayList<Photo> getPhotos(int userId) {
+		String query = "select * from Circle c left join In_Circle ic on c.id = ic.circle_id where c.owner_id="
+				+ userId;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			ArrayList<Circle> circles = new ArrayList<Circle>();
+			Circle circle = null;
+			while (rs.next()) {
+				if (circle == null || circle.getCircleID() != rs.getInt("id")) {
+					circle = new Circle(rs.getInt("id"), rs.getString("name"));
+					circles.add(circle);
+				}
+				circle.addFriendID(rs.getInt("friend_id"));
+			}
+			return circles;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}*/
+public static void testSearchPhoto(){
+	List<Photo> photos = searchPhotosByTag("tag from 17009", 17002);
+	for (Photo photo : photos) {
+		System.out.println(photo.getPhotoId() + " " + photo.getUrl());
+	}
+}
 	public static void testPostPhoto() {
 		try{
 			Photo photo = new Photo(
