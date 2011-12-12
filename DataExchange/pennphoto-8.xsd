@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/pennphoto"
+	xmlns:tns="http://www.example.org/pennphoto" elementFormDefault="qualified">
+
+	<complexType name="studentType">
+		<complexContent>
+			<extension base="tns:userType">
+				<sequence>
+					<element name="year" type="int"></element>
+					<element name="major" type="string"></element>
+					<element name="GPA" type="double"></element>
+					<element name="advisor" type="int" minOccurs="0"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="userType" abstract="true">
+		<sequence>
+			<element name="userId" type="int"></element>
+			<element name="accountId" type="string"></element>
+			<element name="password" type="string"></element>
+			<element name="firstName" type="string"></element>
+			<element name="lastName" type="string"></element>
+			<element name="email" type="string"></element>
+			<element name="birthday" type="date"></element>
+			<element name="gender" type="string"></element>
+			<element name="address" type="string"></element>
+			<element name="school" type="string" maxOccurs="unbounded"></element>
+			<element name="photo" type="tns:photoType" maxOccurs="unbounded"
+				minOccurs="0">
+			</element>
+			<element name="circle" type="tns:circleType" maxOccurs="unbounded"
+				minOccurs="0">
+			</element>
+			<element name="interest" type="string" maxOccurs="unbounded"
+				minOccurs="0">
+			</element>
+
+		</sequence>
+	</complexType>
+
+	<complexType name="professorType">
+		<complexContent>
+			<extension base="tns:userType">
+				<sequence>
+					<element name="advises" type="tns:advisesType" maxOccurs="unbounded"
+						minOccurs="0"></element>
+					<element name="researchArea" type="string"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="advisesType">
+		<sequence>
+			<element name="advisee" type="int"></element>
+			<element name="yearsAdvised" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="photoType">
+		<sequence>
+			<element name="photoId" type="int"></element>
+			<element name="url" type="string"></element>
+			<choice>
+				<element name="visibleToEveryone"></element>
+				<element name="visibleToUser" type="tns:visibilityType"></element>
+				<element name="visibleToCircle" type="tns:visibilityType"></element>
+			</choice>
+			<element name="rating" type="tns:ratingType" maxOccurs="unbounded"
+				minOccurs="0"></element>
+			<element name="tag" type="string" maxOccurs="unbounded"
+				minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ratingType">
+		<sequence>
+			<element name="userId" type="int"></element>
+			<element name="score" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="visibilityType">
+		<sequence>
+			<element name="id" type="int" maxOccurs="unbounded"
+				minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="circleType">
+		<sequence>
+			<element name="circleId" type="int"></element>
+			<element name="name" type="string"></element>
+			<element name="containsFriend" type="int" maxOccurs="unbounded"
+				minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="photodbType">
+		<sequence>
+			<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="student" type="tns:studentType"></element>
+				<element name="professor" type="tns:professorType"></element>
+			</choice>
+		</sequence>
+	</complexType>
+
+	<element name="photodb" type="tns:photodbType">
+
+
+		<key name="userIdKey">
+			<selector xpath="userType" />
+			<field xpath="userId" />
+		</key>
+
+
+		<key name="studentIdKey">
+			<selector xpath="student" />
+			<field xpath="userId" />
+		</key>
+
+		<key name="professorIdKey">
+			<selector xpath="professor" />
+			<field xpath="userId" />
+		</key>
+
+		<keyref name="adviseeIsStudentRef" refer="tns:studentIdKey">
+			<selector xpath="professor/advises" />
+			<field xpath="advisee" />
+		</keyref>
+
+		<keyref name="advisorIsProfessorRef" refer="tns:professorIdKey">
+			<selector xpath="student" />
+			<field xpath="advisor" />
+		</keyref>
+
+	</element>
+
+
+
+
+</schema>
+

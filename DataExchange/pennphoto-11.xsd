@@ -1,0 +1,196 @@
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/pennphoto" xmlns:tns="http://www.example.org/pennphoto" elementFormDefault="qualified">
+
+    <complexType name="userType">
+    	<sequence>
+    		<element name="userID" type="int"></element>
+    		<element name="name" type="string"></element>
+    		<element name="email" type="string"></element>
+    		<element name="age" type="int"></element>
+    		<element name="gender" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="studentType">
+      <complexContent>
+        <extension base="tns:userType">
+          <sequence>
+            <!--  More here -->
+            <element name="year" type="int"></element>
+            <element name="major" type="string"></element>
+            <element name="GPA" type="double"></element>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+    
+    <complexType name="professorType">
+      <complexContent>
+        <extension base="tns:userType">
+          <sequence>
+            <!--  More here -->
+            <element name="roomNumber" type="string"></element>
+            <element name="researchArea" type="string"></element>
+            <element name="title" type="string" maxOccurs="1" minOccurs="0"></element>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+    
+    <complexType name="advisesType">
+      <sequence>
+        <element name="studentID" type="int"></element>
+        <element name="professorID" type="int"></element>
+      </sequence>
+    </complexType>
+
+    <complexType name="ratingsType">
+      <sequence>
+        <element name="raterID" type="int"></element>
+        <element name="rating" type="int"></element>
+        <element name="photoID" type="int"></element>
+      </sequence>
+    </complexType>
+
+    <complexType name="belongsToType">
+    	<sequence>
+    		<element name="friendID" type="int"></element>
+    		<element name="circleID" type="int"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="friendType">
+      <sequence>
+        <element name="friend1ID" type="int"></element>
+        <element name="friend2ID" type="int"></element>
+      </sequence>
+    </complexType>
+
+		<complexType name="photoType">
+    	<sequence>
+    		<element name="photoID" type="int"></element>
+    		<element name="ownerID" type="int"></element>
+    		<element name="url" type="string"></element>
+    		<element name="visibility" type="int"></element>
+    	</sequence>
+    </complexType>
+
+		<complexType name="taggedPhotoType">
+    	<sequence>
+    		<element name="photoID" type="int"></element>
+    		<element name="tag" type="string"></element>
+    		<element name="taggerID" type="int"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="circleType">
+    	<sequence>
+    		<element name="circleID" type="int"></element>
+    		<element name="ownerID" type="int"></element>
+    		<element name="name" type="string"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="photodbType">
+    	<sequence>
+        <element name="user" type="tns:userType" maxOccurs="unbounded" minOccurs="0"></element>
+    		<element name="student" type="tns:studentType" maxOccurs="unbounded" minOccurs="0"></element>
+    		<element name="professor" type="tns:professorType" maxOccurs="unbounded" minOccurs="0"></element>
+				<element name="circle" type="tns:circleType" maxOccurs="unbounded" minOccurs="0"></element>
+				<element name="photo" type="tns:photoType" maxOccurs="unbounded" minOccurs="0"></element>
+				<element name="advises" type="tns:advisesType" maxOccurs="unbounded" minOccurs="0"></element>
+				<element name="belongsTo" type="tns:belongsToType" maxOccurs="unbounded" minOccurs="0"></element>
+				<element name="friend" type="tns:friendType" maxOccurs="unbounded" minOccurs="0"></element>
+				<element name="ratings" type="tns:ratingsType" maxOccurs="unbounded" minOccurs="0"></element>
+				<element name="taggedPhoto" type="tns:taggedPhotoType" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="photodb" type="tns:photodbType">
+        <!--primary keys-->
+        <key name="userKey">
+          <selector xpath="./user"/>
+          <field xpath="./tns:userID"/>
+        </key>
+        <key name="advisesKey">
+          <selector xpath="./advises"/>
+          <field xpath="./tns:studentID"/>
+          <field xpath="./tns:professorID"/>
+        </key>
+        <key name="ratingsKey">
+          <selector xpath="./ratings"/>
+          <field xpath="./tns:raterID"/>
+          <field xpath="./tns:photoID"/>
+        </key>
+        <key name="belongsToKey">
+          <selector xpath="./belongsTo"/>
+          <field xpath="./tns:friendID"/>
+          <field xpath="./tns:circleID"/>
+        </key>
+        <key name="friendKey">
+          <selector xpath="./friend"/>
+          <field xpath="./tns:friend1ID"/>
+          <field xpath="./tns:friend2ID"/>
+        </key>
+        <key name="photoKey">
+          <selector xpath="./photo"/>
+          <field xpath="./tns:photoID"/>
+        </key>
+        <key name="taggedPhotoKey">
+          <selector xpath="./taggedPhoto"/>
+          <field xpath="./tns:photoID"/>
+          <field xpath="./tns:tag"/>
+          <field xpath="./tns:taggerID"/>
+        </key>
+        <key name="circleKey">
+          <selector xpath="./circle"/>
+          <field xpath="./tns:circleID"/>
+        </key>
+
+        <!--foreign keys-->
+        <keyref name="studentKeyRef" refer="tns:userKey">
+          <selector xpath="./advises"/>
+          <field xpath="./tns:studentID" />
+        </keyref>
+        <keyref name="professorKeyRef" refer="tns:userKey">
+          <selector xpath="./advises"/>
+          <field xpath="./tns:professorID" />
+        </keyref>
+        <keyref name="raterKeyRef" refer="tns:userKey">
+          <selector xpath="./ratings"/>
+          <field xpath="./tns:raterID" />
+        </keyref>
+        <keyref name="ratedPhotoKeyRef" refer="tns:photoKey">
+          <selector xpath="./ratings"/>
+          <field xpath="./tns:photoID" />
+        </keyref>
+        <keyref name="friendIDKeyRef" refer="tns:userKey">
+          <selector xpath="./belongsTo"/>
+          <field xpath="./tns:friendID" />
+        </keyref>
+        <keyref name="circleIDKeyRef" refer="tns:circleKey">
+          <selector xpath="./belongsTo"/>
+          <field xpath="./tns:circleID" />
+        </keyref>
+        <keyref name="friend1IDKeyRef" refer="tns:userKey">
+          <selector xpath="./friend"/>
+          <field xpath="./tns:friend1ID" />
+        </keyref>
+        <keyref name="friend2IDKeyRef" refer="tns:userKey">
+          <selector xpath="./friend"/>
+          <field xpath="./tns:friend2ID" />
+        </keyref>
+        <keyref name="ownerKeyRef" refer="tns:userKey">
+          <selector xpath="./photo"/>
+          <field xpath="./tns:ownerID" />
+        </keyref>
+        <keyref name="taggedPhotoKeyRef" refer="tns:photoKey">
+          <selector xpath="./taggedPhoto"/>
+          <field xpath="./tns:photoID" />
+        </keyref>
+        <keyref name="taggerPhotoKeyRef" refer="tns:userKey">
+          <selector xpath="./taggedPhoto"/>
+          <field xpath="./tns:taggerID" />
+        </keyref>
+      </element>
+</schema>
