@@ -210,11 +210,58 @@ body{
 
 /* End Top Bar "Below Header" */
 
+/* Begin Homepage */
+
 #content {
 	height: 600px;
-	width: 100%;
+	width: 1170px;
 	background: grey;
+	
+	padding: 15px;
 }
+
+#top-pics{
+	min-height: 370px;
+	width: 740px;
+	margin: 15px 30px;
+	
+	background: blue; 
+	
+}
+
+.top-pics-photo{
+	height: 200px;
+	width: 200px;
+	
+	margin: 10px;
+	float: left;
+	
+	background: AliceBlue;
+}
+
+.top-pics-photo .img-wrap {
+	height: 80%;
+	width: 80%;
+	
+	margin: 0 auto;
+}
+
+.top-pics-photo img{
+	height: 100%;
+	width: 100%;
+}
+		
+#activity-feed{
+
+}
+		
+#friendship-browser{
+
+}
+
+
+
+/* End Homepage */
 
 #footer {
 	height: 150px;
