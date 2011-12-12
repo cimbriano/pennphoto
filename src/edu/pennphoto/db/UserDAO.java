@@ -360,9 +360,15 @@ public class UserDAO {
 		}
 
 	}
+	
+	public static Map<Integer, String> getProfessors() {
+		return loadKeyValuePairs("select id, CONCAT(first_name, ' ', last_name)  from Professor P join User U where P.user_id = U.id order by last_name");
+	}
+	
 	public static Map<Integer, String> getInstitutions(){
 		return loadKeyValuePairs("select * from Institution order by name");
 	}
+	
 	private static int getInstitutionIdByName(String name, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		int institutionId = 0;
