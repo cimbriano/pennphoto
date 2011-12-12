@@ -1,5 +1,6 @@
 package edu.pennphoto.model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -31,23 +32,19 @@ public abstract class User {
 	private ArrayList<Attendance> attendances;
 	private ArrayList<Circle> circles;
 	private ArrayList<Integer> interestIds;
-	
-	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		sb.append(userID).append("\n").
-		append(email).append("\n").
-		append(password).append("\n").
-		append(firstName).append("\n").
-		append(lastName).append("\n").
-		append(dob).append("\n").
-		append(gender).append("\n").
-		append(address).append("\n").
-		append(city).append("\n").
-		append(stateId).append("\n").
-		append(zip).append("\n");
-		
-		return sb.toString();
+	private static final SimpleDateFormat DOB_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+	@Override
+	public String toString() {
+		return "User [userID=" + userID + ", password=" + password + ", email="
+				+ email + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", dob=" + DOB_FORMAT.format(dob) + ", gender=" + gender + ", address="
+				+ address + ", city=" + city + ", state=" + state
+				+ ", stateId=" + stateId + ", zip=" + zip + ", attendances="
+				+ attendances + ", circles=" + circles + ", interestIds="
+				+ interestIds + "]";
 	}
+
 	public boolean addInterestID(Integer id){
 		return interestIds.add(id);
 	}
