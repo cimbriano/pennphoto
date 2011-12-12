@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import edu.pennphoto.db.PhotoDAO;
 import edu.pennphoto.model.*;
 import edu.pennphoto.model.User.Gender;
 
@@ -84,11 +86,8 @@ public class Exporter {
 			xmlBuilder.append(TAB2 + START + ISPROF + isProfessor + END + ISPROF + "\n");
 			xmlBuilder.append(TAB2 + START + GENDER + user.getGender() + END + GENDER + "\n");
 			appendInterests(xmlBuilder, user);
-			appendAttendances(xmlBuilder, user);
-			
-			//TODO retrieve photos by ownerId			
-			//appendPhotos(xmlBuilder, photos);
-			
+			appendAttendances(xmlBuilder, user);				
+			appendPhotos(xmlBuilder, PhotoDAO.getUserPhoto(user.getUserID()));			
 			appendCircles(xmlBuilder, user);
 			if(isProfessor){
 				appendProfAttributes(xmlBuilder, (Professor) user);
