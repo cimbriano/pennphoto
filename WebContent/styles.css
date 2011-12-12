@@ -231,3 +231,7 @@ font-family: 'Lancelot', cursive;
 .clear{
 	clear: both;	
 }
+
+.hidden{
+	display: none;
+}
