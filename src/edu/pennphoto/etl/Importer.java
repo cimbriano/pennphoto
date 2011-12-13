@@ -1,10 +1,13 @@
 package edu.pennphoto.etl;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -12,8 +15,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
+import edu.pennphoto.db.UserDAO;
+import edu.pennphoto.model.Photo;
 import edu.pennphoto.model.Professor;
+import edu.pennphoto.model.Rating;
 import edu.pennphoto.model.Student;
+import edu.pennphoto.model.Tag;
 import edu.pennphoto.model.User;
 import edu.pennphoto.model.User.Gender;
 
@@ -41,51 +48,91 @@ public class Importer {
 	private static final String[] RESEARCH_AREA = {"researchArea"};
 	private static final String[] TITLE = {"title"};
 	private static final String[] INTEREST = {"interest", "tns:interest"};
+	private static final String[] ATTENDANCE = {"school", "tns:schoolsAttended"};
+	private static final String[] SCHOOL_NAME = {"tns:name"};
+	private static final String[] PHOTO = {"photo", "tns:photo"};
+	private static final String[] PHOTO_ID = {"photoId", "photoID", "tns:photoID"};
+	private static final String[] URL = {"url", "tns:url"};
+	private static final String[] RATING = {"tns:rating", "rating"};
+	private static final String[] RATER_ID ={"tns:raterID", "userId"};
+	private static final String[] RATING_VALUE = {"score", "tns:score"};
+	private static final String[] TAG = {"tag", "tns:tag"};
+	private static final String[] TAG_ID = {"tns:tagID"};
+	private static final String[] TAG_TEXT = {"tns:text"};
+	
+	private static final int[] GROUP_IDS = {8, 11, 12};
+	
+	private static ArrayList<User> _users;
+	private static ArrayList<Photo> _photos;
+	private static Document _doc;
+	private static boolean _photosLoaded;
+	private static boolean _circlesLoaded;
+	private static int _current_group_id;
+
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		parseXML("DataExchange/pennphoto-8.xml");
-		parseXML("DataExchange/pennphoto-11.xml");
-		parseXML("DataExchange/pennphoto-12.xml");
-		
+		for(int i : GROUP_IDS){
+			_current_group_id = i;
+			String filename = "DataExchange/pennphoto-" + _current_group_id + ".xml";
+			parseXML(filename);
+		}
 	}
 	
-	private static Document parseXML(String filename){
+	private static void initializeVariables(){
+		_users = new ArrayList<User>();
+		_photos = new ArrayList<Photo>();
+		_photosLoaded = false;
+		_circlesLoaded = false;
+	}
+	
+	private static void parseXML(String filename){
 		System.out.println("Parsing: " + filename);
-		Document doc = null;
+		initializeVariables();
 		try {
 			File file = new File(filename);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(file);
-			doc.getDocumentElement().normalize();
+			_doc = dBuilder.parse(file);
+			_doc.getDocumentElement().normalize();
 			
-			System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-			NodeList nodes = doc.getElementsByTagName("student");
-			if(nodes.getLength() == 0)	nodes = doc.getElementsByTagName("tns:student");
-			System.out.println(nodes.getLength());
-			System.out.println("students-----------------------");
-			for(int i = 0; i < nodes.getLength(); i++){
-				Node student = nodes.item(i);
-				createUser(student);
-			}
-			nodes = doc.getElementsByTagName("professor");
-			if(nodes.getLength() == 0)	nodes = doc.getElementsByTagName("tns:professor");
-			System.out.println(nodes.getLength());
-			System.out.println("professors-----------------------");
-			for(int i = 0; i < nodes.getLength(); i++){
-				Node professor = nodes.item(i);
-				createUser(professor);
-			}
-			
+			loadUsersFromDoc();
+			System.out.println(_photos);
+			if(!_photosLoaded) loadPhotosFromDoc();
+
+	/*		storeUsers(users);
+			storeCircles(users);
+			storePhotos();
+			storeTags();
+			storeRatings();
+			stpreAdvises();
+	*/
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return doc;
+		
 	}
+	
+	private static void storeUsers(List<User> users){
+		for(User user : users){
+			try {
+				UserDAO.createUser(user);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static void storeCircles(List<User> users){
+		//TODO implement createCircles
+//		UserDAO.createCircle(userId, name);
+	}
+	
+
 	
 	private static User createUser(Node userNode){
 		User user;
@@ -115,7 +162,9 @@ public class Importer {
 			} else if (nodeNameMatches(field, ADDRESS)){
 				setAddress(field, user);
 			} else if (nodeNameMatches(field, INTEREST)) {
-				//TODO how to add interests
+				user.addInterest(new User.Interest(getTextValue(field)));
+			} else if (nodeNameMatches(field, ATTENDANCE)){
+				addAttendance(field, user);
 			} else if (nodeNameMatches(field, MAJOR)){
 				((Student) user).setMajor(getTextValue(field));
 			} else if (nodeNameMatches(field, GPA)){
@@ -124,6 +173,9 @@ public class Importer {
 				((Professor) user).setResearchArea(getTextValue(field));
 			} else if (nodeNameMatches(field, TITLE)){
 				((Professor) user).setTitle(getTextValue(field));
+			} else if (nodeNameMatches(field, PHOTO)){
+				_photosLoaded = true;
+				loadPhotosFromUser(field, user);
 			}
 		}
 		System.out.println(user);
@@ -146,7 +198,7 @@ public class Importer {
 		return retVal;
 	}
 	private static String getTextValue(Node node){
-		return node.getChildNodes().item(0).getNodeValue();
+		return node.getChildNodes().item(0).getNodeValue().trim();
 		
 	}
 	
@@ -202,5 +254,107 @@ public class Importer {
 		return Double.parseDouble(getTextValue(node));
 	}
 
-
+	private static void loadUsersFromDoc(){
+		System.out.println("Root element :" + _doc.getDocumentElement().getNodeName());
+		NodeList nodes = _doc.getElementsByTagName("student");
+		if(nodes.getLength() == 0)	nodes = _doc.getElementsByTagName("tns:student");
+		System.out.println(nodes.getLength());
+		System.out.println("students-----------------------");
+		for(int i = 0; i < nodes.getLength(); i++){
+			Node student = nodes.item(i);
+			_users.add(createUser(student));
+		}
+		nodes = _doc.getElementsByTagName("professor");
+		if(nodes.getLength() == 0)	nodes = _doc.getElementsByTagName("tns:professor");
+		System.out.println(nodes.getLength());
+		System.out.println("professors-----------------------");
+		for(int i = 0; i < nodes.getLength(); i++){
+			Node professor = nodes.item(i);
+			_users.add(createUser(professor));
+		}
+	}
+	
+	private static void addAttendance(Node node, User user){
+		String nodeName = node.getNodeName();
+		if(nodeName.equals(ATTENDANCE[0])){ // team 8's <school> tag
+			user.addAttendance(new User.Attendance(getTextValue(node), 0, 0));
+		} else if (nodeName.equals(ATTENDANCE[1])){
+			NodeList nl = node.getChildNodes();
+			for(int i = 0; i < nl.getLength(); i++){
+				Node n = nl.item(i);
+				if(nodeNameMatches(n, SCHOOL_NAME)){
+					user.addAttendance(new User.Attendance(getTextValue(n), 0, 0));
+				}
+			}
+		}
+	}
+	
+	private static void loadPhotosFromDoc(){
+		//TODO implement loadPhotosFromDoc()
+	}
+	
+	private static void loadPhotosFromUser(Node node, User user){
+		NodeList nl = node.getChildNodes();
+		String url = null;
+		int photoId = 0;
+		for(int i = 0; i < nl.getLength(); i++){
+			Node n = nl.item(i);
+			if(nodeNameMatches(n, PHOTO_ID)){
+				photoId = getUniqueId(getIntValue(n));
+			} else if (nodeNameMatches(n, URL)){
+				url = getTextValue(n);
+			}
+		}
+		//public Photo(Integer photoId, String url, boolean isPrivate, int ownerId, Date uploadDate)
+		Photo photo = new Photo(photoId, url, false, user.getUserID(), new Date()); 
+		_photos.add(photo);
+		loadTagsAndRatingsFromPhoto(node, photo);		
+	}
+	
+	private static void loadTagsAndRatingsFromPhoto(Node node, Photo photo){
+		NodeList nl = node.getChildNodes();
+		String url = null;
+		int photoId = 0;
+		for(int i = 0; i < nl.getLength(); i++){
+			Node n = nl.item(i);
+			if(nodeNameMatches(n, RATING)){
+				Rating rating = new Rating();
+				rating.setPhotoID(photo.getPhotoId());
+				NodeList ratingChildren = n.getChildNodes();
+				for(int j = 0; j < ratingChildren.getLength(); j++){
+					Node ratingChild = ratingChildren.item(j);
+					if(nodeNameMatches(ratingChild, RATER_ID)){
+						rating.setUserID(getUniqueId(getIntValue(ratingChild)));
+					} else if (nodeNameMatches(ratingChild, RATING_VALUE)){
+						rating.setValue(getIntValue(ratingChild));
+					}
+				}
+				photo.addRating(rating);
+			} else if (nodeNameMatches(n, TAG)){
+				Tag tag = new Tag();
+				tag.setPhotoID(photo.getPhotoId());
+				if(_current_group_id != 8){
+					NodeList tagChildren = n.getChildNodes();
+					for(int j = 0; j < tagChildren.getLength(); j++){
+						Node tagChild = tagChildren.item(j);
+						if(nodeNameMatches(tagChild, TAG_TEXT)){
+							tag.setTagText(getTextValue(tagChild));
+						} else if (nodeNameMatches(tagChild, TAG_ID)){
+							//we don't do anything with the tag ID
+						}
+					}
+				} else {
+					tag.setTagText(getTextValue(n));
+				}
+				photo.addTag(tag);
+			}
+		}
+	}
+	
+	
+	private static int getUniqueId(int id){
+		int base = _current_group_id * 1000;	//get the base value for this particular group
+		int uniqueId = (id >= base) ? id : id + base;
+		return uniqueId;
+	}
 }
