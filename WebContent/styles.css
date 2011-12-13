@@ -84,12 +84,18 @@ body{
 	font-size: 177%;
 }
 
+#sign-up a{
+	text-decoration: none;	
+}
+
 #login-wrapper{
 	border-radius: 10px;
 	box-shadow: 8px 13px 30px black;
 	
 	width: 800px;	
 	margin: 0 auto;
+	margin-top: 50px;
+	background: lightBlue;
 }
 
 #login-content {
@@ -97,10 +103,8 @@ body{
 	width: 100%;
 	
 	position: relative;
-	margin-top: 100px;
 	
 	border-radius: 10px 10px 0 0;
-	background: lightBlue;	
 }
 
 #login-info {
@@ -144,7 +148,7 @@ body{
 }
 
 
-#login-content h1 {
+#login-wrapper h1 {
 	font-family: 'Monoton', cursive;
 	font-size: 64px;
 	
@@ -168,6 +172,25 @@ body{
 }
 
 /* End Login Page */
+
+/* Begin Registration */
+
+#registration-form-wrapper{
+	width: 65%;
+	margin: 0 auto;	
+}
+
+#registration-form-wrapper input{
+	width: 98%;
+	font-size: 100%;
+	height: 30px;
+}
+
+
+
+/* End Registration */
+
+
 
 /* Begin Submit Photo Form */
 
