@@ -199,6 +199,11 @@ public abstract class User {
 		int id;
 		String label;
 		
+		@Override
+		public String toString() {
+		return "Interest [id=" + id + ", label=" + label+ "]";
+		}
+		
 		public Interest(String label){
 			this(0, label);
 		}
@@ -224,6 +229,12 @@ public abstract class User {
 		private String institution;
 		private int startYear;
 		private int endYear;
+		
+		@Override
+		public String toString() {
+		return "Attendance [institutionId=" + institutionId + ", institution=" + institution+ ", startYear="
+				+ startYear+ ", endYear=" + endYear + "]";
+		}
 		
 		public String getInstitution() {
 			return institution;
