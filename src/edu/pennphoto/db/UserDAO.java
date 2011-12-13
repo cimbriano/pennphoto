@@ -438,6 +438,10 @@ public class UserDAO {
 		return loadKeyValuePairs("select * from Institution order by name");
 	}
 	
+	public static Map<Integer, String> getStates(){
+		return loadKeyValuePairs("select id, name from State order by name");
+	}
+	
 	private static int getInstitutionIdByName(String name, Connection conn) throws SQLException{
 		return getIdByValue("select id from Institution where name=?", name, conn);
 //		PreparedStatement stmt = null;
