@@ -24,7 +24,7 @@
 
 		<div id="content">
 			<form action="userServlet" method="post">
-				<input type="hidden" name="action" placeholder="register" /><br/>
+				<input type="hidden" name="action" value="register" /><br/>
 				<input type="text" name="first-name" placeholder="First Name"/><br/>
 				<input type="text" name="last-name" placeholder="Last Name"/><br/>
 				<input type="text" name="dob" placeholder="Date of Birth"/><br/>
@@ -65,9 +65,14 @@
 						for (Map.Entry<Integer, String> institution : institutions.entrySet()) { %>
 							<option value=<%= institution.getKey() %>><%= institution.getValue() %></option>
 					<% 	} %>
-					<option value="">Other</option>
+					<option value="0">Other</option>
 				</select><br/>
 				<input id=other-institution-1 name="other-institution-1" class="hidden" placeholder="Other Institution"/>
+				<input id="institution-1-from-year" name="institution-1-from-year" placeholder="From Year"/>
+				<input id="institution-1-to-year" name="institution-1-to-year" placeholder="To Year"/>
+				<br/>
+				
+				<input id="interest-1" name="interest-1" placeholder="Interest"/>
 				<br/>
 				
 				<input type="submit" value="Sign Up"/>
@@ -102,7 +107,7 @@
 		function display_other_inst(num) {
 			var e = document.getElementById("institution-" + num);
 			var institution = e.options[e.selectedIndex].value;
-			if (institution === "") {
+			if (institution === "0") {
 				document.getElementById("other-institution-" + num).style.display = "block";			
 			} else {
 				document.getElementById("other-institution-" + num).style.display = "none";			
