@@ -1,11 +1,15 @@
 package edu.pennphoto.web;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -27,6 +31,7 @@ import edu.pennphoto.model.Student;
 import edu.pennphoto.model.User;
 import edu.pennphoto.model.User.Gender;
 import edu.pennphoto.model.User.Attendance;
+import edu.pennphoto.model.User.Interest;
 
 /**
  * Servlet implementation class UserServlet
@@ -34,7 +39,8 @@ import edu.pennphoto.model.User.Attendance;
 @WebServlet("/UserServlet")
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	private static final DateFormat dateFormat = new SimpleDateFormat(
+			"MM/dd/yyyy");
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -156,72 +162,237 @@ public class UserServlet extends HttpServlet {
 
 	protected void handleRegistration(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		String firstName, lastName, email, password, address, city, state, zip;
-		Date dob;
-		Gender gender;
-
 		boolean isProfessor = "T".equals(request.getParameter("is-professor"));
 		User user = isProfessor ? new Professor() : new Student();
+
+		if (!setUserFields(request, response, user))
+			return;
+
+		if (isProfessor) {
+			if (!setProfessorFields(request, response, user))
+				return;
+		} else {
+			if (!setStudentFields(request, response, user))
+				return;
+		}
+
+		if (!setUserAttendances(request, response, user))
+			return;
+
+		if (!setUserInterests(request, response, user))
+			return;
+
+		try {
+			if (UserDAO.createUser(user)) {
+				response.sendRedirect("login.jsp");
+			} else {
+				response.sendRedirect("registration.jsp?error=1");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Please bare with us as we restore service.");
+		}
+		// TODO - Remove logged in validation form here in place of in doPost
+		// method
+	}
+
+	private static boolean setUserFields(HttpServletRequest request,
+			HttpServletResponse response, User user) throws IOException {
 		user.setUserID(-1);
 		user.setFirstName(request.getParameter("first-name"));
 		user.setLastName(request.getParameter("last-name"));
-		try {
-			user.setDob(dateFormat.parse(request.getParameter("dob")));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			response.sendRedirect("registration.jsp?error=1");
-			return;
-		}
 		user.setEmail(request.getParameter("email"));
 		user.setPassword(request.getParameter("password"));
-
+		user.setGender("M".equalsIgnoreCase(request.getParameter("gender")) ? Gender.MALE
+				: Gender.FEMALE);
 		user.setAddress(request.getParameter("street-address"));
 		user.setStateId(Integer.parseInt(request.getParameter("state"), 10));
 		user.setCity(request.getParameter("city"));
 		user.setZip(request.getParameter("zip-code"));
-		user.setGender("M".equalsIgnoreCase(request.getParameter("gender")) ? Gender.MALE
-				: Gender.FEMALE);
 
-		int i = 1;
-		String institutionField = "institution-" + i;
+		if (!areAllUserStringsSet(user)) {
+			response.sendRedirect("registration.jsp?error=1");
+			return false;
+		}
+
+		try {
+			user.setDob(dateFormat.parse(request.getParameter("dob")));
+		} catch (ParseException e) {
+			sendFieldErrorRedirect(response, "dob",
+					"Please enter Date of Birth in MM/DD/YYYY format.");
+			return false;
+		}
+
+		if (!isValidEmail(user.getEmail())) {
+			sendFieldErrorRedirect(response, "email",
+					"Please enter a valid Email Address.");
+			return false;
+		}
+
+		if (!isValidZipCode(user.getZip())) {
+			sendFieldErrorRedirect(response, "zip-code",
+					"Please enter a valid Zip Code.");
+			return false;
+		}
+
+		return true;
+	}
+
+	private static boolean setProfessorFields(HttpServletRequest request,
+			HttpServletResponse response, User user) {
+		Professor prof = (Professor) user;
+		prof.setResearchArea(request.getParameter("research-area"));
+		prof.setTitle(request.getParameter("title"));
+
+		return true;
+	}
+
+	private static boolean setStudentFields(HttpServletRequest request,
+			HttpServletResponse response, User user) throws IOException {
+		Student student = (Student) user;
+		student.setMajor(request.getParameter("major"));
+		try {
+			student.setGpa(Double.parseDouble(request.getParameter("gpa")));
+		} catch (NumberFormatException nfe) {
+			sendFieldErrorRedirect(response, "gpa", "Please enter a valid GPA.");
+			return false;
+		}
+		try {
+			student.setAdvisorId(Integer.parseInt(request
+					.getParameter("advisor")));
+		} catch (NumberFormatException nfe) {
+			sendFieldErrorRedirect(response, "advisor",
+					"Please choose a valid Advisor.");
+			return false;
+		}
+
+		return true;
+	}
+
+	private static boolean setUserAttendances(HttpServletRequest request,
+			HttpServletResponse response, User user) throws IOException {
+		int num = 1;
+		String institutionField = "institution-" + num;
 		String institutionID;
-		while ((institutionID = request.getParameter(institutionField)) != null){
+		while ((institutionID = request.getParameter(institutionField)) != null) {
 			int attendedID = Integer.parseInt(institutionID);
 			String institutionName;
-			if (attendedID == 0) 
-				institutionName = request.getParameter("other-" + institutionField);
-			else
+			if (attendedID == 0) {
+				institutionName = request.getParameter("other-"
+						+ institutionField);
+				if (institutionName == null
+						|| institutionName.trim().length() == 0) {
+					sendFieldErrorRedirect(response, "other-"
+							+ institutionField,
+							"Please enter an Other Institution name.");
+					return false;
+				}
+			} else {
 				institutionName = "";
-			int startYear = Integer.parseInt(request.getParameter(institutionField + "-from-year"));
-			int endYear = Integer.parseInt(request.getParameter(institutionField + "-to-year"));
-				
-			Attendance attended = new Attendance(attendedID, institutionName, startYear, endYear);
+			}
+
+			int startYear;
+			try {
+				String yearParam = request.getParameter(institutionField
+						+ "-from-year");
+				if (!yearParam.matches("^[12]\\d{3}$"))
+					throw new NumberFormatException();
+				startYear = Integer.parseInt(yearParam);
+			} catch (NumberFormatException nfe) {
+				sendFieldErrorRedirect(response, institutionField
+						+ "-from-year",
+						"Please enter Year Attended From in YYYY format.");
+				return false;
+			}
+
+			int endYear;
+			try {
+				String param = request.getParameter(institutionField
+						+ "-to-year");
+				if (!param.matches("^[12]\\d{3}$"))
+					throw new NumberFormatException();
+				endYear = Integer.parseInt(param);
+			} catch (NumberFormatException nfe) {
+				sendFieldErrorRedirect(response, institutionField + "-to-year",
+						"Please enter Year Attended To in YYYY format.");
+				return false;
+			}
+
+			Attendance attended = new Attendance(attendedID, institutionName,
+					startYear, endYear);
 			user.addAttendance(attended);
-			institutionField = "institution-" + ++i;
+			institutionField = "institution-" + ++num;
 		}
-		
-		for(Attendance att : user.getAttendances())
-			System.out.println(att.getInstitution() + ":" + att.getInstitutionId() + ":"  + att.getStartYear() + ":"  + att.getEndYear());
-		
-//		i = 1;
-//		String interestField = "interest-" + i;
-//		String interest;
-//		while ((interest = request.getParameter(interestField)) != null){
-//			user.addInterest(interest);
-//			institutionField = "institution-" + ++i;
-//		}
-		
-//		for(Attendance att : user.getAttendances())
-//			System.out.println(att.getInstitution() + ":" + att.getInstitutionId() + ":"  + att.getStartYear() + ":"  + att.getEndYear());
-		
-		// TODO - Remove logged in validation form here in place of in doPost
-		// method
-		if (user == null) {
-			response.sendRedirect("registration.jsp?error=1");
-		} else {
-			response.sendRedirect("login.jsp");
+
+		return true;
+	}
+
+	private static boolean setUserInterests(HttpServletRequest request,
+			HttpServletResponse response, User user) {
+		int num = 1;
+		String interestField = "interest-" + num;
+		String interest;
+		while ((interest = request.getParameter(interestField)) != null
+				&& interest.trim().length() != 0) {
+			user.addInterest(new Interest(interest));
+			interestField = "interest-" + ++num;
 		}
+
+		return true;
+	}
+
+	private static void sendFieldErrorRedirect(HttpServletResponse response,
+			String field, String message) throws IOException {
+		message = URLEncoder.encode(message);
+		response.sendRedirect("registration.jsp?error=1&field=" + field
+				+ "&message=" + message);
+	}
+
+	private static boolean isValidZipCode(String zip) {
+		boolean isValid = false;
+		String zipCodeExpression = "^\\d{5}(-\\d{4})?$";
+		Pattern pattern = Pattern.compile(zipCodeExpression,
+				Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(zip);
+
+		if (matcher.matches()) {
+			isValid = true;
+		}
+		return isValid;
+	}
+
+	private static boolean isValidEmail(String email) {
+		boolean isValid = false;
+		String emailExpression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+		Pattern pattern = Pattern.compile(emailExpression,
+				Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(email);
+
+		if (matcher.matches()) {
+			isValid = true;
+		}
+		return isValid;
+	}
+
+	private static boolean areAllUserStringsSet(User user) {
+		boolean areSet = false;
+
+		try {
+			if (user.getFirstName().length() != 0
+					&& user.getLastName().length() != 0
+					&& user.getEmail().length() != 0
+					&& user.getPassword().length() != 0
+					&& user.getAddress().length() != 0
+					&& user.getCity().length() != 0
+					&& user.getZip().length() != 0) {
+				areSet = true;
+			}
+		} catch (NullPointerException npe) {
+			areSet = false;
+		}
+
+		return areSet;
 	}
 
 }

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
     pageEncoding="US-ASCII"%>
-<%@ page import="java.util.Map, edu.pennphoto.db.UserDAO" %>
+<%@ page import="java.util.Map, edu.pennphoto.db.UserDAO, edu.pennphoto.model.User" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,8 +28,8 @@
 				<input type="text" name="first-name" placeholder="First Name"/><br/>
 				<input type="text" name="last-name" placeholder="Last Name"/><br/>
 				<input type="text" name="dob" placeholder="Date of Birth"/><br/>
-				<input type="text" name="email-login" placeholder="Email"/><br/>
-				<input type="password" name="pwd" placeholder="Password"/><br/>
+				<input type="text" name="email" placeholder="Email"/><br/>
+				<input type="password" name="password" placeholder="Password"/><br/>
 				<select name="gender">
 					<option value="M">Male</option>
 					<option value="F">Female</option>
@@ -57,8 +57,13 @@
 
 				<input type="text" name="street-address" placeholder="Address"/><br/>
 				<input type="text" name="city" placeholder="City"/><br/>
-				<input type="text" name="state" placeholder="State"/><br/>
-				<input type="text" name="zipcode" placeholder="Zip Code"/><br/>
+				<select id="state" name="state">
+						<% 	Map<Integer, String> states = UserDAO.getStates();
+							for (Map.Entry<Integer, String> state : states.entrySet()) { %>
+								<option value=<%= state.getKey() %>><%= state.getValue() %></option>
+						<% 	} %>
+				</select><br/>
+				<input type="text" name="zip-code" placeholder="Zip Code"/><br/>
 				
 				<select id="institution-1" name="institution-1" onchange="display_other_inst(1);">
 					<% 	Map<Integer, String> institutions = UserDAO.getInstitutions();
@@ -77,8 +82,10 @@
 				
 				<input type="submit" value="Sign Up"/>
 
-				<% if (request.getParameter("error") != null) { %>
-					<div class="error">Please check your information and try again.</div>
+				<% if (request.getParameter("error") != null) { 
+					String message = request.getParameter("message");
+					if (message == null) message = "Please check your information and try again.";%>
+					<div class="error"><%= message %></div>
 				<% } %>
 			</form>
 		</div>
@@ -90,6 +97,7 @@
 	<script type="text/javascript">
 		function load() {
 			display_role();
+			mark_error_field();
 		}
 	
 		function display_role() {
@@ -111,6 +119,15 @@
 				document.getElementById("other-institution-" + num).style.display = "block";			
 			} else {
 				document.getElementById("other-institution-" + num).style.display = "none";			
+			}
+		}
+		
+		function mark_error_field() {
+			var error = <%= request.getParameter("error") %>;
+			var field = "<%= request.getParameter("field") %>";
+			
+			if ( error && field) {
+				document.getElementsByName(field)[0].className += " error-field";
 			}
 		}
 	</script>
