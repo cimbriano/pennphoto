@@ -59,9 +59,7 @@ body{
 #wrapper{
 	height: 100%;
 	width: 1200px;
-	
 	margin: 0 auto;
-	
 	border-radius: 10px;
 }
 
@@ -80,14 +78,23 @@ body{
 
 /* Begin Login Page */
 
+#sign-up{
+	width: 67%;
+	margin: 0 auto;
+	font-size: 177%;
+}
+
 #login-wrapper{
 	border-radius: 10px;
-	box-shadow: 8px 13px 30px black;	
+	box-shadow: 8px 13px 30px black;
+	
+	width: 800px;	
+	margin: 0 auto;
 }
 
 #login-content {
 	height: 400px;
-	width: 800px;
+	width: 100%;
 	
 	position: relative;
 	margin-top: 100px;
@@ -225,6 +232,8 @@ body{
 	width: 740px;
 	margin: 15px 30px;
 	
+	float: left;
+	
 	background: blue; 
 	
 }
@@ -252,7 +261,17 @@ body{
 }
 		
 #activity-feed{
+	width: 370px;
+	min-height: 370px;
+	
+	float: left;
+	
+	background: brown;
+}
 
+#activity-feed-item{
+	margin: 3px;
+	background: green;
 }
 		
 #friendship-browser{
