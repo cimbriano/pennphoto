@@ -1,0 +1,145 @@
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/pennphoto" 
+xmlns:tns="http://www.example.org/pennphoto" elementFormDefault="qualified">
+		<element name="photodb" type="tns:photodbType">
+			<key name="uid">
+				<selector xpath="./user"></selector>
+				<field xpath="./accountID"></field>
+			</key>
+			<key name="stud_id">
+				<selector xpath="./student"></selector>
+				<field xpath="./accountID"></field>
+			</key>
+			<key name="prof_id">
+				<selector xpath="./professor"></selector>
+				<field xpath="./accountID"></field>
+			</key>
+			<key name="pid">
+				<selector xpath="./user/photo"></selector>
+				<field xpath="./photoID"></field>
+			</key>
+			<key name="sid">
+				<selector xpath="./user/schoolsAttended"></selector>
+				<field xpath="./schoolID"></field>
+			</key>
+			<key name="cid">
+				<selector xpath="./user/circle"></selector>
+				<field xpath="./circleID"></field>
+			</key>
+			<key name="tid">
+				<selector xpath="./user/photo/tag"></selector>
+				<field xpath="./tagID"></field>
+			</key>
+			<keyref name="cirid" refer="tns:uid">
+	 			<selector xpath="./user/circle/containsFriend"></selector>
+	 			<field xpath="."></field>
+	 		</keyref>	  		
+	 		<keyref name="advisee" refer="tns:stud_id">
+	  	 		<selector xpath="./professor/advisee"></selector>
+	 			<field xpath="."></field>				
+	 		</keyref>	
+	 		<keyref name="advisor" refer="tns:prof_id">
+	  	 		<selector xpath="./student/advisor"></selector>
+	 			<field xpath="."></field>				
+	 		</keyref>
+		</element>
+		
+    <complexType name="photodbType">
+        <sequence>
+		<element name="student" type="tns:studentType" maxOccurs="unbounded" minOccurs="0"></element>
+		<element name="professor" type="tns:professorType" maxOccurs="unbounded" minOccurs="0"></element>
+        </sequence>
+    </complexType>
+		
+    <complexType name="personType">
+        <sequence>
+            <element name="accountID" type="int"></element>
+            <element name="password" type="string"></element>
+            <element name="fname" type="string"></element>
+            <element name="lname" type="string"></element>
+            <element name="email" type="string"></element>
+            <element name="birthDate" type="string"></element>
+            <element name="gender" type="string"></element>
+            <element name="address" type="string"></element>
+            <element name="circle" type="tns:circleType" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="photo" type="tns:photoType" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="interest" type="string" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="schoolsAttended" type="tns:schoolType" maxOccurs="unbounded"></element>
+        </sequence>
+    </complexType>
+		
+    <complexType name="professorType">
+        <complexContent>
+            <extension base="tns:personType">
+                <sequence>
+                    <element name="advisee" type="int" minOccurs = "0" maxOccurs="unbounded"></element>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+		
+    <complexType name="studentType">
+        <complexContent>
+            <extension base="tns:personType">
+                <sequence>
+						<element name="advisor" type="int"></element> 
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+		
+    <complexType name="circleType">
+        <sequence>
+            <element name="circleID" type="int"></element>
+            <element name="name" type="string"></element>
+            <element name="friend" type="int" minOccurs="0" maxOccurs="unbounded"></element>
+        </sequence>
+    </complexType>
+		
+    <complexType name="schoolType">
+        <sequence>
+            <element name="schoolID" type="int"></element>
+            <element name="name" type="string"></element>
+        </sequence>
+    </complexType>
+		
+    <complexType name="photoType">
+        <sequence>
+            <element name="photoID" type="int"></element>
+            <element name="url" type="string"></element>
+            <element name="rating" type="tns:ratingType" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="tag" type="tns:tagType" minOccurs="0" maxOccurs="unbounded"></element>
+			<element name="visibility">
+				<simpleType>
+					<restriction base="integer">
+						<pattern value="[0-2]"/><!-- 0:everyone; 1:list of users; 2:list of circles -->
+					</restriction>
+  				</simpleType>
+			</element>
+            <element name="visibleToUser" type="int" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="visibleToCircle" type="int" minOccurs="0" maxOccurs="unbounded"></element>
+        </sequence>
+	</complexType>
+
+    <complexType name="ratingType">
+        <sequence>
+            <element name="raterID" type="int"></element>
+            <element name="score">
+            	<simpleType>
+					<restriction base="integer">
+						<minInclusive value="1" />
+						<maxInclusive value="5" />
+					</restriction>
+				</simpleType>
+            </element>
+        </sequence>
+	</complexType>
+
+
+    <complexType name="tagType">
+        <sequence>
+            <element name="tagID" type = "int"></element>
+            <element name="text" type="string" ></element>
+        </sequence>
+    </complexType>
+</schema>

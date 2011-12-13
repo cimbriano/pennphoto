@@ -10,7 +10,7 @@ public class Event {
 	private int userId;
 	
 	/**
-	 * Hold photo url if event type is PHOTO, otherwise holds tag text
+	 * Holds photo url if event type is PHOTO, otherwise holds tag text
 	 */
 	private String eventValue;
 	private EventType type;

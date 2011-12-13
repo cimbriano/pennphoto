@@ -18,6 +18,7 @@ import edu.pennphoto.model.Student;
 import edu.pennphoto.model.User;
 import edu.pennphoto.model.User.Attendance;
 import edu.pennphoto.model.User.Gender;
+import edu.pennphoto.model.User.Interest;
 
 public class UserDAO {
 
@@ -25,6 +26,9 @@ public class UserDAO {
 		boolean success = createBaseUser(user);
 		if(success){
 			success = storeAttendances(user);
+			boolean interestSuccess = storeInterests(user);
+			success = interestSuccess?success:false;
+			
 		}
 		return success;
 	}
@@ -135,17 +139,82 @@ public class UserDAO {
 		}
 	}
 	
-	private static int createInstitution(String institution, Connection conn){
+	private static boolean storeInterests(User user){
+		Connection conn = null;
 		PreparedStatement stmt = null;
-		int institutionId = 0;
 		try {
-			String query = "insert into Institution values (null, ?)";
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.prepareStatement("insert into Interested_In values(?, ?)");
+			ArrayList<Interest> interests = user.getInterests();
+			for (Interest interest : interests) {
+				int id = interest.getId();
+				if(id <= 0){
+					id = getInterestIdByLabel(interest.getLabel(), conn);
+					if(id <= 0){
+						id = createInterest(interest.getLabel(), conn);
+					}
+				}
+				stmt.setInt(1, user.getUserID());
+				stmt.setInt(2, id);
+				stmt.execute();
+			}
+			return true;
+		}catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+			}catch (Exception ex) {
+			}
+		}
+	}
+	
+	private static int createInterest(String interest, Connection conn){
+		return createIdValuePair("insert into Interest_Desc values (null, ?)", interest, conn);
+	}
+	
+	private static int createInstitution(String institution, Connection conn){
+		return createIdValuePair("insert into Institution values (null, ?)", institution, conn);
+//		PreparedStatement stmt = null;
+//		int institutionId = 0;
+//		try {
+//			String query = "insert into Institution values (null, ?)";
+//			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+//			stmt.setString(1, institution);
+//			stmt.execute();
+//			ResultSet rs = stmt.getGeneratedKeys();
+//			rs.next();
+//			institutionId = rs.getInt(1);
+//		} catch (Exception ex) {
+//			if (stmt != null) {
+//				try {
+//					stmt.close();
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			ex.printStackTrace();
+//		}
+//		return institutionId;
+	}
+	
+	private static int createIdValuePair(String query, String value, Connection conn){
+		PreparedStatement stmt = null;
+		int id = 0;
+		try {
+			//String query = "insert into Institution values (null, ?)";
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, institution);
+			stmt.setString(1, value);
 			stmt.execute();
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
-			institutionId = rs.getInt(1);
+			id = rs.getInt(1);
 		} catch (Exception ex) {
 			if (stmt != null) {
 				try {
@@ -156,7 +225,7 @@ public class UserDAO {
 			}
 			ex.printStackTrace();
 		}
-		return institutionId;
+		return id;
 	}
 	
 	public static User getUserById(int userId) {
@@ -370,14 +439,38 @@ public class UserDAO {
 	}
 	
 	private static int getInstitutionIdByName(String name, Connection conn) throws SQLException{
+		return getIdByValue("select id from Institution where name=?", name, conn);
+//		PreparedStatement stmt = null;
+//		int institutionId = 0;
+//		try {
+//			stmt = conn.prepareStatement("select id from Institution where name=?");
+//			stmt.setString(1, name);
+//			ResultSet rs = stmt.executeQuery();
+//			if (rs.next()) {
+//				institutionId = rs.getInt(1);
+//			}
+//		} finally{
+//			try{
+//			if(stmt != null) stmt.close();
+//			//if(conn != null) conn.close();
+//			}catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return institutionId;
+	}
+	private static int getInterestIdByLabel(String label, Connection conn) throws SQLException{
+		return getIdByValue("select id from Interest_Desc where label=?", label, conn);
+	}
+	private static int getIdByValue(String query, String value, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
-		int institutionId = 0;
+		int id = 0;
 		try {
-			stmt = conn.prepareStatement("select id from Institution where name=?");
-			stmt.setString(1, name);
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, value);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				institutionId = rs.getInt(1);
+				id = rs.getInt(1);
 			}
 		} finally{
 			try{
@@ -387,7 +480,7 @@ public class UserDAO {
 				e.printStackTrace();
 			}
 		}
-		return institutionId;
+		return id;
 	}
 	
 	private static String loadValueById(String query) throws SQLException, NamingException {
@@ -443,12 +536,12 @@ public class UserDAO {
 		createUser(student);
 	}
 	
-	public static User testCreateUser2() throws SQLException {
+	public static User testCreateUser2() {
 		Student student = new Student();
-		student.setEmail("test4");
-		student.setPassword("test4");
-		student.setFirstName("TestFNStud4");
-		student.setLastName("testLNStud4");
+		student.setEmail("test6");
+		student.setPassword("test6");
+		student.setFirstName("TestFNStud6");
+		student.setLastName("testLNStud6");
 		student.setDob(new java.util.Date());
 		student.setAddress("test address2");
 		student.setGender(Gender.FEMALE);
@@ -457,7 +550,16 @@ public class UserDAO {
 		student.addAttendance(new Attendance(1, "some name", 2000, 2001));
 		student.addAttendance(new Attendance(0, "MIT", 2001, 2002));
 		student.addAttendance(new Attendance(0, "Princeton", 2002, 2003));
-		createUser(student);
+		student.addAttendance(new Attendance(0, "Brown", 2002, 2003));
+		student.addInterest(new Interest(1, "Football"));
+		student.addInterest(new Interest(0, "Music"));
+		student.addInterest(new Interest(0, "Chess"));
+		try {
+			createUser(student);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return student;
 	}
 

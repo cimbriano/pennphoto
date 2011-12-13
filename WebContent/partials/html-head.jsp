@@ -1,3 +1,6 @@
+<%@ page import="edu.pennphoto.model.User" %>
+
+
 <!DOCTYPE html>
 <html>
 <head>	
@@ -26,11 +29,14 @@
 
 <body>
 
-<% if (session.getAttribute("user") != null) {
+<% 
+	User sessionUser = (User) session.getAttribute("user");
+	
+%>
+
+<% if (sessionUser != null) {
 %> 
 	<jsp:include page="top-bar.jsp" />
 <%	
 }
 %>
-
-<div id="wrapper">
