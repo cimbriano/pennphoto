@@ -301,3 +301,7 @@ font-family: 'Lancelot', cursive;
 .hidden{
 	display: none;
 }
+
+.error-field {
+	background: red;
+}
