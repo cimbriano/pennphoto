@@ -31,7 +31,7 @@ public abstract class User {
 
 	private ArrayList<Attendance> attendances;
 	private ArrayList<Circle> circles;
-	private ArrayList<Integer> interestIds;
+	private ArrayList<Interest> interests;
 	private static final SimpleDateFormat DOB_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
@@ -42,23 +42,23 @@ public abstract class User {
 				+ address + ", city=" + city + ", state=" + state
 				+ ", stateId=" + stateId + ", zip=" + zip + ", attendances="
 				+ attendances + ", circles=" + circles + ", interestIds="
-				+ interestIds + "]";
+				+ interests + "]";
 	}
 
-	public boolean addInterestID(Integer id){
-		return interestIds.add(id);
+	public boolean addInterest(Interest interest){
+		return interests.add(interest);
 	}
 	
-	public boolean removeInterestID(Integer id){
-		return interestIds.remove(id);
+	public boolean removeInterest(Integer interest){
+		return interests.remove(interest);
 	}
 	
-	public ArrayList<Integer> getInterestIDs() {
-		return interestIds;
+	public ArrayList<Interest> getInterests() {
+		return interests;
 	}
 
-	public void setInterestIDs(ArrayList<Integer> interestIDs) {
-		this.interestIds = interestIDs;
+	public void setInterests(ArrayList<Interest> interests) {
+		this.interests = interests;
 	}
 
 	public int getUserID() {
@@ -177,7 +177,7 @@ public abstract class User {
 		super();
 		attendances = new ArrayList<Attendance>();
 		circles = new ArrayList<Circle>();
-		interestIds = new ArrayList<Integer>();
+		interests = new ArrayList<Interest>();
 	}
 	
 	public User(int userID, String email, String firstName, String lastName,
@@ -195,7 +195,30 @@ public abstract class User {
 		this.state = state;
 		this.zip = zip;
 	}
-	
+	public static class Interest{
+		int id;
+		String label;
+		
+		public Interest(String label){
+			this(0, label);
+		}
+		public Interest(int id, String label){
+			this.id = id;
+			this.label = label;
+		}
+		public int getId() {
+			return id;
+		}
+		public void setId(int id) {
+			this.id = id;
+		}
+		public String getLabel() {
+			return label;
+		}
+		public void setLabel(String label) {
+			this.label = label;
+		}
+	}
 	public static class Attendance{
 		private int institutionId;
 		private String institution;
