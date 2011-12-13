@@ -1,28 +1,13 @@
-<%@ page language="java" contentType="text/html; charset=US-ASCII"
-    pageEncoding="US-ASCII"%>
 <%@ page import="java.util.Map, edu.pennphoto.db.UserDAO, edu.pennphoto.model.User" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 
-<!-- Stylesheets -->
-<link rel="stylesheet" type="text/css" media="all" href="styles.css" />
-<link rel="stylesheet" type="text/css" media="all" href="main-nav.css" />
+<jsp:include page="partials/html-head.jsp" />
 
-<title>PennPhoto Registration</title>
+<div id="login-wrapper">
 
-</head>
+	<h1>Registration</h1>
 
-<body onload="load();">
-	<div id="wrapper">
-
-		<div id="header">
-			<div id="logo"></div>
-			<div class="clear"></div>
-		</div><!-- #header -->
-
-		<div id="content">
+		<div id="registration-form-wrapper">	
+		
 			<form action="userServlet" method="post">
 				<input type="hidden" name="action" value="register" /><br/>
 				<input type="text" name="first-name" placeholder="First Name"/><br/>
@@ -59,9 +44,15 @@
 				<input type="text" name="city" placeholder="City"/><br/>
 				<select id="state" name="state">
 						<% 	Map<Integer, String> states = UserDAO.getStates();
-							for (Map.Entry<Integer, String> state : states.entrySet()) { %>
-								<option value=<%= state.getKey() %>><%= state.getValue() %></option>
-						<% 	} %>
+							if(states != null){
+								for (Map.Entry<Integer, String> state : states.entrySet()) { %>
+								
+								
+								<option value=<%= (state != null) ? state.getKey() : " " %> > <%= state.getValue() %></option>
+							<% 	} %>
+								
+						<% } %>
+							
 				</select><br/>
 				<input type="text" name="zip-code" placeholder="Zip Code"/><br/>
 				
@@ -80,7 +71,7 @@
 				<input id="interest-1" name="interest-1" placeholder="Interest"/>
 				<br/>
 				
-				<input type="submit" value="Sign Up"/>
+				<input class="submit" type="submit" value="Sign Up"/>
 
 				<% if (request.getParameter("error") != null) { 
 					String message = request.getParameter("message");
@@ -88,13 +79,16 @@
 					<div class="error"><%= message %></div>
 				<% } %>
 			</form>
-		</div>
-
-		<jsp:include page="partials/footer.jsp" />		
 		
-	</div><!--  #wrapper -->
+		
+		
+		</div><!-- #login-form-wrapper -->
 
-	<script type="text/javascript">
+	<jsp:include page="partials/footer.jsp" />
+
+</div><!-- #login-wrapper -->
+
+<script type="text/javascript">
 		function load() {
 			display_role();
 			mark_error_field();
@@ -131,6 +125,3 @@
 			}
 		}
 	</script>
-
-</body>
-</html>

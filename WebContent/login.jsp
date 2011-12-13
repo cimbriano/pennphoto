@@ -8,7 +8,7 @@
 		
 		<div id="login-info">
 			<div id="sign-up">
-				<a href="registration_temp.jsp">
+				<a href="registration.jsp">
 					<h3>Not registered? &nbsp;Sign up!</h3>
 				
 					<ul>
