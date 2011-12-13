@@ -2,9 +2,5 @@
 
 
 
-</div> <!-- #wrapper -->
-
-
-
 </body>
 </html>

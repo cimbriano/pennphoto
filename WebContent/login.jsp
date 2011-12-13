@@ -7,11 +7,19 @@
 		<h1>Penn Photo Login!</h1>
 		
 		<div id="login-info">
+			<div id="sign-up">
+				<h3>Not registered? &nbsp;Sign up!</h3>
+				
 				<ul>
 					<li>Penn photo is awesome</li>
 					<li>Its also really cool</li>
 					<li>You'll be the talk of the town</li>
 				</ul>
+				
+			</div>
+		
+		
+				
 			</div>
 	
 		<div id="login-form-wrapper">
