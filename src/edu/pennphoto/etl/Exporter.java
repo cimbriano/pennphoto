@@ -8,6 +8,7 @@ import java.util.List;
 import edu.pennphoto.db.PhotoDAO;
 import edu.pennphoto.model.*;
 import edu.pennphoto.model.User.Gender;
+import edu.pennphoto.model.User.Interest;
 
 public class Exporter {
 
@@ -102,9 +103,8 @@ public class Exporter {
 	}
 
 	private static void appendInterests(StringBuilder xmlBuilder, User user) {
-		for(Integer intId : user.getInterestIDs()){
-			//TODO replace intId with actual Interest name
-			xmlBuilder.append(TAB + START + INTEREST + intId + END + INTEREST + "\n");
+		for(Interest interest : user.getInterests()){
+			xmlBuilder.append(TAB + START + INTEREST + interest.getLabel() + END + INTEREST + "\n");
 		}
 	}
 	
@@ -163,7 +163,7 @@ public class Exporter {
 			for(Tag tag : photo.getTags()){
 				xmlBuilder.append(TAB3 + START + TAG);
 				xmlBuilder.append(TAB4 + START + USER_ID + tag.getUserID() + END + USER_ID + "\n");
-				xmlBuilder.append(TAB4 + START + VALUE + tag.getTagText() + END + VALUE + "\n");
+				xmlBuilder.append(TAB4 + START + TAG_TEXT + tag.getTagText() + END + TAG_TEXT + "\n");
 				xmlBuilder.append(TAB3 + END + TAG);
 			}
 			xmlBuilder.append(TAB2 + END + PHOTO);
