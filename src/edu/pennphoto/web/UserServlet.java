@@ -119,10 +119,14 @@ public class UserServlet extends HttpServlet {
 	}
 
 	protected void handleCreateCircle(HttpServletRequest request,
-			HttpServletResponse response) {
-		// Do some create circle stuff
-
-		// TODO - Success or failure : redirect? AJAX?
+			HttpServletResponse response) throws IOException {
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		int userId = user.getUserID();
+		String name = request.getParameter("circle-name");
+		Circle circle = UserDAO.createCircle(userId, name);
+		user.addCircle(circle);
+		response.sendRedirect("confirmation.jsp");
 
 	}
 
