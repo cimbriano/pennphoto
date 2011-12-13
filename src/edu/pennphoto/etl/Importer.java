@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +17,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
 import edu.pennphoto.db.UserDAO;
+import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.Photo;
 import edu.pennphoto.model.Professor;
 import edu.pennphoto.model.Rating;
@@ -57,16 +59,26 @@ public class Importer {
 	private static final String[] RATER_ID ={"tns:raterID", "userId"};
 	private static final String[] RATING_VALUE = {"score", "tns:score"};
 	private static final String[] TAG = {"tag", "tns:tag"};
-	private static final String[] TAG_ID = {"tns:tagID"};
 	private static final String[] TAG_TEXT = {"tns:text"};
+	private static final String[] PHOTO_OWNER_ID = {"ownerID"};
+	private static final String[] CIRCLE = {"circle", "tns:circle"};
+	private static final String[] CIRCLE_ID = {"circleID", "circleId", "tns:circleID"};
+	private static final String[] CIRCLE_NAME = {"name", "tns:name"};
+	private static final String[] OWNER_ID = {"ownerID"};
+	private static final String[] CONTAINS_FRIEND = {"containsFriend", "friendID", "tns:friend"};
+	private static final String PHOTO_11 = "photo";
+	private static final String CIRCLE_11 = "circle";
+	private static final String FRIEND_11 = "belongsTo";
 	
 	private static final int[] GROUP_IDS = {8, 11, 12};
 	
-	private static ArrayList<User> _users;
+	private static HashMap<Integer, User> _users;
 	private static ArrayList<Photo> _photos;
+	private static HashMap<Integer, Circle> _circles;
 	private static Document _doc;
 	private static boolean _photosLoaded;
 	private static boolean _circlesLoaded;
+	private static boolean _friendsLoaded;
 	private static int _current_group_id;
 
 	
@@ -82,10 +94,12 @@ public class Importer {
 	}
 	
 	private static void initializeVariables(){
-		_users = new ArrayList<User>();
+		_users = new HashMap<Integer, User>();
 		_photos = new ArrayList<Photo>();
+		_circles = new HashMap<Integer, Circle>();
 		_photosLoaded = false;
 		_circlesLoaded = false;
+		_friendsLoaded = false;
 	}
 	
 	private static void parseXML(String filename){
@@ -99,8 +113,12 @@ public class Importer {
 			_doc.getDocumentElement().normalize();
 			
 			loadUsersFromDoc();
-			System.out.println(_photos);
 			if(!_photosLoaded) loadPhotosFromDoc();
+			if(!_circlesLoaded) loadCirclesFromDoc();
+			if(!_friendsLoaded) loadFriendsFromDoc();
+			
+			System.out.println(_users);
+			System.out.println(_photos);
 
 	/*		storeUsers(users);
 			storeCircles(users);
@@ -175,12 +193,50 @@ public class Importer {
 				((Professor) user).setTitle(getTextValue(field));
 			} else if (nodeNameMatches(field, PHOTO)){
 				_photosLoaded = true;
-				loadPhotosFromUser(field, user);
+				loadPhoto(field, user);
+			} else if (nodeNameMatches(field, CIRCLE)){
+				loadCircle(field, user);
 			}
 		}
-		System.out.println(user);
 		return user;
 	}
+	
+	private static void loadCircle(Node node, User user){
+		NodeList circleChildren = node.getChildNodes();
+		Circle circle = new Circle();
+		for(int i = 0; i < circleChildren.getLength(); i++){
+			Node circleChild = circleChildren.item(i);
+			if(nodeNameMatches(circleChild, CIRCLE_ID)){
+				circle.setCircleID(getUniqueId(getIntValue(circleChild)));
+			} else if (nodeNameMatches(circleChild, CIRCLE_NAME)){
+		//		System.out.println("CIRCLE_NAME Node:" + circleChild.getNodeName());
+				circle.setName(getTextValue(circleChild));
+			} else if (nodeNameMatches(circleChild, OWNER_ID)){
+				user = _users.get(getUniqueId(getIntValue(circleChild)));
+			}
+		}
+		_circlesLoaded = true;
+		_circles.put(circle.getCircleID(), circle);
+		user.addCircle(circle);
+		loadFriend(node, circle);
+	}
+	
+	private static void loadFriend(Node node, Circle circle){
+		NodeList friends = node.getChildNodes();
+		ArrayList<Integer> friendIds = new ArrayList<Integer>();
+		int circleId = (circle != null) ? circle.getCircleID() : 0;
+		for(int i = 0; i < friends.getLength(); i++){
+			Node friend = friends.item(i);
+			if(nodeNameMatches(friend, CONTAINS_FRIEND)){
+				_friendsLoaded = true;
+				friendIds.add(getUniqueId(getIntValue(friend)));
+			} else if (nodeNameMatches(friend, CIRCLE_ID)){
+				circleId = getUniqueId(getIntValue(friend));
+			}
+		}
+		_circles.get(circleId).addFriendIDs(friendIds);
+	}
+
 	
 
 
@@ -198,8 +254,14 @@ public class Importer {
 		return retVal;
 	}
 	private static String getTextValue(Node node){
-		return node.getChildNodes().item(0).getNodeValue().trim();
 		
+		String retString = null;
+		try{
+			retString = node.getChildNodes().item(0).getNodeValue().trim();
+		} catch (NullPointerException n) {
+
+		}
+		return retString;
 	}
 	
 	private static Date getDobDateValue(Node node) {
@@ -258,19 +320,17 @@ public class Importer {
 		System.out.println("Root element :" + _doc.getDocumentElement().getNodeName());
 		NodeList nodes = _doc.getElementsByTagName("student");
 		if(nodes.getLength() == 0)	nodes = _doc.getElementsByTagName("tns:student");
-		System.out.println(nodes.getLength());
-		System.out.println("students-----------------------");
 		for(int i = 0; i < nodes.getLength(); i++){
 			Node student = nodes.item(i);
-			_users.add(createUser(student));
+			User user = (createUser(student));
+			_users.put(user.getUserID(), user);
 		}
 		nodes = _doc.getElementsByTagName("professor");
 		if(nodes.getLength() == 0)	nodes = _doc.getElementsByTagName("tns:professor");
-		System.out.println(nodes.getLength());
-		System.out.println("professors-----------------------");
 		for(int i = 0; i < nodes.getLength(); i++){
 			Node professor = nodes.item(i);
-			_users.add(createUser(professor));
+			User user = (createUser(professor));
+			_users.put(user.getUserID(), user);
 		}
 	}
 	
@@ -290,12 +350,31 @@ public class Importer {
 	}
 	
 	private static void loadPhotosFromDoc(){
-		//TODO implement loadPhotosFromDoc()
+		NodeList nodes = _doc.getElementsByTagName(PHOTO_11);
+		for(int i = 0; i < nodes.getLength(); i++){
+			loadPhoto(nodes.item(i), null);
+		}
 	}
 	
-	private static void loadPhotosFromUser(Node node, User user){
+	private static void loadCirclesFromDoc(){
+		NodeList nodes = _doc.getElementsByTagName(CIRCLE_11);
+		for(int i = 0; i < nodes.getLength(); i++){
+			loadCircle(nodes.item(i), null);
+		}
+	}
+	
+	
+	private static void loadFriendsFromDoc(){
+		NodeList nodes = _doc.getElementsByTagName(FRIEND_11);
+		for(int i = 0; i < nodes.getLength(); i++){
+			loadFriend(nodes.item(i), null);
+		}
+	}
+	
+	private static void loadPhoto(Node node, User user){
 		NodeList nl = node.getChildNodes();
 		String url = null;
+		int userId = (user != null) ? user.getUserID() : 0;
 		int photoId = 0;
 		for(int i = 0; i < nl.getLength(); i++){
 			Node n = nl.item(i);
@@ -303,18 +382,18 @@ public class Importer {
 				photoId = getUniqueId(getIntValue(n));
 			} else if (nodeNameMatches(n, URL)){
 				url = getTextValue(n);
+			} else if (nodeNameMatches(n, PHOTO_OWNER_ID)){
+				userId = getUniqueId(getIntValue(n));
 			}
 		}
 		//public Photo(Integer photoId, String url, boolean isPrivate, int ownerId, Date uploadDate)
-		Photo photo = new Photo(photoId, url, false, user.getUserID(), new Date()); 
+		Photo photo = new Photo(photoId, url, false, userId, new Date()); 
 		_photos.add(photo);
 		loadTagsAndRatingsFromPhoto(node, photo);		
 	}
 	
 	private static void loadTagsAndRatingsFromPhoto(Node node, Photo photo){
 		NodeList nl = node.getChildNodes();
-		String url = null;
-		int photoId = 0;
 		for(int i = 0; i < nl.getLength(); i++){
 			Node n = nl.item(i);
 			if(nodeNameMatches(n, RATING)){
@@ -339,8 +418,6 @@ public class Importer {
 						Node tagChild = tagChildren.item(j);
 						if(nodeNameMatches(tagChild, TAG_TEXT)){
 							tag.setTagText(getTextValue(tagChild));
-						} else if (nodeNameMatches(tagChild, TAG_ID)){
-							//we don't do anything with the tag ID
 						}
 					}
 				} else {

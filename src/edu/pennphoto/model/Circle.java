@@ -12,6 +12,10 @@ public class Circle {
 		this.name = name;
 		friendIDs = new ArrayList<Integer>();
 	}
+	
+	public Circle(){
+		this(0, null);
+	}
 	public int getCircleID() {
 		return circleID;
 	}
@@ -35,8 +39,18 @@ public class Circle {
 		return friendIDs.add(friendID);
 	}
 	
+	public boolean addFriendIDs(ArrayList<Integer> friendIds){
+		return this.friendIDs.addAll(friendIds);
+	}
+	
 	public boolean removeFriendID(Integer friendID){
 		return friendIDs.remove(friendID);
+	}
+
+	@Override
+	public String toString() {
+		return "Circle [circleID=" + circleID + ", name=" + name
+				+ ", friendIDs=" + friendIDs + "]";
 	}
 	
 	
