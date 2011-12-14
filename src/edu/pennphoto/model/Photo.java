@@ -32,7 +32,7 @@ public class Photo {
 	}
 
 	public int getPhotoId() {
-		return photoId;
+		return photoId != null?photoId:0;
 	}
 
 	public void setPhotoId(int photoId) {

@@ -109,7 +109,9 @@ public class UserDAO {
 			ex.printStackTrace();
 			success = false;
 		} finally {
-			conn.setAutoCommit(true);
+			if (conn != null) {
+				conn.setAutoCommit(true);
+			}
 			try{
 				userStmt.close();
 			}catch(Exception ex){
