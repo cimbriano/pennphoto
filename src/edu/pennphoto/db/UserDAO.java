@@ -54,7 +54,7 @@ public class UserDAO {
 		boolean success = true;
 		try {
 			boolean isProfessor = user instanceof Professor;
-			String userQuery = "insert into User values (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String userQuery = "insert into User values ("+(user.getUserID() > 0?user.getUserID():"null")+", ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			conn = DBHelper.getInstance().getConnection();
 			conn.setAutoCommit(false);
 			userStmt = conn.prepareStatement(userQuery,
@@ -367,13 +367,17 @@ public class UserDAO {
 		}
 		return user;
 	}
-
+	
 	public static Circle createCircle(int userId, String name) {
+		return createCircle(userId, name, -1);
+	}
+	
+	public static Circle createCircle(int userId, String name, int knownCircleId) {
 		Connection conn = null;
 		PreparedStatement circleStmt = null;
 		Circle circle = null;
 		try {
-			String userQuery = "insert into Circle values (null, ?, ?)";
+			String userQuery = "insert into Circle values ("+(knownCircleId >0?knownCircleId:"null")+", ?, ?)";
 			conn = DBHelper.getInstance().getConnection();
 			circleStmt = conn.prepareStatement(userQuery,
 					Statement.RETURN_GENERATED_KEYS);
@@ -622,17 +626,23 @@ public class UserDAO {
 		return student;
 	}
 
-	public static void testCreateUser1() throws SQLException {
+	public static void testCreateUser1(){
 		Professor professor = new Professor();
-		professor.setEmail("proftest@penn.edu");
-		professor.setPassword("proftest");
-		professor.setFirstName("profTestFN");
-		professor.setLastName("proftestLN");
+		professor.setUserID(111);
+		professor.setEmail("proftest2@penn.edu");
+		professor.setPassword("proftest2");
+		professor.setFirstName("David");
+		professor.setLastName("Muller");
 		professor.setDob(new java.util.Date());
 		professor.setAddress("proftest address");
 		professor.setGender(Gender.MALE);
 		professor.setTitle("Prof");
 		professor.setResearchArea("researchArea");
-		createUser(professor);
+		try {
+			createUser(professor);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 }
