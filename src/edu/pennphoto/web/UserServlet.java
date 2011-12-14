@@ -121,11 +121,42 @@ public class UserServlet extends HttpServlet {
 				handleSubmitPhoto(request, response);
 			} else if (action.equals("create-circle")) {
 				handleCreateCircle(request, response);
-			} else {
+			} else if(action.equals("add-friend")){
+				handleAddFriendToCircle(request, response);
+			}else {
 				response.sendRedirect("homepage.jsp");
 			}
 		}
 
+	}
+
+	private void handleAddFriendToCircle(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		
+		
+		try {
+			
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("user");
+
+			String circleIDString = request.getParameter("circleID");
+			String friendIDString = request.getParameter("friendID");
+			
+			int circleID = Integer.parseInt(circleIDString);
+			int friendID = Integer.parseInt(friendIDString);
+			
+			UserDAO.addFriendToCircle(circleID, friendID);
+			
+			response.sendRedirect("confirmation.jsp");
+			
+			
+		} catch(Exception e) {
+			response.sendRedirect("error.jsp");
+		}finally{
+			
+		}
+		
+		
 	}
 
 	protected void handleCreateCircle(HttpServletRequest request,
@@ -194,7 +225,7 @@ public class UserServlet extends HttpServlet {
 		// method
 		if (user == null) {
 			response.sendRedirect("login.jsp?error=1");
-		} else {
+		} else {			
 			HttpSession session = request.getSession(true);
 			session.setAttribute("user", user);
 			response.sendRedirect("homepage.jsp");

@@ -1,11 +1,11 @@
 package edu.pennphoto.model;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class Circle {
 	private int circleID;
 	private String name;
-	private ArrayList<Integer> friendIDs;
+	private List<Integer> friendIDs;
 	public Circle(int circleID, String name) {
 		super();
 		this.circleID = circleID;
@@ -28,10 +28,10 @@ public class Circle {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public ArrayList<Integer> getFriendIDs() {
+	public List<Integer> getFriendIDs() {
 		return friendIDs;
 	}
-	public void setFriendIDs(ArrayList<Integer> friendIDs) {
+	public void setFriendID(List<Integer> friendIDs) {
 		this.friendIDs = friendIDs;
 	}
 	
@@ -39,7 +39,7 @@ public class Circle {
 		return friendIDs.add(friendID);
 	}
 	
-	public boolean addFriendIDs(ArrayList<Integer> friendIds){
+	public boolean addFriendIDs(List<Integer> friendIds){
 		return this.friendIDs.addAll(friendIds);
 	}
 	
