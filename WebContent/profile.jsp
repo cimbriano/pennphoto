@@ -2,7 +2,7 @@
 					edu.pennphoto.model.User" %>
 
 
-<% 	User user = (User) request.getAttribute("user"); %>
+<% 	User user = (User) session.getAttribute("user"); %>
 	<p><%= user.getFirstName() %></p>
 	<p><%= user.getLastName() %></p>
 	<p><%= user.getEmail() %></p>

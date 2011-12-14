@@ -59,10 +59,11 @@ public class UserServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String msg = request.getPathInfo();
-
 		// Checks for /logout
-
-		if (msg == null) {
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		
+		if (msg == null || user == null) {
 			// Error
 			response.sendRedirect("login.jsp?error=bp");
 		} else if (msg.equals("/logout")) {
@@ -70,7 +71,10 @@ public class UserServlet extends HttpServlet {
 			request.getSession().invalidate();
 			response.sendRedirect(request.getServletContext().getContextPath()
 					+ "/login.jsp");
-		} else {
+		} else  if (msg.equals("/profile")) {
+			response.sendRedirect(request.getServletContext().getContextPath()
+					+ "/profile.jsp");
+		}else{
 			// Any other
 			response.getWriter().write(msg);
 		}
