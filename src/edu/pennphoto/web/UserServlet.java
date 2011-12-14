@@ -27,6 +27,7 @@ import edu.pennphoto.db.UserDAO;
 import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.Photo;
 import edu.pennphoto.model.Professor;
+import edu.pennphoto.model.Rating;
 import edu.pennphoto.model.Student;
 import edu.pennphoto.model.User;
 import edu.pennphoto.model.User.Gender;
@@ -140,20 +141,47 @@ public class UserServlet extends HttpServlet {
 	}
 
 	protected void handleSubmitPhoto(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws IOException {
 		String privacy = request.getParameter("privacy");
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		int userId = user.getUserID();
 		boolean isPrivate = privacy.equals("private") ? true : false;
-
+		boolean photo_posted = false;
 		String url = request.getParameter("url");
+
+		Photo photo = new Photo(url, isPrivate, userId);
 		String rating = request.getParameter("rating");
-		// TODO - Finish creating Photo
-
-		// int ownerId = ;
-
-		// Photo photo = new Photo(url, isPrivate, ownerId);
-		// boolean photo_posted = PhotoDAO.postPhoto(photo);
-
-		// TODO - Success or failure : redirect? AJAX?
+		String[] circleIds = request.getParameterValues("circleIds");
+		String[] viewerIds = request.getParameterValues("userIds");
+		
+		if(circleIds != null){
+			for(String circleId : circleIds){
+				photo.addViewCircleID(Integer.parseInt(circleId));
+			}
+		}
+		if(viewerIds != null){
+			for(String viewerId : viewerIds){
+				photo.addViewUserID(Integer.parseInt(viewerId));
+			}
+		}
+		if(rating != null){
+			Rating r = new Rating();
+			r.setUserID(userId);
+			r.setValue(Integer.parseInt(rating));
+		}
+		
+		try {
+			photo_posted = PhotoDAO.postPhoto(photo);
+		} catch (SQLException e) {
+			
+		}
+		if(photo_posted){
+			response.sendRedirect("confirmation.jsp");
+		} else {
+			response.sendRedirect("error.jsp");
+		}
+		
 	}
 
 	protected void handleLogin(HttpServletRequest request,
@@ -204,7 +232,7 @@ public class UserServlet extends HttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Please bare with us as we restore service.");
+					"Please bear with us as we restore service.");
 		}
 		// TODO - Remove logged in validation form here in place of in doPost
 		// method
