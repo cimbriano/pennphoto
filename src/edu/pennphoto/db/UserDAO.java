@@ -390,14 +390,18 @@ public class UserDAO {
 			int circleId = rs.getInt(1);
 			circle = new Circle(circleId, name);
 		} catch (Exception ex) {
-			if (circleStmt != null) {
+			ex.printStackTrace();
+		}finally{
 				try {
 					circleStmt.close();
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
-			ex.printStackTrace();
+				try {
+					conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 		}
 		return circle;
 	}
@@ -414,14 +418,18 @@ public class UserDAO {
 			stmt.execute();
 			return true;
 		} catch (Exception ex) {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 			ex.printStackTrace();
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}
@@ -440,14 +448,18 @@ public class UserDAO {
 			int rowsNum = stmt.executeUpdate(query);
 			return rowsNum;
 		} catch (Exception ex) {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 			ex.printStackTrace();
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return 0;
 	}
@@ -478,8 +490,18 @@ public class UserDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-
 	}
 	
 	public static Map<Integer, String> getProfessors() {
@@ -496,24 +518,6 @@ public class UserDAO {
 	
 	private static int getInstitutionIdByName(String name, Connection conn) throws SQLException{
 		return getIdByValue("select id from Institution where name=?", name, conn);
-//		PreparedStatement stmt = null;
-//		int institutionId = 0;
-//		try {
-//			stmt = conn.prepareStatement("select id from Institution where name=?");
-//			stmt.setString(1, name);
-//			ResultSet rs = stmt.executeQuery();
-//			if (rs.next()) {
-//				institutionId = rs.getInt(1);
-//			}
-//		} finally{
-//			try{
-//			if(stmt != null) stmt.close();
-//			//if(conn != null) conn.close();
-//			}catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return institutionId;
 	}
 	private static int getInterestIdByLabel(String label, Connection conn) throws SQLException{
 		return getIdByValue("select id from Interest_Desc where label=?", label, conn);
@@ -540,7 +544,7 @@ public class UserDAO {
 	}
 	private static String getStateNameById(int stateId){
 		try {
-			return (String)loadValueById("select * from State where id="+stateId);
+			return loadValueById("select name from State where id="+stateId);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -563,10 +567,14 @@ public class UserDAO {
 			}
 			return null;
 		} finally{
-			try{
-			if(stmt != null) stmt.close();
-			if(conn != null) conn.close();
-			}catch (Exception e) {
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -588,12 +596,15 @@ public class UserDAO {
 			e.printStackTrace();
 			return null;
 		}finally{
-			if(conn != null){
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
