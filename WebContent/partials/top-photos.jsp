@@ -8,11 +8,14 @@
 
 User user = (User) session.getAttribute("user");
 
-if(user != null){ %>
-
+if(user != null){
+	String searchTag = request.getParameter("search-tag");
+	%>
 <div id="top-pics">
 		
-		<% List<Photo> photos = PhotoDAO.getTopPhotosForUser(user.getUserID());
+		<% List<Photo> photos = searchTag == null || searchTag.trim().equals("") ? 
+				PhotoDAO.getTopPhotosForUser(user.getUserID()):
+			PhotoDAO.searchPhotosByTag(searchTag, user.getUserID());
 		
 			for (Photo photo : photos) {
 				
