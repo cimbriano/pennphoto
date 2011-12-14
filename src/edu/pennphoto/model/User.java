@@ -16,23 +16,23 @@ public abstract class User {
 		
 	}
 	
-	private int userID;
-	private String password;
-	private String email;
-	private String firstName;
-	private String lastName;
-	private Date dob;
-	private Gender gender;
-	private String address;
-	private String city;
-	private String state;
-	private int stateId;
-	private String zip;
+	protected int userID;
+	protected String password;
+	protected String email;
+	protected String firstName;
+	protected String lastName;
+	protected Date dob;
+	protected Gender gender;
+	protected String address;
+	protected String city;
+	protected String state;
+	protected int stateId;
+	protected String zip;
 
-	private ArrayList<Attendance> attendances;
-	private ArrayList<Circle> circles;
-	private ArrayList<Interest> interests;
-	private static final SimpleDateFormat DOB_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	protected ArrayList<Attendance> attendances;
+	protected ArrayList<Circle> circles;
+	protected ArrayList<Interest> interests;
+	protected static final SimpleDateFormat DOB_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
 	public String toString() {
