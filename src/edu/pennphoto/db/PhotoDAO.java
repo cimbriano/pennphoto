@@ -44,7 +44,7 @@ public class PhotoDAO {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			String userQuery = "insert into Photo values (null, ?, ?, ?, null)";
+			String userQuery = "insert into Photo values ("+(photo.getPhotoId() > 0?photo.getPhotoId():"null")+", ?, ?, ?, null)";
 			conn = DBHelper.getInstance().getConnection();
 			conn.setAutoCommit(false);
 			stmt = conn.prepareStatement(userQuery,
