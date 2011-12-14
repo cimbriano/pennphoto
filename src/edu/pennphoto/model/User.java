@@ -146,6 +146,8 @@ public abstract class User {
 	}
 	
 	public ArrayList<Circle> getCircles(){
+		
+		
 		return circles;
 	}
 	

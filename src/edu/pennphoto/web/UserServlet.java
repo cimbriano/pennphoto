@@ -153,7 +153,7 @@ public class UserServlet extends HttpServlet {
 		// method
 		if (user == null) {
 			response.sendRedirect("login.jsp?error=1");
-		} else {
+		} else {			
 			HttpSession session = request.getSession(true);
 			session.setAttribute("user", user);
 			response.sendRedirect("homepage.jsp");
