@@ -129,7 +129,7 @@ public class Importer {
 			System.out.println(_users.values());
 			System.out.println(_photos);
 			System.out.println(_circles.values());
-			System.out.println( _advisingMap);
+			//System.out.println( _advisingMap);
 
 	/*		storeUsers(users);
 			storeCircles(users);
@@ -199,7 +199,7 @@ public class Importer {
 			} else if (nodeNameMatches(field, GPA)){
 				((Student) user).setGpa(getDoubleValue(field));
 			} else if (nodeNameMatches(field, ADVISOR)){
-				_advisingMap.addAdvising(getUniqueId(getIntValue(field)), user.getUserID());
+				((Student) user).setAdvisorId(getUniqueId(getIntValue(field)));
 			} else if (nodeNameMatches(field, RESEARCH_AREA)){
 				((Professor) user).setResearchArea(getTextValue(field));
 			} else if (nodeNameMatches(field, TITLE)){
@@ -222,7 +222,6 @@ public class Importer {
 			if(nodeNameMatches(circleChild, CIRCLE_ID)){
 				circle.setCircleID(getUniqueId(getIntValue(circleChild)));
 			} else if (nodeNameMatches(circleChild, CIRCLE_NAME)){
-		//		System.out.println("CIRCLE_NAME Node:" + circleChild.getNodeName());
 				circle.setName(getTextValue(circleChild));
 			} else if (nodeNameMatches(circleChild, OWNER_ID)){
 				user = _users.get(getUniqueId(getIntValue(circleChild)));

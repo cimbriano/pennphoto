@@ -23,13 +23,27 @@ import edu.pennphoto.model.User.Interest;
 public class UserDAO {
 
 	public static boolean createUser(User user) throws SQLException {
-		boolean success = createBaseUser(user);
-		if(success){
-			success = storeAttendances(user);
-			boolean interestSuccess = storeInterests(user);
-			success = interestSuccess?success:false;
-			
-		}
+			Connection conn = null;
+			boolean success = false;
+			try{
+				success = createBaseUser(user);
+				if(success){
+					conn = DBHelper.getInstance().getConnection();
+					storeAttendances(user, conn);
+					storeInterests(user, conn);
+				}
+			}catch(NamingException ex){
+				//TODO: throw it too?
+				ex.printStackTrace();
+			}finally{
+				if(conn != null){
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		return success;
 	}
 	
@@ -40,7 +54,7 @@ public class UserDAO {
 		boolean success = true;
 		try {
 			boolean isProfessor = user instanceof Professor;
-			String userQuery = "insert into User values (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String userQuery = "insert into User values ("+(user.getUserID() > 0?user.getUserID():"null")+", ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			conn = DBHelper.getInstance().getConnection();
 			conn.setAutoCommit(false);
 			userStmt = conn.prepareStatement(userQuery,
@@ -61,6 +75,7 @@ public class UserDAO {
 			ResultSet rs = userStmt.getGeneratedKeys();
 			rs.next();
 			int userId = rs.getInt(1);
+			user.setUserID(userId);
 			if (isProfessor) {
 				Professor professor = (Professor) user;
 				spStmt = conn
@@ -68,6 +83,7 @@ public class UserDAO {
 				spStmt.setInt(1, userId);
 				spStmt.setString(2, professor.getResearchArea());
 				spStmt.setString(3, professor.getTitle());
+				spStmt.execute();
 			} else {
 				Student student = (Student) user;
 				spStmt = conn
@@ -75,9 +91,9 @@ public class UserDAO {
 				spStmt.setInt(1, userId);
 				spStmt.setString(2, student.getMajor());
 				spStmt.setDouble(3, student.getGpa());
+				spStmt.execute();
+				addAdvisorAdvisee(student.getUserID(), student.getAdvisorId(), conn);
 			}
-			spStmt.execute();
-			user.setUserID(userId);
 		} catch (Exception ex) {
 			if (conn != null) {
 				try {
@@ -91,18 +107,44 @@ public class UserDAO {
 			success = false;
 		} finally {
 			conn.setAutoCommit(true);
-			if (userStmt != null) {
+			try{
 				userStmt.close();
+			}catch(Exception ex){
+				ex.printStackTrace();
 			}
-			if (spStmt != null) {
+			try{
 				spStmt.close();
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			try{
+				conn.close();
+			}catch(SQLException ex){
+				ex.printStackTrace();
 			}
 		}
 		return success;
 	}
-
-	private static boolean storeAttendances(User user){
-		Connection conn = null;
+	
+	private static void addAdvisorAdvisee(int studentId, int professorId, Connection conn) throws SQLException{
+		Statement stmt = null;
+		try {
+			String query = "insert into Advises values("+studentId+", "+professorId+")";
+			stmt = conn.createStatement();
+			stmt.execute(query);
+		} finally {
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	private static boolean storeAttendances(User user, Connection conn){
+		//Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = DBHelper.getInstance().getConnection();
@@ -128,9 +170,9 @@ public class UserDAO {
 			return false;
 		} finally {
 			try {
-				if (conn != null) {
-					conn.close();
-				}
+//				if (conn != null) {
+//					conn.close();
+//				}
 				if (stmt != null) {
 					stmt.close();
 				}
@@ -139,8 +181,8 @@ public class UserDAO {
 		}
 	}
 	
-	private static boolean storeInterests(User user){
-		Connection conn = null;
+	private static boolean storeInterests(User user, Connection conn){
+		//Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = DBHelper.getInstance().getConnection();
@@ -164,9 +206,9 @@ public class UserDAO {
 			return false;
 		} finally {
 			try {
-				if (conn != null) {
-					conn.close();
-				}
+//				if (conn != null) {
+//					conn.close();
+//				}
 				if (stmt != null) {
 					stmt.close();
 				}
@@ -239,7 +281,12 @@ public class UserDAO {
 
 	public static User login(String username, String password) {
 		try {
-			return getUser(-1, username, password);
+			User user =  getUser(-1, username, password);
+			if(user != null){
+				UserDAO.getUserCircles(user.getUserID());
+				
+			}
+			return user;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -304,6 +351,7 @@ public class UserDAO {
 					}
 				}
 			}
+			user.setState(getStateNameById(user.getStateId()));
 		} catch (Exception ex) {
 			user = null;
 			ex.printStackTrace();
@@ -320,13 +368,17 @@ public class UserDAO {
 		}
 		return user;
 	}
-
+	
 	public static Circle createCircle(int userId, String name) {
+		return createCircle(userId, name, -1);
+	}
+	
+	public static Circle createCircle(int userId, String name, int knownCircleId) {
 		Connection conn = null;
 		PreparedStatement circleStmt = null;
 		Circle circle = null;
 		try {
-			String userQuery = "insert into Circle values (null, ?, ?)";
+			String userQuery = "insert into Circle values ("+(knownCircleId >0?knownCircleId:"null")+", ?, ?)";
 			conn = DBHelper.getInstance().getConnection();
 			circleStmt = conn.prepareStatement(userQuery,
 					Statement.RETURN_GENERATED_KEYS);
@@ -486,6 +538,18 @@ public class UserDAO {
 		}
 		return id;
 	}
+	private static String getStateNameById(int stateId){
+		try {
+			return (String)loadValueById("select * from State where id="+stateId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	private static String loadValueById(String query) throws SQLException, NamingException {
 		Statement stmt = null;
@@ -523,6 +587,14 @@ public class UserDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -559,7 +631,7 @@ public class UserDAO {
 		student.addInterest(new Interest(0, "Music"));
 		student.addInterest(new Interest(0, "Chess"));
 		try {
-			createUser(student);
+		createUser(student);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -567,17 +639,23 @@ public class UserDAO {
 		return student;
 	}
 
-	public static void testCreateUser1() throws SQLException {
+	public static void testCreateUser1(){
 		Professor professor = new Professor();
-		professor.setEmail("proftest@penn.edu");
-		professor.setPassword("proftest");
-		professor.setFirstName("profTestFN");
-		professor.setLastName("proftestLN");
+		professor.setUserID(111);
+		professor.setEmail("proftest2@penn.edu");
+		professor.setPassword("proftest2");
+		professor.setFirstName("David");
+		professor.setLastName("Muller");
 		professor.setDob(new java.util.Date());
 		professor.setAddress("proftest address");
 		professor.setGender(Gender.MALE);
 		professor.setTitle("Prof");
 		professor.setResearchArea("researchArea");
-		createUser(professor);
+		try {
+			createUser(professor);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 }
