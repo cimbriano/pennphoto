@@ -23,15 +23,18 @@ body{
 
 #top-bar {
 	height: 30px;
-	width: 100%;
+	width: 90%;
+	margin: 0 auto;
+	
+	padding: 15px 25px;
 	
 	background: black;
 	color: white;	
+	
 }
 
 #user-actions{
 	float: right;	
-	margin-right: 20px;
 }
 
 #user-actions li {
@@ -243,7 +246,7 @@ body{
 /* Begin Homepage */
 
 #content {
-	height: 600px;
+	min-height: 600px;
 	width: 1170px;
 	background: grey;
 	
@@ -262,18 +265,18 @@ body{
 }
 
 .top-pics-photo{
-	height: 200px;
+	height: 400px;
 	width: 200px;
 	
 	margin: 10px;
 	float: left;
 	
-	background: AliceBlue;
+	background: white;;
 }
 
 .top-pics-photo .img-wrap {
-	height: 80%;
-	width: 80%;
+	height: 100px;
+	width: 100px;
 	
 	margin: 0 auto;
 }
