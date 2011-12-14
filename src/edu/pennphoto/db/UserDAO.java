@@ -292,11 +292,27 @@ public class UserDAO {
 		}
 	}
 	
-//	public static List<User> getUsersList(){
-//		List<User> users = new ArrayList<User>();
-//		loadProfessor
-//		String query = "select * from User"
-//	}
+	public static List<User> getUsersList(){
+		List<User> users = new ArrayList<User>();
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			loadProfessors(users, conn);
+			loadStudents(users, conn);
+			return users;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 	
 	private static void loadProfessors(List<User> container, Connection conn){
 		String query = "select * from User u inner join Professor p on u.id=p.user_id";
