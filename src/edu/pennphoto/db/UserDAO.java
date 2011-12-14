@@ -351,6 +351,7 @@ public class UserDAO {
 					}
 				}
 			}
+			user.setState(getStateNameById(user.getStateId()));
 		} catch (Exception ex) {
 			user = null;
 			ex.printStackTrace();
@@ -536,6 +537,18 @@ public class UserDAO {
 			}
 		}
 		return id;
+	}
+	private static String getStateNameById(int stateId){
+		try {
+			return (String)loadValueById("select * from State where id="+stateId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	private static String loadValueById(String query) throws SQLException, NamingException {

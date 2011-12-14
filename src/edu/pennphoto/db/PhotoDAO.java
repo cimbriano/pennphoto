@@ -217,7 +217,7 @@ public class PhotoDAO {
 	 */
 	public static List<Photo> searchPhotosByTag(String keyword, int userId) {
 		String query = "select * from Photo p left join Tag t on p.id=t.photo_id inner join ("+RELEVANCE_SCORE_QUERY+") "+
-	" rel on p.id=rel.photo_id where t.tag=? order by rel.rel_score desc";
+	" rel on p.id=rel.photo_id where t.tag LIKE '%"+keyword+"%' order by rel.rel_score desc";
 
 		PreparedStatement stmt = null;
 		Connection conn = null;
@@ -230,7 +230,7 @@ public class PhotoDAO {
 			stmt.setInt(4, userId);
 			stmt.setInt(5, userId);
 			stmt.setInt(6, userId);
-			stmt.setString(7, keyword);
+			//stmt.setString(7, keyword);
 			ResultSet rs = stmt.executeQuery();
 			return generatePhotoList(rs);
 		} catch (Exception e) {
