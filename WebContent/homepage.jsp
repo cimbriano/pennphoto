@@ -9,6 +9,7 @@
 
 <div id="wrapper">
 
+<a href="testpage.jsp" style="fontsize: 40px ">GO TO  TESTPAGE</a>
 	
 	<% 
 		User user = (User) session.getAttribute("user");
@@ -19,41 +20,14 @@
 			
 			
 	%>
-		<p>Successful Login or still logged in</p>		
-		
-		<jsp:include page="partials/top-scroll.jsp" />
-	
+	<p>Successful Login or still logged in</p>		
+			
 	<div id="content">
 	
-		<!-- TODO  - put this is a partial? Need the user object -->
-		<div id="top-pics">
+		<jsp:include page="partials/top-photos.jsp" />
 		
-		<% List<Photo> photos = PhotoDAO.getTopPhotosForUser(user.getUserID());
+	
 		
-			for (Photo photo : photos) {
-				
-				int owner = photo.getOwnerId();
-				
-		%>
-		
-			<div class="top-pics-photo">
-				<div class="img-wrap">
-					<img src="<%= photo.getUrl() %>" alt="Photo Submitted by user <%= owner %>"/>
-				</div>
-				
-				<div class="photo-meta">
-					<!-- TODO Owner info here? or on a tool tip? -->
-				</div>
-			</div>
-		
-		<%
-				
-		}
-		
-		%>
-			<div class="clear"></div>
-		
-		</div>
 		
 		
 		
@@ -105,10 +79,14 @@
 			<% } //Close else %>			
 			
 		</div><!-- #activity-feed -->
+		
+				<div class="clear"></div>
+		
 				
 		<div id="friendship-browser"></div>
 		
-	</div><!-- #content -->
+		
+	</div><!-- #content -->	
 	
 	<jsp:include page="partials/footer.jsp" />
 		
