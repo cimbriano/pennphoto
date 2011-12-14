@@ -318,6 +318,7 @@ public class UserDAO {
 		String query = "select * from User u inner join Professor p on u.id=p.user_id";
 		Statement stmt = null;
 		try {
+			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			while(rs.next()){
 				Professor professor = (Professor)createUserDataObject(rs, true);
@@ -341,6 +342,7 @@ public class UserDAO {
 		String query = "select * from User u inner join Student s on u.id=s.user_id";
 		Statement stmt = null;
 		try {
+			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			while(rs.next()){
 				Student student = (Student)createUserDataObject(rs, false);
@@ -745,6 +747,13 @@ public class UserDAO {
 			e.printStackTrace();
 		}
 		return student;
+	}
+	
+	public static void testLoadUserList(){
+		List<User> userList = getUsersList();
+		for (User user : userList) {
+			System.out.println(user);
+		}
 	}
 
 	public static void testCreateUser1(){
