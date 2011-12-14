@@ -6,21 +6,18 @@
 
 <div id="user-actions">
 	<ul>
-		<li><a href="userServlet/profile">
-		
+	
 		<% 
 			User user = (User) session.getAttribute("user");
 			if (user != null) { 
 				
 		%> 
-			<%= user.getEmail() %>
+			<li><a href="userServlet/profile"> <%= user.getEmail() %> </a></li>
+			<li><a href="userServlet/logout?userID=<%= user.getUserID() %>">Logout</a></li>
 			
-		<%
-			}
-		%>
+		<% } %>
 		
-		</a></li>
-		<li><a href="userServlet/logout">Logout</a></li>
+		
 	</ul>
 </div>
 
