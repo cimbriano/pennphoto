@@ -106,7 +106,7 @@
 			
 		</div><!-- #activity-feed -->
 				
-		<div id="friendship-browser"></div>
+		<jsp:include page="partials/friendship-browser.jsp" />				
 		
 	</div><!-- #content -->
 	
