@@ -23,13 +23,27 @@ import edu.pennphoto.model.User.Interest;
 public class UserDAO {
 
 	public static boolean createUser(User user) throws SQLException {
-		boolean success = createBaseUser(user);
-		if(success){
-			success = storeAttendances(user);
-			boolean interestSuccess = storeInterests(user);
-			success = interestSuccess?success:false;
-			
-		}
+			Connection conn = null;
+			boolean success = false;
+			try{
+				success = createBaseUser(user);
+				if(success){
+					conn = DBHelper.getInstance().getConnection();
+					storeAttendances(user, conn);
+					storeInterests(user, conn);
+				}
+			}catch(NamingException ex){
+				//TODO: throw it too?
+				ex.printStackTrace();
+			}finally{
+				if(conn != null){
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		return success;
 	}
 	
@@ -61,6 +75,7 @@ public class UserDAO {
 			ResultSet rs = userStmt.getGeneratedKeys();
 			rs.next();
 			int userId = rs.getInt(1);
+			user.setUserID(userId);
 			if (isProfessor) {
 				Professor professor = (Professor) user;
 				spStmt = conn
@@ -68,6 +83,7 @@ public class UserDAO {
 				spStmt.setInt(1, userId);
 				spStmt.setString(2, professor.getResearchArea());
 				spStmt.setString(3, professor.getTitle());
+				spStmt.execute();
 			} else {
 				Student student = (Student) user;
 				spStmt = conn
@@ -75,9 +91,9 @@ public class UserDAO {
 				spStmt.setInt(1, userId);
 				spStmt.setString(2, student.getMajor());
 				spStmt.setDouble(3, student.getGpa());
+				spStmt.execute();
+				addAdvisorAdvisee(student.getUserID(), student.getAdvisorId(), conn);
 			}
-			spStmt.execute();
-			user.setUserID(userId);
 		} catch (Exception ex) {
 			if (conn != null) {
 				try {
@@ -91,18 +107,44 @@ public class UserDAO {
 			success = false;
 		} finally {
 			conn.setAutoCommit(true);
-			if (userStmt != null) {
+			try{
 				userStmt.close();
+			}catch(Exception ex){
+				ex.printStackTrace();
 			}
-			if (spStmt != null) {
+			try{
 				spStmt.close();
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			try{
+				conn.close();
+			}catch(SQLException ex){
+				ex.printStackTrace();
 			}
 		}
 		return success;
 	}
-
-	private static boolean storeAttendances(User user){
-		Connection conn = null;
+	
+	private static void addAdvisorAdvisee(int studentId, int professorId, Connection conn) throws SQLException{
+		Statement stmt = null;
+		try {
+			String query = "insert into Advises values("+studentId+", "+professorId+")";
+			stmt = conn.createStatement();
+			stmt.execute(query);
+		} finally {
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	private static boolean storeAttendances(User user, Connection conn){
+		//Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = DBHelper.getInstance().getConnection();
@@ -128,9 +170,9 @@ public class UserDAO {
 			return false;
 		} finally {
 			try {
-				if (conn != null) {
-					conn.close();
-				}
+//				if (conn != null) {
+//					conn.close();
+//				}
 				if (stmt != null) {
 					stmt.close();
 				}
@@ -139,8 +181,8 @@ public class UserDAO {
 		}
 	}
 	
-	private static boolean storeInterests(User user){
-		Connection conn = null;
+	private static boolean storeInterests(User user, Connection conn){
+		//Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = DBHelper.getInstance().getConnection();
@@ -164,9 +206,9 @@ public class UserDAO {
 			return false;
 		} finally {
 			try {
-				if (conn != null) {
-					conn.close();
-				}
+//				if (conn != null) {
+//					conn.close();
+//				}
 				if (stmt != null) {
 					stmt.close();
 				}
@@ -239,7 +281,12 @@ public class UserDAO {
 
 	public static User login(String username, String password) {
 		try {
-			return getUser(-1, username, password);
+			User user =  getUser(-1, username, password);
+			if(user != null){
+				UserDAO.getUserCircles(user.getUserID());
+				
+			}
+			return user;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -523,6 +570,14 @@ public class UserDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -559,7 +614,7 @@ public class UserDAO {
 		student.addInterest(new Interest(0, "Music"));
 		student.addInterest(new Interest(0, "Chess"));
 		try {
-			createUser(student);
+		createUser(student);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
