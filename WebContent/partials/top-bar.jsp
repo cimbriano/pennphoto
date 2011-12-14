@@ -2,6 +2,8 @@
 
 <div id="top-bar">
 
+<a href="homepage.jsp">Home</a>
+
 <div id="user-actions">
 	<ul>
 		<li><a href="userServlet/profile">
