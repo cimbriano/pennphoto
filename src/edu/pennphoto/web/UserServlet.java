@@ -105,15 +105,24 @@ public class UserServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 
-		// TODO - Put is_logged in validation here.
-		if (action.equals("login")) {
-			handleLogin(request, response);
-		} else if (action.equals("register")) {
-			handleRegistration(request, response);
-		} else if (action.equals("photo")) {
-			handleSubmitPhoto(request, response);
-		} else if (action.equals("create-circle")) {
-			handleCreateCircle(request, response);
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		if(user == null){
+			if (action.equals("login")) {
+				handleLogin(request, response);
+			} else if (action.equals("register")) {
+				handleRegistration(request, response);
+			} else {
+				response.sendRedirect("login.jsp");
+			}		
+		} else {
+			if (action.equals("photo")) {
+				handleSubmitPhoto(request, response);
+			} else if (action.equals("create-circle")) {
+				handleCreateCircle(request, response);
+			} else {
+				response.sendRedirect("homepage.jsp");
+			}
 		}
 
 	}
