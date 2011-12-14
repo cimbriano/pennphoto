@@ -56,6 +56,8 @@ public class Exporter {
 	private static final String VALUE = "value>";
 	private static final String TAG = "tag>\n";
 	private static final String TAG_TEXT = "tag_text>";
+	private static final String CIRCLE_ID = "circle_id>";
+	private static final String VIEWABLE_TO = "visible_to>";
 	
 	private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 						"<tns:photodb xmlns:tns=\"pennphoto17ns\"\n" +
@@ -69,6 +71,11 @@ public class Exporter {
 		System.out.println(export(user1));
 	}
 	
+	/**Returns an XML export document for a list of users
+	 * 
+	 * @param users
+	 * @return XML export document
+	 */
 	public static String export(List<User> users){
 		StringBuilder xmlBuilder = new StringBuilder();
 		xmlBuilder.append(HEADER);
@@ -165,6 +172,18 @@ public class Exporter {
 				xmlBuilder.append(TAB4 + START + USER_ID + tag.getUserID() + END + USER_ID + "\n");
 				xmlBuilder.append(TAB4 + START + TAG_TEXT + tag.getTagText() + END + TAG_TEXT + "\n");
 				xmlBuilder.append(TAB3 + END + TAG);
+			}
+			List<Integer> viewCircleIds = photo.getViewCircleIDs();
+			List<Integer> viewUserIds = photo.getViewUserIDs();
+			if((viewCircleIds.size() + viewUserIds.size()) > 0){
+				xmlBuilder.append(TAB3 + START + VIEWABLE_TO);
+				for(Integer circleId : viewCircleIds){
+					xmlBuilder.append(TAB4 + START + CIRCLE_ID + circleId + END + CIRCLE_ID + "\n");
+				}
+				for(Integer userId: viewUserIds){
+					xmlBuilder.append(TAB4 + START + USER_ID + userId + END + USER_ID + "\n");
+				}
+				xmlBuilder.append(TAB3 + END + VIEWABLE_TO);
 			}
 			xmlBuilder.append(TAB2 + END + PHOTO);
 		}
