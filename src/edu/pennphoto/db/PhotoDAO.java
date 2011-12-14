@@ -345,6 +345,35 @@ public class PhotoDAO {
 			return null;
 		}
 	}
+	
+	private static int getPhotoRatingByUser(int userID, int photoID){
+		String query = "select * from Rating where photo_id=" + photoID + " AND user_id=" + userID;
+		int rating = -1;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			if(rs.next()){
+				rating = rs.getInt("rating");;
+			}
+			
+			return rating;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+			
+		}finally{
+			try{
+				conn.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
 
 	private static List<Integer> getIntList(String query) {
 		Statement stmt = null;
