@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.NamingException;
@@ -147,7 +148,6 @@ public class UserDAO {
 		//Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DBHelper.getInstance().getConnection();
 			stmt = conn.prepareStatement("insert into Attended values(?, ?, ?, ?)");
 			ArrayList<Attendance> attendances = user.getAttendances();
 			for (Attendance attendance : attendances) {
@@ -185,7 +185,6 @@ public class UserDAO {
 		//Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DBHelper.getInstance().getConnection();
 			stmt = conn.prepareStatement("insert into Interested_In values(?, ?)");
 			ArrayList<Interest> interests = user.getInterests();
 			for (Interest interest : interests) {
@@ -292,7 +291,86 @@ public class UserDAO {
 			return null;
 		}
 	}
+	
+//	public static List<User> getUsersList(){
+//		List<User> users = new ArrayList<User>();
+//		loadProfessor
+//		String query = "select * from User"
+//	}
+	
+	private static void loadProfessors(List<User> container, Connection conn){
+		String query = "select * from User u inner join Professor p on u.id=p.user_id";
+		Statement stmt = null;
+		try {
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()){
+				Professor professor = (Professor)createUserDataObject(rs, true);
+				populateProfessorData(rs, professor);
+				container.add(professor);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static void loadStudents(List<User> container, Connection conn){
+		String query = "select * from User u inner join Student s on u.id=s.user_id";
+		Statement stmt = null;
+		try {
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()){
+				Student student = (Student)createUserDataObject(rs, false);
+				populateStudentData(rs, student);
+				container.add(student);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static User createUserDataObject(ResultSet rs, boolean isProfessor) throws SQLException{
+		User user = isProfessor ? new Professor() : new Student();
+		user.setEmail(rs.getString("email"));
+		user.setUserID(rs.getInt("id"));
+		user.setFirstName(rs.getString("first_name"));
+		user.setLastName(rs.getString("last_name"));
+		user.setDob(rs.getDate("dob"));
+		user.setAddress(rs.getString("street_address"));
+		user.setStateId(rs.getInt("state_id"));
+		user.setCity(rs.getString("city"));
+		user.setZip(rs.getString("zip_code"));
+		user.setGender("m".equalsIgnoreCase(rs.getString("gender")) ? Gender.MALE
+				: Gender.FEMALE);
+		return user;
+	}
 
+	private static void populateProfessorData(ResultSet rs, Professor professor) throws SQLException{
+		professor.setTitle(rs.getString("title"));
+		professor.setResearchArea(rs
+				.getString("research_area"));
+	}
+	
+	private static void populateStudentData(ResultSet rs, Student student) throws SQLException{
+		student.setMajor(rs.getString("major"));
+		student.setGpa(rs.getDouble("gpa"));
+	}
+	
 	private static User getUser(int userId, String username, String password)
 			throws SQLException {
 		Connection conn = null;
@@ -315,18 +393,19 @@ public class UserDAO {
 			ResultSet rs = userStmt.executeQuery();
 			if (rs.next()) {
 				boolean isProfessor = rs.getBoolean("is_professor");
-				user = isProfessor ? new Professor() : new Student();
-				user.setEmail(rs.getString("email"));
-				user.setUserID(rs.getInt("id"));
-				user.setFirstName(rs.getString("first_name"));
-				user.setLastName(rs.getString("last_name"));
-				user.setDob(rs.getDate("dob"));
-				user.setAddress(rs.getString("street_address"));
-				user.setStateId(rs.getInt("state_id"));
-				user.setCity(rs.getString("city"));
-				user.setZip(rs.getString("zip_code"));
-				user.setGender("m".equalsIgnoreCase(rs.getString("gender")) ? Gender.MALE
-						: Gender.FEMALE);
+				user = createUserDataObject(rs, isProfessor);
+//				user = isProfessor ? new Professor() : new Student();
+//				user.setEmail(rs.getString("email"));
+//				user.setUserID(rs.getInt("id"));
+//				user.setFirstName(rs.getString("first_name"));
+//				user.setLastName(rs.getString("last_name"));
+//				user.setDob(rs.getDate("dob"));
+//				user.setAddress(rs.getString("street_address"));
+//				user.setStateId(rs.getInt("state_id"));
+//				user.setCity(rs.getString("city"));
+//				user.setZip(rs.getString("zip_code"));
+//				user.setGender("m".equalsIgnoreCase(rs.getString("gender")) ? Gender.MALE
+//						: Gender.FEMALE);
 
 				spStmt = conn.createStatement();
 				if (isProfessor) {
@@ -335,9 +414,10 @@ public class UserDAO {
 							.executeQuery("select * from Professor where user_id="
 									+ user.getUserID());
 					if (prs.next()) {
-						professor.setTitle(prs.getString("title"));
-						professor.setResearchArea(prs
-								.getString("research_area"));
+						populateProfessorData(prs, professor);
+//						professor.setTitle(prs.getString("title"));
+//						professor.setResearchArea(prs
+//								.getString("research_area"));
 					}
 
 				} else {
@@ -346,12 +426,13 @@ public class UserDAO {
 							.executeQuery("select * from Student where user_id="
 									+ user.getUserID());
 					if (prs.next()) {
-						student.setMajor(prs.getString("major"));
-						student.setGpa(prs.getDouble("gpa"));
+						populateStudentData(prs, student);
+//						student.setMajor(prs.getString("major"));
+//						student.setGpa(prs.getDouble("gpa"));
 					}
 				}
+				user.setState(getStateNameById(user.getStateId()));
 			}
-			user.setState(getStateNameById(user.getStateId()));
 		} catch (Exception ex) {
 			user = null;
 			ex.printStackTrace();
