@@ -294,13 +294,19 @@ public class UserDAO {
 		}
 	}
 	
+	public static List<User> getFriendsList(int userId){
+		return getUsersList(userId);
+	}
 	public static List<User> getUsersList(){
+		return getUsersList(-1);
+	}
+	public static List<User> getUsersList(int userId){
 		List<User> users = new ArrayList<User>();
 		Connection conn = null;
 		try {
 			conn = DBHelper.getInstance().getConnection();
-			loadProfessors(users, conn);
-			loadStudents(users, conn);
+			loadProfessors(users, conn, userId);
+			loadStudents(users, conn, userId);
 			return users;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -316,8 +322,11 @@ public class UserDAO {
 		return null;
 	}
 	
-	private static void loadProfessors(List<User> container, Connection conn){
+	private static void loadProfessors(List<User> container, Connection conn, int userId){
 		String query = "select * from User u inner join Professor p on u.id=p.user_id";
+		if(userId > 0){
+			query += " where u.id in (select friend_id from Friendship_View where user_id = "+userId+")";
+		}
 		Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
@@ -340,8 +349,11 @@ public class UserDAO {
 		}
 	}
 	
-	private static void loadStudents(List<User> container, Connection conn){
+	private static void loadStudents(List<User> container, Connection conn, int userId){
 		String query = "select * from User u inner join Student s on u.id=s.user_id left join Advises a on u.id=a.student_id";
+		if(userId > 0){
+			query += " where u.id in (select friend_id from Friendship_View where user_id = "+userId+")";
+		}
 		Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
@@ -757,6 +769,11 @@ public class UserDAO {
 		for (User user : userList) {
 			System.out.println(user);
 		}
+		
+//		List<User> userList = getFriendsList(17001);
+//		for (User user : userList) {
+//			System.out.println(user);
+//		}
 		System.err.println("-----");
 		User u = login("test", "test");
 		System.out.println(u);
