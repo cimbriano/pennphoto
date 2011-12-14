@@ -1,3 +1,12 @@
+<%@ page import="	java.util.List,
+					edu.pennphoto.model.Circle,
+					edu.pennphoto.model.User,
+					edu.pennphoto.db.UserDAO" %>
+
+<%
+User user = (User) session.getAttribute("user"); 
+if(user != null ){ %> 
+
 <div id="submit-photo-wrapper">
 
 	<form action="userServlet" method="post">
@@ -33,10 +42,26 @@
 			
 			<fieldset>
 				<legend>Visible To Circles?</legend>
+				
+				<%
+				List<Circle> circles = user.getCircles();
+				for(Circle circle : circles){
+				%>
+					<label><%= circle.getName() %></label><input type="checkbox" name="circleIds" value="<%= circle.getCircleID() %>" />
+				<% } %>
 			</fieldset>
 			
 			<fieldset>
-				<legend>Visible to Friends</legend>		
+				<legend>Visible to Friends</legend>	
+				
+				<%
+				List<User> friends = UserDAO.getFriendsList(user.getUserID());
+				
+				for(User friend : friends){
+				%>
+					<label><%= friend.getEmail() %></label><input type="checkbox" name="friendIds" value="<%= friend.getUserID() %>" />
+				<% } %>
+					
 			</fieldset>
 			
 		</fieldset>
@@ -79,4 +104,8 @@
 		
 	</form>
 	
-</div>
+</div><!-- #submit-photo-wrapper -->
+
+
+<% } %>
+
