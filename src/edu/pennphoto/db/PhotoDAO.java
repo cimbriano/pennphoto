@@ -301,7 +301,7 @@ public class PhotoDAO {
 	}
 
 	public static List<Tag> getPhotoTags(int photoId) {
-		String query = "select * from tag where photo_id=" + photoId;
+		String query = "select * from Tag where photo_id=" + photoId;
 		Statement stmt = null;
 		Connection conn = null;
 		try {
@@ -346,7 +346,7 @@ public class PhotoDAO {
 		}
 	}
 	
-	private static int getPhotoRatingByUser(int userID, int photoID){
+	public static int getPhotoRatingByUser(int userID, int photoID){
 		String query = "select * from Rating where photo_id=" + photoID + " AND user_id=" + userID;
 		int rating = -1;
 		Statement stmt = null;
