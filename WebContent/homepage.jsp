@@ -83,7 +83,7 @@
 				<div class="clear"></div>
 		
 				
-		<div id="friendship-browser"></div>
+		<jsp:include page="partials/friendship-browser.jsp" />				
 		
 		
 	</div><!-- #content -->	
