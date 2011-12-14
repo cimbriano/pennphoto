@@ -18,6 +18,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
+import edu.pennphoto.db.PhotoDAO;
 import edu.pennphoto.db.UserDAO;
 import edu.pennphoto.model.AdvisingMap;
 import edu.pennphoto.model.Circle;
@@ -84,10 +85,6 @@ public class Importer {
 	private static boolean _circlesLoaded;
 	private static boolean _friendsLoaded;
 	private static int _current_group_id;
-	private static AdvisingMap _advisingMap;
-	
-
-
 	
 	/**
 	 * @param args
@@ -105,7 +102,6 @@ public class Importer {
 		_users = new HashMap<Integer, User>();
 		_photos = new ArrayList<Photo>();
 		_circles = new HashMap<Integer, Circle>();
-		_advisingMap = new AdvisingMap();
 		_photosLoaded = false;
 		_circlesLoaded = false;
 		_friendsLoaded = false;
@@ -129,15 +125,11 @@ public class Importer {
 			System.out.println(_users.values());
 			System.out.println(_photos);
 			System.out.println(_circles.values());
-			//System.out.println( _advisingMap);
 
-	/*		storeUsers(users);
-			storeCircles(users);
+			storeUsers();
 			storePhotos();
-			storeTags();
-			storeRatings();
-			storeAdvises();
-	*/
+			storeCircles();
+	
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -145,20 +137,41 @@ public class Importer {
 		
 	}
 	
-	private static void storeUsers(List<User> users){
-		for(User user : users){
+	private static void storeUsers(){
+		for(User user : _users.values()){
 			try {
 				UserDAO.createUser(user);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	private static void storeCircles(List<User> users){
-		//TODO implement createCircles
-//		UserDAO.createCircle(userId, name);
+	private static void storePhotos(){
+		for(Photo photo : _photos){
+			try {
+				PhotoDAO.postPhoto(photo);
+				for(Tag tag : photo.getTags()){
+					PhotoDAO.createTag(tag);
+				}
+				for(Rating rating: photo.getRatings()){
+					PhotoDAO.createRating(rating);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static void storeCircles(){
+		for(User user : _users.values()){
+			for(Circle circle :  user.getCircles()){
+				UserDAO.createCircle(user.getUserID(), circle.getName(), circle.getCircleID());
+				for(Integer friendId : circle.getFriendIDs()){
+					UserDAO.addFriendToCircle(circle.getCircleID(), friendId);
+				}
+			}
+		}
 	}
 	
 
