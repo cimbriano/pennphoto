@@ -105,24 +105,37 @@ public class UserServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 
-		// TODO - Put is_logged in validation here.
-		if (action.equals("login")) {
-			handleLogin(request, response);
-		} else if (action.equals("register")) {
-			handleRegistration(request, response);
-		} else if (action.equals("photo")) {
-			handleSubmitPhoto(request, response);
-		} else if (action.equals("create-circle")) {
-			handleCreateCircle(request, response);
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		if(user == null){
+			if (action.equals("login")) {
+				handleLogin(request, response);
+			} else if (action.equals("register")) {
+				handleRegistration(request, response);
+			} else {
+				response.sendRedirect("login.jsp");
+			}		
+		} else {
+			if (action.equals("photo")) {
+				handleSubmitPhoto(request, response);
+			} else if (action.equals("create-circle")) {
+				handleCreateCircle(request, response);
+			} else {
+				response.sendRedirect("homepage.jsp");
+			}
 		}
 
 	}
 
 	protected void handleCreateCircle(HttpServletRequest request,
-			HttpServletResponse response) {
-		// Do some create circle stuff
-
-		// TODO - Success or failure : redirect? AJAX?
+			HttpServletResponse response) throws IOException {
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		int userId = user.getUserID();
+		String name = request.getParameter("circle-name");
+		Circle circle = UserDAO.createCircle(userId, name);
+		user.addCircle(circle);
+		response.sendRedirect("confirmation.jsp");
 
 	}
 

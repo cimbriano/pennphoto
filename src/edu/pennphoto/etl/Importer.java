@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,6 +19,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
 import edu.pennphoto.db.UserDAO;
+import edu.pennphoto.model.AdvisingMap;
 import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.Photo;
 import edu.pennphoto.model.Professor;
@@ -66,6 +69,7 @@ public class Importer {
 	private static final String[] CIRCLE_NAME = {"name", "tns:name"};
 	private static final String[] OWNER_ID = {"ownerID"};
 	private static final String[] CONTAINS_FRIEND = {"containsFriend", "friendID", "tns:friend"};
+	private static final String[] ADVISOR = {"tns:advisor", "advisor"};
 	private static final String PHOTO_11 = "photo";
 	private static final String CIRCLE_11 = "circle";
 	private static final String FRIEND_11 = "belongsTo";
@@ -80,6 +84,9 @@ public class Importer {
 	private static boolean _circlesLoaded;
 	private static boolean _friendsLoaded;
 	private static int _current_group_id;
+	private static AdvisingMap _advisingMap;
+	
+
 
 	
 	/**
@@ -89,6 +96,7 @@ public class Importer {
 		for(int i : GROUP_IDS){
 			_current_group_id = i;
 			String filename = "DataExchange/pennphoto-" + _current_group_id + ".xml";
+			System.out.println("\n\n\nImporting group " + _current_group_id);
 			parseXML(filename);
 		}
 	}
@@ -97,13 +105,14 @@ public class Importer {
 		_users = new HashMap<Integer, User>();
 		_photos = new ArrayList<Photo>();
 		_circles = new HashMap<Integer, Circle>();
+		_advisingMap = new AdvisingMap();
 		_photosLoaded = false;
 		_circlesLoaded = false;
 		_friendsLoaded = false;
 	}
 	
 	private static void parseXML(String filename){
-		System.out.println("Parsing: " + filename);
+		System.out.println("Parsing: " + filename + "*******************************");
 		initializeVariables();
 		try {
 			File file = new File(filename);
@@ -117,15 +126,17 @@ public class Importer {
 			if(!_circlesLoaded) loadCirclesFromDoc();
 			if(!_friendsLoaded) loadFriendsFromDoc();
 			
-			System.out.println(_users);
+			System.out.println(_users.values());
 			System.out.println(_photos);
+			System.out.println(_circles.values());
+			//System.out.println( _advisingMap);
 
 	/*		storeUsers(users);
 			storeCircles(users);
 			storePhotos();
 			storeTags();
 			storeRatings();
-			stpreAdvises();
+			storeAdvises();
 	*/
 			
 		} catch (Exception e) {
@@ -187,6 +198,8 @@ public class Importer {
 				((Student) user).setMajor(getTextValue(field));
 			} else if (nodeNameMatches(field, GPA)){
 				((Student) user).setGpa(getDoubleValue(field));
+			} else if (nodeNameMatches(field, ADVISOR)){
+				((Student) user).setAdvisorId(getUniqueId(getIntValue(field)));
 			} else if (nodeNameMatches(field, RESEARCH_AREA)){
 				((Professor) user).setResearchArea(getTextValue(field));
 			} else if (nodeNameMatches(field, TITLE)){
@@ -209,7 +222,6 @@ public class Importer {
 			if(nodeNameMatches(circleChild, CIRCLE_ID)){
 				circle.setCircleID(getUniqueId(getIntValue(circleChild)));
 			} else if (nodeNameMatches(circleChild, CIRCLE_NAME)){
-		//		System.out.println("CIRCLE_NAME Node:" + circleChild.getNodeName());
 				circle.setName(getTextValue(circleChild));
 			} else if (nodeNameMatches(circleChild, OWNER_ID)){
 				user = _users.get(getUniqueId(getIntValue(circleChild)));

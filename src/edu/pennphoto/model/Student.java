@@ -43,9 +43,18 @@ public class Student extends User {
 	public void setGpa(double gpa) {
 		this.gpa = gpa;
 	}
-	
-	public String toString(){
-		return super.toString() + "\n" + major + "\n"+gpa;
+
+	@Override
+	public String toString() {
+		return "\nStudent [userID=" + userID + ", password=" + password + ", email="
+				+ email + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", dob=" + DOB_FORMAT.format(dob) + ", gender=" + gender + ", address="
+				+ address + ", city=" + city + ", state=" + state
+				+ ", stateId=" + stateId + ", zip=" + zip + ", attendances="
+				+ attendances + ", circles=" + circles + ", interestIds="
+				+ interests + " major=" + major + ", gpa=" + gpa + ", advisorId="
+				+ advisorId + "]";
 	}
+
 	
 }
