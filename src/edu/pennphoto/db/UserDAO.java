@@ -93,7 +93,9 @@ public class UserDAO {
 				spStmt.setString(2, student.getMajor());
 				spStmt.setDouble(3, student.getGpa());
 				spStmt.execute();
-				addAdvisorAdvisee(student.getUserID(), student.getAdvisorId(), conn);
+				if(student.getAdvisorId() > 0){
+					addAdvisorAdvisee(student.getUserID(), student.getAdvisorId(), conn);
+				}
 			}
 		} catch (Exception ex) {
 			if (conn != null) {
@@ -339,7 +341,7 @@ public class UserDAO {
 	}
 	
 	private static void loadStudents(List<User> container, Connection conn){
-		String query = "select * from User u inner join Student s on u.id=s.user_id";
+		String query = "select * from User u inner join Student s on u.id=s.user_id left join Advises a on u.id=a.student_id";
 		Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
@@ -387,6 +389,7 @@ public class UserDAO {
 	private static void populateStudentData(ResultSet rs, Student student) throws SQLException{
 		student.setMajor(rs.getString("major"));
 		student.setGpa(rs.getDouble("gpa"));
+		student.setAdvisorId(rs.getInt("professor_id"));
 	}
 	
 	private static User getUser(int userId, String username, String password)
@@ -441,7 +444,7 @@ public class UserDAO {
 				} else {
 					Student student = (Student) user;
 					ResultSet prs = spStmt
-							.executeQuery("select * from Student where user_id="
+							.executeQuery("select * from Student s left join Advises a on s.user_id=a.professor_id where user_id="
 									+ user.getUserID());
 					if (prs.next()) {
 						populateStudentData(prs, student);
@@ -754,6 +757,9 @@ public class UserDAO {
 		for (User user : userList) {
 			System.out.println(user);
 		}
+		System.err.println("-----");
+		User u = login("test", "test");
+		System.out.println(u);
 	}
 
 	public static void testCreateUser1(){
