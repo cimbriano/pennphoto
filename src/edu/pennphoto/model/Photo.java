@@ -27,6 +27,8 @@ public class Photo {
 		this.uploadDate = uploadDate;
 		viewCircleIDs = new ArrayList<Integer>();
 		viewUserIDs = new ArrayList<Integer>();
+		tags = new ArrayList<Tag>();
+		ratings = new ArrayList<Rating>();
 	}
 
 	public int getPhotoId() {
@@ -85,7 +87,6 @@ public class Photo {
 	}
 	
 	public boolean addTag(Tag tag){
-		if(tags ==  null) tags = new ArrayList<Tag>();
 		return tags.add(tag);
 	}
 	
@@ -94,7 +95,6 @@ public class Photo {
 	}
 	
 	public boolean addRating(Rating rating){
-		if(ratings == null) ratings = new ArrayList<Rating>();
 		return ratings.add(rating);
 	}
 	

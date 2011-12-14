@@ -75,7 +75,7 @@ public class Importer {
 	private static final String CIRCLE_11 = "circle";
 	private static final String FRIEND_11 = "belongsTo";
 	
-	private static final int[] GROUP_IDS = {8, 11, 12};
+	private static final int[] GROUP_IDS = {11};
 	
 	private static HashMap<Integer, User> _users;
 	private static ArrayList<Photo> _photos;
@@ -125,7 +125,8 @@ public class Importer {
 			System.out.println(_users.values());
 			System.out.println(_photos);
 			System.out.println(_circles.values());
-
+			
+			System.out.println("writing to database");
 			storeUsers();
 			storePhotos();
 			storeCircles();
@@ -139,16 +140,20 @@ public class Importer {
 	
 	private static void storeUsers(){
 		for(User user : _users.values()){
-			try {
-				UserDAO.createUser(user);
-			} catch (SQLException e) {
-				e.printStackTrace();
+			if(user instanceof Student){
+				try {
+					System.out.println(user);
+					UserDAO.createUser(user);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
 	
 	private static void storePhotos(){
 		for(Photo photo : _photos){
+			System.out.println(photo);
 			try {
 				PhotoDAO.postPhoto(photo);
 				for(Tag tag : photo.getTags()){
@@ -166,6 +171,7 @@ public class Importer {
 	private static void storeCircles(){
 		for(User user : _users.values()){
 			for(Circle circle :  user.getCircles()){
+				System.out.println(circle);
 				UserDAO.createCircle(user.getUserID(), circle.getName(), circle.getCircleID());
 				for(Integer friendId : circle.getFriendIDs()){
 					UserDAO.addFriendToCircle(circle.getCircleID(), friendId);
@@ -189,6 +195,7 @@ public class Importer {
 			Node field = fields.item(j);
 			if(nodeNameMatches(field, USERID)){
 				user.setUserID(getIntValue(field));
+				user.setPassword(getTextValue(field));
 			} else if(nodeNameMatches(field, EMAIL)){
 				user.setEmail(getTextValue(field));
 			} else if (nodeNameMatches(field, COMBINED_NAME)){
