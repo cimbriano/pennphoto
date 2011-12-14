@@ -85,6 +85,7 @@ public class Photo {
 	}
 	
 	public boolean addTag(Tag tag){
+		if(tags ==  null) tags = new ArrayList<Tag>();
 		return tags.add(tag);
 	}
 	
@@ -93,6 +94,7 @@ public class Photo {
 	}
 	
 	public boolean addRating(Rating rating){
+		if(ratings == null) ratings = new ArrayList<Rating>();
 		return ratings.add(rating);
 	}
 	
@@ -134,6 +136,15 @@ public class Photo {
 
 	public void setPhotoId(Integer photoId) {
 		this.photoId = photoId;
+	}
+
+	@Override
+	public String toString() {
+		return "Photo [photoId=" + photoId + ", url=" + url + ", isPrivate="
+				+ isPrivate + ", ownerId=" + ownerId + ", viewCircleIDs="
+				+ viewCircleIDs + ", viewUserIDs=" + viewUserIDs + ", tags="
+				+ tags + ", ratings=" + ratings + ", uploadDate=" + uploadDate
+				+ "]";
 	}
 	
 	

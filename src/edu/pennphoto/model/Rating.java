@@ -10,6 +10,10 @@ public class Rating {
 		this.userID = userID;
 		this.value = value;
 	}
+	
+	public Rating(){
+		
+	}
 	public int getPhotoID() {
 		return photoID;
 	}
@@ -27,6 +31,12 @@ public class Rating {
 	}
 	public void setValue(int value) {
 		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return "Rating [photoID=" + photoID + ", userID=" + userID + ", value="
+				+ value + "]";
 	}
 	
 	

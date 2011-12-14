@@ -13,6 +13,8 @@ public class Tag {
 		this.tagText = tagText;
 	}
 	
+	public Tag(){}
+	
 	public int getPhotoID() {
 		return photoID;
 	}

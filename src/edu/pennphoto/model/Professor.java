@@ -51,7 +51,21 @@ public class Professor extends User {
 		this.title = title;
 	}
 
-	public String toString(){
-		return super.toString() + "\n" + title + "\n"+researchArea;
+	@Override
+	public String toString() {
+		
+			return "\nProfessor [userID=" + userID + ", password=" + password + ", email="
+					+ email + ", firstName=" + firstName + ", lastName=" + lastName
+					+ ", dob=" + DOB_FORMAT.format(dob) + ", gender=" + gender + ", address="
+					+ address + ", city=" + city + ", state=" + state
+					+ ", stateId=" + stateId + ", zip=" + zip + ", attendances="
+					+ attendances + ", circles=" + circles + ", interestIds="
+					+ interests + "researchArea=" + researchArea + ", title=" + title
+							+ ", adviseeIds=" + adviseeIds + "]";
+		
 	}
+
+
+
+
 }
