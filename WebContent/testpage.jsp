@@ -3,8 +3,7 @@
 
 <jsp:include page="partials/html-head.jsp" />
 
-	<jsp:include page="partials/header.jsp" />
-	
+<div id="wrapper">	
 	
 	<% 
 		User user = (User) session.getAttribute("user");
@@ -31,3 +30,5 @@
 	</div><!-- #content -->
 	
 	<jsp:include page="partials/footer.jsp" />
+
+</div> <!-- #wrapper -->
