@@ -13,6 +13,9 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.Professor;
 import edu.pennphoto.model.Student;
@@ -604,6 +607,69 @@ public class UserDAO {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static JSONArray getInitialBrowserFriends(int userId) {
+		JSONArray friends = new JSONArray();
+		String query = "select distinct F.user_id, CONCAT(first_name, ' ', last_name) as name, F.friend_id " +
+		"from User as U join " + 
+		"( select user_id, friend_id from Friendship_View FV1 where user_id = ? " +
+	    "UNION select FV1.user_id, FV2.friend_id from Friendship_View FV1, Friendship_View FV2 where FV1.user_id = ? and FV1.friend_id = FV2.user_id " + 
+		"UNION select student_id as user_id, professor_id as friend_id from Advises where student_id = ? " +
+	    "UNION select professor_id as user_id, student_id as friend_id from Advises where professor_id = ? ) as F " +
+	    "on (U.id = F.user_id)";
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.prepareStatement(query);
+			stmt.setInt(1, userId);
+			stmt.setInt(2, userId);
+			stmt.setInt(3, userId);
+			stmt.setInt(4, userId);
+			ResultSet rs = stmt.executeQuery();
+			String currentId = "";
+			JSONObject user = null;
+			JSONArray adjacencies = null;
+			JSONObject to;
+			while(rs.next()){
+				if (currentId.equals(rs.getString("user_id"))) {
+					to = new JSONObject();
+					to.put("nodeTo", rs.getString("friend_id"));
+					adjacencies.put(to);
+
+				} else {
+					if (user != null) {
+						user.put("adjacencies", adjacencies);
+						friends.put(user);
+					}
+					user = new JSONObject();
+					currentId = rs.getString("user_id");
+					user.put("id", currentId);
+					user.put("name", rs.getString("name"));
+					adjacencies = new JSONArray();
+				}
+			}
+			if (user != null && friends != null) {
+				user.put("adjacencies", adjacencies);
+				friends.put(user);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return friends;
 	}
 	
 	public static Map<Integer, String> getProfessors() {
