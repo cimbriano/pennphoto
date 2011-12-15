@@ -127,11 +127,36 @@ public class UserServlet extends HttpServlet {
 				handleCreateCircle(request, response);
 			} else if(action.equals("add-friend")){
 				handleAddFriendToCircle(request, response);
-			}else {
+			}else if (action.equals("rating")){
+				handleSubmitRating(request, response);
+			} else {
 				response.sendRedirect("homepage.jsp");
 			}
 		}
 
+	}
+
+	private void handleSubmitRating(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		try {
+
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("user");
+			int photoID = Integer.parseInt(request.getParameter("photo"));
+			int rateValue = Integer.parseInt(request.getParameter("rating"));
+			
+			Rating rating = new Rating(photoID, user.getUserID(), rateValue);
+			
+			PhotoDAO.createRating(rating);
+			response.sendRedirect("confirmation.jsp");
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			response.sendRedirect("error.jsp");
+		}finally{
+
+		}
+		
 	}
 
 	private void handleAddFriendToCircle(HttpServletRequest request,

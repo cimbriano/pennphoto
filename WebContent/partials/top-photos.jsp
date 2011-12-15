@@ -23,6 +23,7 @@ if(user != null){
 %>
 
 		<div class="top-pics-photo">
+			<p>PhotoID: <%= photo.getPhotoId() %></p>
 			<div class="img-wrap">
 				<img src="<%= photo.getUrl() %>" alt="Photo Submitted by user <%= owner %>"/>
 			</div>
@@ -44,6 +45,7 @@ if(user != null){
 		<form action="userServlet" method="post">
 	
 			<input type="hidden" name="action" value="rating" />
+			<input type="hidden" name="photo" value="<%= photo.getPhotoId() %>" />
 				<fieldset>
 					<legend>Your Rating</legend>
 					<ul class="rating">
@@ -51,7 +53,7 @@ if(user != null){
 					<% for(int i = 1; i <= 5; i++){ %>
 						<li>
 							<label><%= i %></label>
-							<input id="rating<%= i %>" name= rating type=radio />
+							<input name=rating type=radio <%= (yourRating == i) ? "checked" : "" %> />
 						</li>
 					
 					<% } %>
