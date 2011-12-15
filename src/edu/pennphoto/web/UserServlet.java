@@ -1,6 +1,7 @@
 package edu.pennphoto.web;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -19,7 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
+
 import org.apache.catalina.Session;
+import org.json.JSONArray;
 
 import edu.pennphoto.db.DBHelper;
 import edu.pennphoto.db.PhotoDAO;
@@ -120,13 +124,50 @@ public class UserServlet extends HttpServlet {
 				handleSubmitPhoto(request, response);
 			} else if (action.equals("create-circle")) {
 				handleCreateCircle(request, response);
+			} else if (action.equals("init-friends")) {
+				handleFriendBrowserInit(request, response);
+			} else if (action.equals("browser-photos")) {
+				handleGetBrowserPhotos(request, response);
 			} else {
 				response.sendRedirect("homepage.jsp");
 			}
 		}
 
 	}
+	
+	protected void handleGetBrowserPhotos(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		int userId = user.getUserID();
+		Integer friendId = null;
+		if (request.getParameter("friend-id") != null) {
+			try {
+				friendId = Integer.parseInt(request.getParameter("friend-id"));
+			} catch (NumberFormatException nfe) {
+				return;
+			}
+		}
+		
+		JSONArray json = PhotoDAO.getFriendsPhotos(userId, friendId);
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		out.print(json.toString());
+		out.flush();
+	}
 
+	protected void handleFriendBrowserInit(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		int userId = user.getUserID();
+		JSONArray json = UserDAO.getInitialBrowserFriends(userId);
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		out.print(json.toString());
+		out.flush();
+	}
+	
 	protected void handleCreateCircle(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		HttpSession session = request.getSession();
