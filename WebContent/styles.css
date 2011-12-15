@@ -298,10 +298,37 @@ body{
 }
 		
 #friendship-browser{
-
+	
 }
 
+#infovis {
+  position: relative;
+  width: 80%;
+  height: 600px;
+  margin: auto;
+  overflow: hidden;
+  background: grey;
+  float: left;
+}
 
+#inner-details {
+	display: none;
+}
+
+#friendship-photos {
+	float: right;
+	height: 600px;
+	width: 220px;
+	overflow: auto;
+}
+
+.friendship-photo {
+	display: block;
+	height: 200px;
+	width: 200px;
+	padding: 4px;
+	padding-right: 1px;
+}
 
 /* End Homepage */
 
