@@ -301,7 +301,9 @@ body{
 }
 		
 #friendship-browser{
-
+	background: red;
+	min-height: 400px;
+	min-width: 400px;
 }
 
 
