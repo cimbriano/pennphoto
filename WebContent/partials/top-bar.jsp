@@ -16,7 +16,7 @@
 			if (user != null) { 
 				
 		%> 
-			<li><a href="userServlet/profile"> <%= user.getEmail() %> </a></li>
+			<li><a href="userServlet/profile"> <%= user.getEmail() %> : <%= user.getUserID() %> </a></li>
 			<li><span>|</span></li>
 			<li><a href="userServlet/logout?userID=<%= user.getUserID() %>">Logout</a></li>
 			
