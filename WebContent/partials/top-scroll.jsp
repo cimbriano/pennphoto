@@ -1,17 +1,42 @@
+<%@ page import="	java.util.List, 
+					edu.pennphoto.db.UserDAO, 
+					edu.pennphoto.model.User" %>
+<%
+
+User user = (User) session.getAttribute("user");
+if(user != null){ %>
+	
 <div id="top-scroll">
-<!-- Had an idea for two sections in the top bar one for submitting a photo link, one for creating circles, then thought otherwise. -->
 
-<!-- 
-	<div class="top-bar-form" id="circle-form">
+	<h3>Friend Recommendations</h3>
+	<% List<User> recs = UserDAO.getFriendsOfFriends(user.getUserID()); %>
 	
-	</div>
+	<% if(recs != null){ %>
+		<ul id="recs">
+		
+		<% for(User friendRec : recs) { %>
+			<li>
+				<div class="reccomended-friend">
+					<span><%= friendRec.getFirstName() %></span> <span><%= friendRec.getLastName() %></span>
+				</div>
+			</li>
+			
+		
+		<% }%>
+		
+		
+		</ul>
+		
+		<div class="clear"></div>
+	<% } else { %>
+		<p>Sorry, no friends to suggest.</p>
+	<% } %>
 	
-	<div class="top-bar-form" id="photo-form">
-	
-	</div>
-	
-	<div class="clear"></div>
- -->
-
-
 </div><!-- #top-scroll -->
+	
+	
+<% } %>
+
+
+
+

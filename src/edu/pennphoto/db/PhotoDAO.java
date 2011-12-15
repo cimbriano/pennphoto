@@ -75,11 +75,19 @@ public class PhotoDAO {
 			ex.printStackTrace();
 			return false;
 		} finally {
-			conn.setAutoCommit(true);
-			if (stmt != null) {
-				stmt.close();
+			if (conn != null) {
+				conn.setAutoCommit(true);
 			}
-
+			try{
+				stmt.close();
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			try{
+				conn.close();
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 		}
 	}
 
@@ -133,24 +141,21 @@ public class PhotoDAO {
 			stmt.execute();
 			return true;
 		} catch (Exception ex) {
-			if (stmt != null) {
+			ex.printStackTrace();
+		}finally{
 				try {
 					stmt.close();
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
 				try {
 					conn.close();
-				} catch (SQLException excep) {
+				} catch (Exception excep) {
 					excep.printStackTrace();
 				}
 			}
-			ex.printStackTrace();
 			return false;
 		}
-	}
 
 	public static boolean createRating(Rating rating) {
 		Connection conn = null;
@@ -165,23 +170,21 @@ public class PhotoDAO {
 			stmt.execute();
 			return true;
 		} catch (Exception ex) {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException excep) {
-					excep.printStackTrace();
-				}
-			}
 			ex.printStackTrace();
-			return false;
 		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -206,10 +209,22 @@ public class PhotoDAO {
 			stmt.setInt(6, userId);
 			ResultSet rs = stmt.executeQuery();
 			return generatePhotoList(rs);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -236,10 +251,22 @@ public class PhotoDAO {
 			//stmt.setString(7, keyword);
 			ResultSet rs = stmt.executeQuery();
 			return generatePhotoList(rs);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -271,10 +298,22 @@ public class PhotoDAO {
 				events.add(event);
 			}
 			return events;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}
+		return null;
 	}
 	public static List<Photo> getUserPhoto(int userId) {
 		String query = "select * from Photo where owner_id=" + userId;
@@ -285,10 +324,21 @@ public class PhotoDAO {
 			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			return generatePhotoList(rs);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}return null;
 	}
 
 	public static List<Integer> getPhotoVisibleToCircles(int photoId) {
@@ -304,7 +354,7 @@ public class PhotoDAO {
 	}
 
 	public static List<Tag> getPhotoTags(int photoId) {
-		String query = "select * from tag where photo_id=" + photoId;
+		String query = "select * from Tag where photo_id=" + photoId;
 		Statement stmt = null;
 		Connection conn = null;
 		try {
@@ -320,10 +370,22 @@ public class PhotoDAO {
 				tags.add(tag);
 			}
 			return tags;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	public static List<Rating> getPhotoRatings(int photoId) {
@@ -343,10 +405,56 @@ public class PhotoDAO {
 				ratings.add(rating);
 			}
 			return ratings;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	public static int getPhotoRatingByUser(int userID, int photoID){
+		String query = "select * from Rating where photo_id=" + photoID + " AND user_id=" + userID;
+		int rating = -1;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			if(rs.next()){
+				rating = rs.getInt("rating");;
+			}
+			
+			return rating;
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}
+		return -1;
 	}
 	
 	public static JSONArray getFriendsPhotos(int userId, int friendId) {
@@ -405,10 +513,22 @@ public class PhotoDAO {
 				result.add(rs.getInt(1));
 			}
 			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	private static List<Photo> generatePhotoList(ResultSet rs)

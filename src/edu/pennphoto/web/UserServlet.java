@@ -31,6 +31,7 @@ import edu.pennphoto.db.UserDAO;
 import edu.pennphoto.model.Circle;
 import edu.pennphoto.model.Photo;
 import edu.pennphoto.model.Professor;
+import edu.pennphoto.model.Rating;
 import edu.pennphoto.model.Student;
 import edu.pennphoto.model.User;
 import edu.pennphoto.model.User.Gender;
@@ -62,10 +63,11 @@ public class UserServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String msg = request.getPathInfo();
-
 		// Checks for /logout
-
-		if (msg == null) {
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		
+		if (msg == null || user == null) {
 			// Error
 			response.sendRedirect("login.jsp?error=bp");
 		} else if (msg.equals("/logout")) {
@@ -73,7 +75,10 @@ public class UserServlet extends HttpServlet {
 			request.getSession().invalidate();
 			response.sendRedirect(request.getServletContext().getContextPath()
 					+ "/login.jsp");
-		} else {
+		} else  if (msg.equals("/profile")) {
+			response.sendRedirect(request.getServletContext().getContextPath()
+					+ "/profile.jsp");
+		}else{
 			// Any other
 			response.getWriter().write(msg);
 		}
@@ -124,15 +129,71 @@ public class UserServlet extends HttpServlet {
 				handleSubmitPhoto(request, response);
 			} else if (action.equals("create-circle")) {
 				handleCreateCircle(request, response);
+			} else if(action.equals("add-friend")){
+				handleAddFriendToCircle(request, response);
+			}else if (action.equals("rating")){
+				handleSubmitRating(request, response);
 			} else if (action.equals("init-friends")) {
 				handleFriendBrowserInit(request, response);
 			} else if (action.equals("browser-photos")) {
-				handleGetBrowserPhotos(request, response);
+				handleGetBrowserPhotos(request, response);				
 			} else {
 				response.sendRedirect("homepage.jsp");
 			}
 		}
 
+	}
+
+	private void handleSubmitRating(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		try {
+
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("user");
+			int photoID = Integer.parseInt(request.getParameter("photo"));
+			int rateValue = Integer.parseInt(request.getParameter("rating"));
+			
+			Rating rating = new Rating(photoID, user.getUserID(), rateValue);
+			
+			PhotoDAO.createRating(rating);
+			response.sendRedirect("confirmation.jsp");
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			response.sendRedirect("error.jsp");
+		}finally{
+
+		}
+		
+	}
+
+	private void handleAddFriendToCircle(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		
+		
+		try {
+			
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("user");
+
+			String circleIDString = request.getParameter("circleID");
+			String friendIDString = request.getParameter("friendID");
+			
+			int circleID = Integer.parseInt(circleIDString);
+			int friendID = Integer.parseInt(friendIDString);
+			
+			UserDAO.addFriendToCircle(circleID, friendID);
+			
+			response.sendRedirect("confirmation.jsp");
+			
+			
+		} catch(Exception e) {
+			response.sendRedirect("error.jsp");
+		}finally{
+			
+		}
+		
+		
 	}
 	
 	protected void handleGetBrowserPhotos(HttpServletRequest request,
@@ -181,20 +242,47 @@ public class UserServlet extends HttpServlet {
 	}
 
 	protected void handleSubmitPhoto(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws IOException {
 		String privacy = request.getParameter("privacy");
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		int userId = user.getUserID();
 		boolean isPrivate = privacy.equals("private") ? true : false;
-
+		boolean photo_posted = false;
 		String url = request.getParameter("url");
+
+		Photo photo = new Photo(url, isPrivate, userId);
 		String rating = request.getParameter("rating");
-		// TODO - Finish creating Photo
-
-		// int ownerId = ;
-
-		// Photo photo = new Photo(url, isPrivate, ownerId);
-		// boolean photo_posted = PhotoDAO.postPhoto(photo);
-
-		// TODO - Success or failure : redirect? AJAX?
+		String[] circleIds = request.getParameterValues("circleIds");
+		String[] viewerIds = request.getParameterValues("userIds");
+		
+		if(circleIds != null){
+			for(String circleId : circleIds){
+				photo.addViewCircleID(Integer.parseInt(circleId));
+			}
+		}
+		if(viewerIds != null){
+			for(String viewerId : viewerIds){
+				photo.addViewUserID(Integer.parseInt(viewerId));
+			}
+		}
+		if(rating != null){
+			Rating r = new Rating();
+			r.setUserID(userId);
+			r.setValue(Integer.parseInt(rating));
+		}
+		
+		try {
+			photo_posted = PhotoDAO.postPhoto(photo);
+		} catch (SQLException e) {
+			
+		}
+		if(photo_posted){
+			response.sendRedirect("confirmation.jsp");
+		} else {
+			response.sendRedirect("error.jsp");
+		}
+		
 	}
 
 	protected void handleLogin(HttpServletRequest request,
@@ -207,7 +295,7 @@ public class UserServlet extends HttpServlet {
 		// method
 		if (user == null) {
 			response.sendRedirect("login.jsp?error=1");
-		} else {
+		} else {			
 			HttpSession session = request.getSession(true);
 			session.setAttribute("user", user);
 			response.sendRedirect("homepage.jsp");
@@ -245,7 +333,7 @@ public class UserServlet extends HttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Please bare with us as we restore service.");
+					"Please bear with us as we restore service.");
 		}
 		// TODO - Remove logged in validation form here in place of in doPost
 		// method

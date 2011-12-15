@@ -112,7 +112,9 @@ public class UserDAO {
 			ex.printStackTrace();
 			success = false;
 		} finally {
-			conn.setAutoCommit(true);
+			if (conn != null) {
+				conn.setAutoCommit(true);
+			}
 			try{
 				userStmt.close();
 			}catch(Exception ex){
@@ -297,13 +299,33 @@ public class UserDAO {
 		}
 	}
 	
+	public static List<User> getFriendsList(int userId){
+		return getUsersList(userId);
+	}
+	
 	public static List<User> getUsersList(){
+		return getUsersList(-1);
+	}
+	
+	public static List<User> getUsersList(int userId){
+		String whereClause =  userId > 0?" where u.id in (select friend_id from Friendship_View where user_id = "+userId+")":"";
+		return getUsersList(whereClause);
+	}
+	
+	public static List<User> getFriendsOfFriends(int userId){
+		String whereClause = " where u.id in (select v2.friend_id from Friendship_View v1 inner join Friendship_View v2 on v1.friend_id = v2.user_id where v1.user_id="+userId+" and v2.friend_id != v1.user_id";
+		whereClause += " and v2.friend_id not in (select friend_id from Friendship_View where user_id = "+userId+"))";
+		return getUsersList(whereClause);
+	}
+	
+	public static List<User> getUsersList(String whereClause){
 		List<User> users = new ArrayList<User>();
 		Connection conn = null;
 		try {
 			conn = DBHelper.getInstance().getConnection();
-			loadProfessors(users, conn);
-			loadStudents(users, conn);
+			
+			loadProfessors(users, conn, whereClause);
+			loadStudents(users, conn, whereClause);
 			return users;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -319,8 +341,9 @@ public class UserDAO {
 		return null;
 	}
 	
-	private static void loadProfessors(List<User> container, Connection conn){
-		String query = "select * from User u inner join Professor p on u.id=p.user_id";
+	private static void loadProfessors(List<User> container, Connection conn, String whereClause){
+		String query = "select * from User u inner join Professor p on u.id=p.user_id" + whereClause;
+		System.out.println(query);
 		Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
@@ -343,8 +366,9 @@ public class UserDAO {
 		}
 	}
 	
-	private static void loadStudents(List<User> container, Connection conn){
-		String query = "select * from User u inner join Student s on u.id=s.user_id left join Advises a on u.id=a.student_id";
+	private static void loadStudents(List<User> container, Connection conn, String whereClause){
+		String query = "select * from User u inner join Student s on u.id=s.user_id left join Advises a on u.id=a.student_id"+whereClause;
+		System.out.println(query);
 		Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
@@ -819,15 +843,25 @@ public class UserDAO {
 	}
 	
 	public static void testLoadUserList(){
-		List<User> userList = getUsersList();
+//		List<User> userList = getUsersList();
+//		for (User user : userList) {
+//			System.out.println(user);
+//		}
+		
+		List<User> userList = getFriendsOfFriends(17006);
 		for (User user : userList) {
 			System.out.println(user);
 		}
+//		List<User> userList = getFriendsList(17001);
+//		for (User user : userList) {
+//			System.out.println(user);
+//		}
 		System.err.println("-----");
-		User u = login("test", "test");
-		System.out.println(u);
+		//User u = login("test", "test");
+		//System.out.println(u);
 	}
 
+	
 	public static void testCreateUser1(){
 		Professor professor = new Professor();
 		professor.setUserID(111);

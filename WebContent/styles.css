@@ -23,15 +23,18 @@ body{
 
 #top-bar {
 	height: 30px;
-	width: 100%;
+	width: 90%;
+	margin: 0 auto;
+	
+	padding: 15px 25px;
 	
 	background: black;
 	color: white;	
+	
 }
 
 #user-actions{
 	float: right;	
-	margin-right: 20px;
 }
 
 #user-actions li {
@@ -230,20 +233,29 @@ body{
 	
 
 	
-/* Begin Top Bar "Below Header" */
+/* Begin Top Bar Friend recommendations */
 #top-scroll {
 	height: 90px;
 	width: 100%;
 	background: green;
 }
 
+#top-scroll ul#recs {
+	list-style: none;
+}
 
-/* End Top Bar "Below Header" */
+#top-scroll ul#recs li{
+	float:left;	
+}
+
+
+
+/* End Top Bar Friend recommendations */
 
 /* Begin Homepage */
 
 #content {
-	height: 600px;
+	min-height: 600px;
 	width: 1170px;
 	background: grey;
 	
@@ -262,18 +274,18 @@ body{
 }
 
 .top-pics-photo{
-	height: 200px;
+	height: 400px;
 	width: 200px;
 	
 	margin: 10px;
 	float: left;
 	
-	background: AliceBlue;
+	background: white;;
 }
 
 .top-pics-photo .img-wrap {
-	height: 80%;
-	width: 80%;
+	height: 100px;
+	width: 100px;
 	
 	margin: 0 auto;
 }
@@ -281,6 +293,16 @@ body{
 .top-pics-photo img{
 	height: 100%;
 	width: 100%;
+}
+
+ul.rating{
+	list-style: none;
+	margin: 0;
+	padding:0;
+}
+
+ul.rating li{
+	float: left;	
 }
 		
 #activity-feed{
@@ -298,7 +320,9 @@ body{
 }
 		
 #friendship-browser{
-	
+	background: red;
+	min-height: 400px;
+	min-width: 400px;
 }
 
 #infovis {
