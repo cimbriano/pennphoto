@@ -8,8 +8,6 @@
 <jsp:include page="partials/html-head.jsp" />
 
 <div id="wrapper">
-
-<a href="testpage.jsp" style="fontsize: 40px ">GO TO  TESTPAGE</a>
 	
 	<% 
 		User user = (User) session.getAttribute("user");
