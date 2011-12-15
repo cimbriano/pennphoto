@@ -13,6 +13,7 @@
 	<jsp:include page="partials/top-scroll.jsp" />
 	
 	<div id="content">
+		<jsp:include page="partials/friendship-browser.jsp" />
 		<jsp:include page="partials/submit-photo.jsp" />
 		<jsp:include page="partials/create-circle.jsp" />
 	</div><!-- #content -->
