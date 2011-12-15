@@ -1,0 +1,9 @@
+Group17
+
+Libraries Used:
+
+json-org
+mysql-connector
+zorba
+jquery
+jit
