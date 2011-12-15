@@ -8,11 +8,11 @@ if(user != null){ %>
 	
 <div id="top-scroll">
 
-	<h3>Friend Reccomendations</h3>
+	<h3>Friend Recommendations</h3>
 	<% List<User> recs = UserDAO.getFriendsOfFriends(user.getUserID()); %>
 	
 	<% if(recs != null){ %>
-		<ul>
+		<ul id="recs">
 		
 		<% for(User friendRec : recs) { %>
 			<li>
@@ -24,7 +24,10 @@ if(user != null){ %>
 		
 		<% }%>
 		
+		
 		</ul>
+		
+		<div class="clear"></div>
 	<% } else { %>
 		<p>Sorry, no friends to suggest.</p>
 	<% } %>

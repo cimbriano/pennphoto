@@ -233,15 +233,24 @@ body{
 	
 
 	
-/* Begin Top Bar "Below Header" */
+/* Begin Top Bar Friend recommendations */
 #top-scroll {
 	height: 90px;
 	width: 100%;
 	background: green;
 }
 
+#top-scroll ul#recs {
+	list-style: none;
+}
 
-/* End Top Bar "Below Header" */
+#top-scroll ul#recs li{
+	float:left;	
+}
+
+
+
+/* End Top Bar Friend recommendations */
 
 /* Begin Homepage */
 
