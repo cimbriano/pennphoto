@@ -294,6 +294,16 @@ body{
 	height: 100%;
 	width: 100%;
 }
+
+ul.rating{
+	list-style: none;
+	margin: 0;
+	padding:0;
+}
+
+ul.rating li{
+	float: left;	
+}
 		
 #activity-feed{
 	width: 370px;
