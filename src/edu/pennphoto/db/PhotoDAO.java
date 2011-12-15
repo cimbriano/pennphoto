@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import edu.pennphoto.model.Event;
 import edu.pennphoto.model.Event.EventType;
 import edu.pennphoto.model.Photo;
@@ -344,6 +347,50 @@ public class PhotoDAO {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static JSONArray getFriendsPhotos(int userId, int friendId) {
+		JSONArray photos = new JSONArray();
+		String query = "select distinct p.id, p.url " +
+				"from Photo p left " +
+				"join Photo_Visible_To_Circle vcr on p.id=vcr.photo_id " +
+				"left join Photo_Visible_To_User vu on p.id=vu.photo_id " +
+				"left join In_Circle ic on vcr.circle_id = ic.circle_id " +
+				"where is_private = 0 " +
+				"or (vu.user_id = ? or ic.friend_id= ?) " +
+				"and p.owner_id= ? ";
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.prepareStatement(query);
+			stmt.setInt(1, userId);
+			stmt.setInt(2, userId);
+			stmt.setInt(3, friendId);
+			ResultSet rs = stmt.executeQuery();
+			JSONObject photo = null;
+			while(rs.next()){
+				photo = new JSONObject();
+				photo.put("id", rs.getString("id"));
+				photo.put("url", rs.getString("url"));
+				photos.put(photo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return photos;
 	}
 
 	private static List<Integer> getIntList(String query) {
