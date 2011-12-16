@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import edu.pennphoto.db.PhotoDAO;
+import edu.pennphoto.db.UserDAO;
 import edu.pennphoto.model.*;
 import edu.pennphoto.model.User.Gender;
 import edu.pennphoto.model.User.Interest;
@@ -66,9 +67,11 @@ public class Exporter {
 	private static final String FOOTER = "</tns:photodb>\n";
 	
 	public static void main(String[] args){
-		User user1 = new Professor(1, "user1@penn.edu", "First 1", "Last 1", new Date(), 
-				Gender.MALE, "Primero Street", "Isa City", "NY", "10001");
-		System.out.println(export(user1));
+		
+	}
+	
+	public static String getExportXML(){
+		return export(UserDAO.getUsersList());
 	}
 	
 	/**Returns an XML export document for a list of users
