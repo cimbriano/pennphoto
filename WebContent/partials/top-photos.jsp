@@ -53,7 +53,7 @@ if(user != null){
 					<% for(int i = 1; i <= 5; i++){ %>
 						<li>
 							<label><%= i %></label>
-							<input name=rating type=radio <%= (yourRating == i) ? "checked" : "" %> />
+							<input name=rating type=radio value=<%=i%> <%= (yourRating == i) ? "checked" : "" %> />
 						</li>
 					
 					<% } %>
