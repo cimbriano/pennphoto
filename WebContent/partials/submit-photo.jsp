@@ -69,26 +69,13 @@ if(user != null ){ %>
 		<fieldset>
 			<legend>Rating</legend>
 			<ul id="ratings">
-				<li>
-					<input id=rating1 name=rating type=radio />
-					<label>1</label>
-				</li>
-				<li>
-					<input id=rating2 name=rating type=radio />
-					<label>2</label>
-				</li>
-				<li>
-					<input id=rating3 name=rating type=radio />
-					<label>3</label>
-				</li>
-				<li>
-					<input id=rating4 name=rating type=radio />
-					<label>4</label>
-				</li>
-				<li>
-					<input id=rating5 name=rating type=radio />
-					<label>5</label>
-				</li>
+				<% for(int i = 1; i <= 5; i++){ %>
+					<li>
+						<label><%= i %></label>
+						<input name=rating type=radio value=<%=i%> />
+					</li>
+				
+				<% } %>
 			</ul>
 		</fieldset>
 		

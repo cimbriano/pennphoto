@@ -244,6 +244,7 @@ public class UserServlet extends HttpServlet {
 	protected void handleSubmitPhoto(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String privacy = request.getParameter("privacy");
+		System.out.println("Privacy param =" + privacy);
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		int userId = user.getUserID();
