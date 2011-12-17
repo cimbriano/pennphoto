@@ -1,6 +1,7 @@
 <%@ page import="	java.util.List,
 					edu.pennphoto.model.User,
-					edu.pennphoto.model.Circle" %>
+					edu.pennphoto.model.Circle,
+					edu.pennphoto.db.UserDAO" %>
  
 <% 
 
@@ -15,7 +16,7 @@ List<Circle> circles = user.getCircles();
 	<ul>
 		<% for(int id : circle.getFriendIDs()) { %>
 			
-			<li><%= id %></li>
+			<li><%= UserDAO.getUserById(id).getEmail() %></li>
 			
 		<% } %>
 	</ul>
