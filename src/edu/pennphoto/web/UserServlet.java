@@ -270,24 +270,28 @@ public class UserServlet extends HttpServlet {
 				photo.addViewUserID(Integer.parseInt(viewerId));
 			}
 		}
-		if(rating != null){
-			Rating r = new Rating();
-			r.setUserID(userId);
-			r.setValue(Integer.parseInt(rating));
-			photo.addRating(r);
-		}			
-		if(tagStrings !=  null){
-			Tag[] tags = new Tag[tagStrings.length];
-			for(String tagString : tagStrings){
-				Tag tag = new Tag();
-				tag.setUserID(userId);
-				tag.setTagText(tagString);
-				photo.addTag(tag);
-			}
-		}
+
 		
 		try {
 			photo_posted = PhotoDAO.postPhoto(photo);
+			if(rating != null){
+				Rating r = new Rating();
+				r.setUserID(userId);
+				r.setValue(Integer.parseInt(rating));
+				r.setPhotoID(photo.getPhotoId());
+				PhotoDAO.createRating(r);
+				photo.addRating(r);
+			}			
+			if(tagStrings !=  null){
+				for(String tagString : tagStrings){
+					Tag tag = new Tag();
+					tag.setUserID(userId);
+					tag.setTagText(tagString);
+					tag.setPhotoID(photo.getPhotoId());
+					PhotoDAO.createTag(tag);
+					photo.addTag(tag);
+				}
+			}
 		} catch (SQLException e) {
 			
 		}

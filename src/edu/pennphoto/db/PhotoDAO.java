@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -132,7 +133,7 @@ public class PhotoDAO {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			String query = "insert into Tag values (?, ?, ?)";
+			String query = "insert into Tag values (?, ?, ?, null)";
 			conn = DBHelper.getInstance().getConnection();
 			stmt = conn.prepareStatement(query);
 			stmt.setInt(1, tag.getPhotoID());
