@@ -860,6 +860,14 @@ public class UserDAO {
 		//User u = login("test", "test");
 		//System.out.println(u);
 	}
+	
+	/**Retrieve the students for a specific professor
+	 * @param professor
+	 * @return
+	 */
+	public static Map<Integer, String> getStudents(Professor professor){
+		return loadKeyValuePairs("select id, CONCAT(first_name, ' ', last_name) from User where id in (select student_id from Advises where professor_id =" + professor.getUserID() + ");");
+	}
 
 	
 	public static void testCreateUser1(){

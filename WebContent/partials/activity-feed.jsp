@@ -1,5 +1,6 @@
 <%@ page import="	java.util.List, 
-					edu.pennphoto.db.PhotoDAO, 
+					edu.pennphoto.db.PhotoDAO,
+					edu.pennphoto.db.UserDAO, 
 					edu.pennphoto.model.User,
 					edu.pennphoto.model.Photo,
 					edu.pennphoto.model.Event" %>
@@ -19,25 +20,24 @@ if(events.size() == 0){ %>
 		//no events		
 	for(Event event : events){ %> 
 		
-		<div class="activity-feed-item">
-			<!-- To do, get user name from this -->
-			<span><%= event.getUserId() %></span>
+		<div class="activity-feed-item">			
+			<% Photo photo = PhotoDAO.getPhotoById(event.getPhotoId());
+			   User actor = UserDAO.getUserById(event.getUserId());
+			%>
+				<img src="<%= photo.getUrl() %>" />
+				<span><%= actor.getFirstName() %>&nbsp;<%= actor.getLastName() %></span>
 			
-			<% 
-				if(event.getType().equals(Event.EventType.PHOTO)){
+			<% if(event.getType().equals(Event.EventType.PHOTO)){
 					//Photo stuff
 			%>
-				<span> submitted a photo from </span>
-				<span><%= event.getEventValue() %></span>		
-					
+				<span> added a new photo </span>			
 					
 			<%
 				} else if(event.getType().equals(Event.EventType.TAG)){
 					//Tag stuff
 					
 			%>
-				<span>tagged photo <%= event.getPhotoId() %></span>
-				<span>with <%= event.getEventValue() %></span>
+				<span>tagged photo with <%= event.getEventValue() %></span>
 			<% } %>
 
 		</div><!-- #activity-feed-item -->
