@@ -28,7 +28,10 @@
 	
 		<div class="clear"></div>
 
-		<jsp:include page="partials/friendship-browser.jsp" />				
+		<jsp:include page="partials/friendship-browser.jsp" />		
+		
+		<div class="clear"></div>
+				
 				
 	</div><!-- #content -->	
 	
