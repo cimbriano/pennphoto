@@ -156,12 +156,15 @@ public class UserServlet extends HttpServlet {
 			
 			Rating rating = new Rating(photoID, user.getUserID(), rateValue);
 			
-			PhotoDAO.createRating(rating);
-			response.sendRedirect("confirmation.jsp");
-
+			boolean success = PhotoDAO.createRating(rating);
+			if(success){
+				response.sendRedirect("homepage.jsp?" + ResponseCode.PARAMETER_NAME + "=" + ResponseCode.RATING_SUCCESS);
+			}	else {
+				response.sendRedirect("homepage.jsp?" + ResponseCode.PARAMETER_NAME + "=" + ResponseCode.RATING_FAILURE);
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
-			response.sendRedirect("error.jsp");
+			response.sendRedirect("homepage.jsp?" + ResponseCode.PARAMETER_NAME + "=" + ResponseCode.RATING_FAILURE);
 		}finally{
 
 		}
