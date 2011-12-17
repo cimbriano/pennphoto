@@ -24,20 +24,22 @@ if(events.size() == 0){ %>
 			<% Photo photo = PhotoDAO.getPhotoById(event.getPhotoId());
 			   User actor = UserDAO.getUserById(event.getUserId());
 			%>
-				<img src="<%= photo.getUrl() %>" />
-				<span><%= actor.getFirstName() %>&nbsp;<%= actor.getLastName() %></span>
+			<div class="img-wrap">
+				<img src="<%= photo.getUrl() %>" alt="Photo Submitted by user <%= photo.getOwnerId() %>"/>
+			</div>
+			<span><%= actor.getFirstName() %>&nbsp;<%= actor.getLastName() %>
 			
 			<% if(event.getType().equals(Event.EventType.PHOTO)){
 					//Photo stuff
 			%>
-				<span> added a new photo </span>			
+				 added a new photo		
 					
 			<%
 				} else if(event.getType().equals(Event.EventType.TAG)){
 					//Tag stuff
 					
 			%>
-				<span>tagged photo with <%= event.getEventValue() %></span>
+				tagged photo with <%= event.getEventValue() %></span>
 			<% } %>
 
 		</div><!-- #activity-feed-item -->
