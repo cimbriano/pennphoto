@@ -617,7 +617,10 @@ public class UserDAO {
 					circle = new Circle(rs.getInt("id"), rs.getString("name"));
 					circles.add(circle);
 				}
-				circle.addFriendID(rs.getInt("friend_id"));
+				int friendId = rs.getInt("friend_id");
+				if(friendId > 0){
+				    circle.addFriendID(friendId);
+				}
 			}
 			return circles;
 		} catch (Exception e) {
