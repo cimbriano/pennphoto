@@ -531,6 +531,32 @@ public class PhotoDAO {
 		}
 		return null;
 	}
+	
+	public static Photo getPhotoById(int photoId){
+		String query = "select * from Photo where id =" + photoId;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			return generatePhotoList(rs).get(0);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception excep) {
+				excep.printStackTrace();
+			}
+		}return null;
+	}
 
 	private static List<Photo> generatePhotoList(ResultSet rs)
 			throws SQLException {
