@@ -3,10 +3,7 @@
 	<form action="userServlet" method="post">
 	
 		<input type="hidden" name="action" value="create-circle" />
-		
-		
-		
-		
+			
 		<fieldset>
 			<legend>Circle Name</legend>
 			<input 	id=circle-name
@@ -16,13 +13,10 @@
 					type="text" 
 					name="circle-name"
 					required />
-		</fieldset>
-		
-		<fieldset>
+					
 			<input class="submit" type="submit" value="Submit"/>
-		</fieldset>		
-		
-		
+		</fieldset>
+			
 	</form>
 	
 </div>
