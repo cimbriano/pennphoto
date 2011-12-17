@@ -289,7 +289,7 @@ public class UserDAO {
 		try {
 			User user =  getUser(-1, username, password);
 			if(user != null){
-				UserDAO.getUserCircles(user.getUserID());
+				user.setCircles(UserDAO.getUserCircles(user.getUserID()));
 				
 			}
 			return user;
