@@ -33,6 +33,7 @@ import edu.pennphoto.model.Photo;
 import edu.pennphoto.model.Professor;
 import edu.pennphoto.model.Rating;
 import edu.pennphoto.model.Student;
+import edu.pennphoto.model.Tag;
 import edu.pennphoto.model.User;
 import edu.pennphoto.model.User.Gender;
 import edu.pennphoto.model.User.Attendance;
@@ -256,6 +257,8 @@ public class UserServlet extends HttpServlet {
 		String rating = request.getParameter("rating");
 		String[] circleIds = request.getParameterValues("circleIds");
 		String[] viewerIds = request.getParameterValues("userIds");
+		String tagParameters = request.getParameter("tag");
+		String[] tagStrings = parseCSV(tagParameters);
 		
 		if(circleIds != null){
 			for(String circleId : circleIds){
@@ -271,6 +274,16 @@ public class UserServlet extends HttpServlet {
 			Rating r = new Rating();
 			r.setUserID(userId);
 			r.setValue(Integer.parseInt(rating));
+			photo.addRating(r);
+		}			
+		if(tagStrings !=  null){
+			Tag[] tags = new Tag[tagStrings.length];
+			for(String tagString : tagStrings){
+				Tag tag = new Tag();
+				tag.setUserID(userId);
+				tag.setTagText(tagString);
+				photo.addTag(tag);
+			}
 		}
 		
 		try {
@@ -537,5 +550,19 @@ public class UserServlet extends HttpServlet {
 
 		return areSet;
 	}
-
+	
+	private static String[] parseCSV(String string){
+		String[] rawValues = string.split(",");
+		ArrayList<String> values = new ArrayList<String>();
+		for(String rawValue : rawValues){
+			String trimmed = rawValue.trim();
+			if(!"".equals(trimmed)) values.add(trimmed);
+		}
+		if(values.size() == 0){
+			return null;
+		} else {
+			String[] retValues = new String[values.size()];
+			return values.toArray(retValues);
+		}
+	}
 }

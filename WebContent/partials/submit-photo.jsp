@@ -81,6 +81,7 @@ if(user != null ){ %>
 		
 		<fieldset>
 			<legend>Tags</legend>
+			<input name="tag" type="text"/>
 			
 		</fieldset>
 			
