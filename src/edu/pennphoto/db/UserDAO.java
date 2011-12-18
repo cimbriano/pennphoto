@@ -284,6 +284,45 @@ public class UserDAO {
 			return null;
 		}
 	}
+	
+	public static int getUserIdByEmail(String email) throws SQLException{
+		int id = -1;
+		
+		Connection conn = null;
+		PreparedStatement userStmt = null;
+		Statement spStmt = null;
+
+		try {
+			conn = DBHelper.getInstance().getConnection();
+
+			String userQuery = "select id from User where email=?";
+			userStmt = conn.prepareStatement(userQuery);
+			userStmt.setString(1, email);
+
+			ResultSet rs = userStmt.executeQuery();
+			if (rs.next()) {
+
+				id = rs.getInt("id");
+			}
+
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+			if (userStmt != null) {
+				userStmt.close();
+			}
+			if (spStmt != null) {
+				spStmt.close();
+			}
+		}
+
+		return id;
+	}
+	
 
 	public static User login(String username, String password) {
 		try {

@@ -183,13 +183,23 @@ public class UserServlet extends HttpServlet {
 			User user = (User) session.getAttribute("user");
 
 			String circleIDString = request.getParameter("circleID");
-			String friendIDString = request.getParameter("friendID");
-			
 			int circleID = Integer.parseInt(circleIDString);
-			int friendID = Integer.parseInt(friendIDString);
 			
+			
+			String friendIDString = request.getParameter("friendID");
+			int friendID = -1;
+			
+			try{
+				friendID = Integer.parseInt(friendIDString);
+				
+				
+			} catch (Exception e){
+				friendID = UserDAO.getUserIdByEmail(friendIDString);
+				
+				
+			}
+					
 			UserDAO.addFriendToCircle(circleID, friendID);
-			
 			response.sendRedirect("confirmation.jsp");
 			
 			

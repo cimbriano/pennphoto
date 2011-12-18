@@ -19,7 +19,7 @@ List<Circle> circles = user.getCircles();
 	<input id="add-friend-friendID" type="hidden" name="friendID" value="friendID" />
 
 	<fieldset>
-		<legend>Add New Friends</legend>
+		<legend>Add A Suggested Friends</legend>
 		<select id="circles">
 			<option value="default">Select a Circle</option>
 		
@@ -28,16 +28,20 @@ List<Circle> circles = user.getCircles();
 		<% } %>
 		</select>
 		
-		
-		
-		
 		<% for(User friendRec : UserDAO.getFriendRecommendations(user.getUserID())) { %>		
 			<div class="friend-rec">
 			<span><%=friendRec.getEmail() %></span>
 			<button class="add-friend-button" type="button" friend="<%= friendRec.getUserID() %>">Add to Circle</button>
 			</div>
 		<% } %>
+			
+	</fieldset>
+	
+	<fieldset>
+		<legend>Add User By Email</legend>
 		
+		<input id="friend-by-email" type="text" value="Friend to Add"/>
+		<button id="add-friend-button-by-email" type="button">Add to Circle</button>
 	</fieldset>
 
 </form>
