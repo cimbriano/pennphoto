@@ -27,8 +27,9 @@ if(events.size() == 0){ %>
 			%>
 			<div class="img-wrap">
 				<img src="<%= photo.getUrl() %>" alt="Photo Submitted by user <%= photo.getOwnerId() %>"/>
-			</div>
-			<span><%= actor.getFirstName() %>&nbsp;<%= actor.getLastName() %>
+			</div> <!--  img-wrap -->
+			<div class="activity-desc">
+			<%= actor.getFirstName() %>&nbsp;<%= actor.getLastName() %>
 			
 			<% if(event.getType().equals(Event.EventType.PHOTO)){
 					//Photo stuff
@@ -40,9 +41,9 @@ if(events.size() == 0){ %>
 					//Tag stuff
 					
 			%>
-				added the tag "<%= event.getEventValue() %>"</span>
+				added the tag "<%= event.getEventValue() %>"
 			<% } %>
-
+			</div><!-- activity-desc -->
 		</div><!-- #activity-feed-item -->
 		
 		
