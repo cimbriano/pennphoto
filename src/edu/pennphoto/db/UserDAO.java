@@ -318,6 +318,10 @@ public class UserDAO {
 		return getUsersList(whereClause);
 	}
 	
+	public static List<User> getFriendRecommendations(int userID){
+		return getFriendsOfFriends(userID);
+	}
+	
 	public static List<User> getUsersList(String whereClause){
 		List<User> users = new ArrayList<User>();
 		Connection conn = null;

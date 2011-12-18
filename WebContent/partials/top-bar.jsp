@@ -6,7 +6,7 @@
 
 <span id="sep">&nbsp;|&nbsp;</span>
 
-<a href="testpage.jsp">Manage Friends and Circles</a>
+<a href="manage.jsp">Manage Friends and Circles</a>
 
 <div id="user-actions">
 	<ul>

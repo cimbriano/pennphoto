@@ -280,7 +280,7 @@ body{
 	margin: 10px;
 	float: left;
 	
-	background: white;;
+	background: white;
 }
 
 .top-pics-photo .img-wrap {
@@ -314,9 +314,25 @@ ul.rating li{
 	background: brown;
 }
 
-#activity-feed-item{
-	margin: 3px;
-	background: green;
+.activity-feed-item{
+	width: 90%;
+	
+	margin: 10px;
+	float: left;
+	
+	background: yellow;
+}
+
+#activity-feed .img-wrap {
+	height: 50px;
+	width: 50px;
+	padding: 4px;
+	float: left;
+	margin: 0 auto;
+}
+
+#activity-feed img{
+	height: 100%;
 }
 		
 #friendship-browser{

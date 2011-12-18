@@ -25,7 +25,12 @@
 		
 		<jsp:include page="partials/add-friend-to-circle.jsp" /> </br>	
 		
-		<div id="all-friends"></div>
+		<jsp:include page="partials/add-new-friends.jsp" /> </br>	
+		
+		
+		<div id="all-friends">
+			<jsp:include page="partials/circle-friend-list.jsp" /> </br>	
+		</div>
 		
 	</div><!-- #content -->
 	

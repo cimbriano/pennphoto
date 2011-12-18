@@ -2,7 +2,8 @@
 					edu.pennphoto.db.PhotoDAO, 
 					edu.pennphoto.model.User,
 					edu.pennphoto.model.Photo,
-					edu.pennphoto.model.Event" %>
+					edu.pennphoto.model.Event,
+					edu.pennphoto.web.ResponseCode" %>
 
 
 <jsp:include page="partials/html-head.jsp" />
@@ -17,8 +18,14 @@
 		} else{	
 			request.setAttribute("search-tag", "tag");
 		%>
-	<p>Successful Login or still logged in</p>		
-			
+	<div id="message">
+	<%
+		String code = request.getParameter(ResponseCode.PARAMETER_NAME);
+		if(code != null){
+			out.println(ResponseCode.getMessage(Integer.parseInt(code)));
+		}
+	%>
+	</div>			
 	<div id="content">
 	
 		<jsp:include page="partials/top-scroll.jsp" />
@@ -28,7 +35,10 @@
 	
 		<div class="clear"></div>
 
-		<jsp:include page="partials/friendship-browser.jsp" />				
+		<jsp:include page="partials/friendship-browser.jsp" />		
+		
+		<div class="clear"></div>
+				
 				
 	</div><!-- #content -->	
 	
