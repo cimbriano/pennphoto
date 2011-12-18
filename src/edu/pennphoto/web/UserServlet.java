@@ -137,7 +137,9 @@ public class UserServlet extends HttpServlet {
 			} else if (action.equals("init-friends")) {
 				handleFriendBrowserInit(request, response);
 			} else if (action.equals("browser-photos")) {
-				handleGetBrowserPhotos(request, response);				
+				handleGetBrowserPhotos(request, response);
+			} else if (action.equals("tag-photo")){
+				handleTagPhoto(request, response);
 			} else {
 				response.sendRedirect("homepage.jsp");
 			}
@@ -197,6 +199,30 @@ public class UserServlet extends HttpServlet {
 			
 		}
 		
+		
+	}
+	
+	protected void handleTagPhoto(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		int userId = user.getUserID();
+		int photoId = Integer.parseInt(request.getParameter("photo"));
+		Photo photo = PhotoDAO.getPhotoById(photoId);
+		String tagText = request.getParameter("tag");
+		boolean success = false;
+		if(tagText !=  null && !"".equals(tagText.trim())){
+			Tag tag = new Tag();
+			tag.setUserID(userId);
+			tag.setTagText(tagText.trim());
+			tag.setPhotoID(photoId);
+			success = PhotoDAO.createTag(tag);
+			photo.addTag(tag);
+		}
+		if(success){
+			response.sendRedirect("homepage.jsp?" + ResponseCode.PARAMETER_NAME + "=" + ResponseCode.TAGGING_SUCCESS);
+		}	else {
+			response.sendRedirect("homepage.jsp?" + ResponseCode.PARAMETER_NAME + "=" + ResponseCode.TAGGING_FAILURE);
+		}
 		
 	}
 	
@@ -260,8 +286,7 @@ public class UserServlet extends HttpServlet {
 		String rating = request.getParameter("rating");
 		String[] circleIds = request.getParameterValues("circleIds");
 		String[] viewerIds = request.getParameterValues("userIds");
-		String tagParameters = request.getParameter("tag");
-		String[] tagStrings = parseCSV(tagParameters);
+		String tagText = request.getParameter("tag");
 		
 		if(circleIds != null){
 			for(String circleId : circleIds){
@@ -285,15 +310,13 @@ public class UserServlet extends HttpServlet {
 				PhotoDAO.createRating(r);
 				photo.addRating(r);
 			}			
-			if(tagStrings !=  null){
-				for(String tagString : tagStrings){
-					Tag tag = new Tag();
-					tag.setUserID(userId);
-					tag.setTagText(tagString);
-					tag.setPhotoID(photo.getPhotoId());
-					PhotoDAO.createTag(tag);
-					photo.addTag(tag);
-				}
+			if(tagText !=  null){
+				Tag tag = new Tag();
+				tag.setUserID(userId);
+				tag.setTagText(tagText);
+				tag.setPhotoID(photo.getPhotoId());
+				PhotoDAO.createTag(tag);
+				photo.addTag(tag);
 			}
 		} catch (SQLException e) {
 			
