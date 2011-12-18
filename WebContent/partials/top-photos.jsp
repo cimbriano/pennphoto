@@ -34,11 +34,17 @@ if(user != null){
 				<% 
 				//Get photo tags
 				List<Tag> tags = PhotoDAO.getPhotoTags(photo.getPhotoId());
-				if(tags != null){
-					for(Tag tag : tags){ %>
-					<p>Tag: <%= tag.getTagText()%></p> 		
-					<% } %>
+				if(tags != null && tags.size() > 0){ %>
+					<p>Tags:
+				<% 	for(int i = 0; i < tags.size(); i++){ 
+						Tag tag = tags.get(i);
+						out.print(tag.getTagText());
+						if(i < tags.size() - 1){
+							out.print(", ");
+						}
+					 } %>
 				<% } //end if tags != null %>
+				</p>
 				
 			<% int yourRating = PhotoDAO.getPhotoRatingByUser(user.getUserID(), photo.getPhotoId());%>
 			
@@ -67,7 +73,17 @@ if(user != null){
 				</fieldset>
 			
 			</form>
-							
+			<form action="userServlet" method="post">
+	
+			<input type="hidden" name="action" value="tag-photo" />
+			<input type="hidden" name="photo" value="<%= photo.getPhotoId() %>" />
+				<fieldset>
+					<legend>Tag this photo</legend>
+					<input name="tag" type="text"/>
+					<input class="submit" type="submit" value="Add Tag"/>
+				</fieldset>
+			
+			</form>				
 				
 			</div>
 		</div>

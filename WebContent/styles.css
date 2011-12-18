@@ -333,6 +333,7 @@ ul.rating li{
 
 #activity-feed img{
 	height: 100%;
+	width: 100%
 }
 		
 #friendship-browser{
@@ -394,4 +395,8 @@ font-family: 'Lancelot', cursive;
 
 .error-field {
 	background: red;
+}
+
+.inst-attended{
+	margin-top:5px;
 }

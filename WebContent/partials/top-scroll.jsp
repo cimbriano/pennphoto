@@ -16,7 +16,7 @@ if(user != null){ %>
 		
 		<% for(User friendRec : recs) { %>
 			<li>
-				<div class="reccomended-friend">
+				<div class="recomended-friend">
 					<span><%= friendRec.getFirstName() %></span> <span><%= friendRec.getLastName() %></span>
 				</div>
 			</li>
