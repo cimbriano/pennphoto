@@ -291,8 +291,8 @@ body{
 }
 
 .top-pics-photo img{
-	height: 100%;
-	width: 100%;
+	max-height: 100%;
+	max-width: 100%;
 }
 
 ul.rating{
@@ -332,8 +332,8 @@ ul.rating li{
 }
 
 #activity-feed img{
-	height: 100%;
-	width: 100%
+	max-height: 100%;
+	max-width: 100%
 }
 		
 #friendship-browser{

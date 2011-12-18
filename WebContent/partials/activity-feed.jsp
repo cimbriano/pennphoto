@@ -11,6 +11,7 @@ User user = (User) session.getAttribute("user");
 if (user != null) { %>
 	
 	<div id="activity-feed">
+	<span>Recent Updates</span>
 <% 
 List<Event> events = PhotoDAO.getRecentEvents(user.getUserID());
 if(events.size() == 0){ %> 
@@ -32,14 +33,14 @@ if(events.size() == 0){ %>
 			<% if(event.getType().equals(Event.EventType.PHOTO)){
 					//Photo stuff
 			%>
-				 added a new photo		
+				 posted a new photo		
 					
 			<%
 				} else if(event.getType().equals(Event.EventType.TAG)){
 					//Tag stuff
 					
 			%>
-				tagged photo with <%= event.getEventValue() %></span>
+				added the tag "<%= event.getEventValue() %>"</span>
 			<% } %>
 
 		</div><!-- #activity-feed-item -->

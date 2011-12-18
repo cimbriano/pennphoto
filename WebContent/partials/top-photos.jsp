@@ -1,5 +1,6 @@
 <%@ page import="	java.util.List, 
-					edu.pennphoto.db.PhotoDAO, 
+					edu.pennphoto.db.PhotoDAO,
+					edu.pennphoto.db.UserDAO, 
 					edu.pennphoto.model.User,
 					edu.pennphoto.model.Photo,
 					edu.pennphoto.model.Tag" %>
@@ -19,11 +20,13 @@ if(user != null){
 
 	for (Photo photo : photos) {
 		
-		int owner = photo.getOwnerId();	
+		int ownerId = photo.getOwnerId();	
+		User owner = UserDAO.getUserById(ownerId);
 %>
-
+		
 		<div class="top-pics-photo">
 			<p>PhotoID: <%= photo.getPhotoId() %></p>
+			<p>Posted by: <%= owner.getFirstName() %>&nbsp;<%= owner.getLastName() %></p>
 			<div class="img-wrap">
 				<img src="<%= photo.getUrl() %>" alt="Photo Submitted by user <%= owner %>"/>
 			</div>

@@ -84,27 +84,6 @@ public class UserServlet extends HttpServlet {
 			response.getWriter().write(msg);
 		}
 
-		// String msg = "";
-		// try {
-		// // msg = DBHelper.getInstance().testConnection();
-		// // UserDAO.testCreateUser();
-		// // Circle circle = UserDAO.createCircle(17001, "test_circle2");
-		// //ArrayList<Circle> circles = UserDAO.getUserCircles(17001);
-		// //UserDAO.addFriendToCircle(17000, 17002);
-		//
-		// //UserDAO.removeFriendFromCircle(17000, 17002);
-		// User user = UserDAO.login("test@penn.edu", "test");
-		// msg = "" + user;
-		// user = UserDAO.getUserById(17002);
-		// msg += "\n\n" + user;
-		//
-		// PhotoDAO.testPostPhoto();
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// msg = e.getMessage();
-		// }
-		// response.getWriter().write(msg);
 	}
 
 	/**
@@ -330,7 +309,7 @@ public class UserServlet extends HttpServlet {
 				PhotoDAO.createRating(r);
 				photo.addRating(r);
 			}			
-			if(tagText !=  null){
+			if(tagText !=  null && !"".equals(tagText.trim())){
 				Tag tag = new Tag();
 				tag.setUserID(userId);
 				tag.setTagText(tagText);
@@ -354,9 +333,6 @@ public class UserServlet extends HttpServlet {
 		String email = request.getParameter("email-login");
 		String password = request.getParameter("pwd");
 		User user = UserDAO.login(email, password);
-
-		// TODO - Remove logged in validation form here in place of in doPost
-		// method
 		if (user == null) {
 			response.sendRedirect("login.jsp?error=1");
 		} else {			
