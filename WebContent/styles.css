@@ -396,3 +396,7 @@ font-family: 'Lancelot', cursive;
 .error-field {
 	background: red;
 }
+
+.inst-attended{
+	margin-top:5px;
+}
