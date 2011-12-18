@@ -2,6 +2,7 @@ package edu.pennphoto.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Photo {
 	private Integer photoId;
@@ -9,10 +10,10 @@ public class Photo {
 	private boolean isPrivate;
 	private int ownerId;
 	
-	private ArrayList<Integer> viewCircleIDs;
-	private ArrayList<Integer> viewUserIDs;
-	private ArrayList<Tag> tags;
-	private ArrayList<Rating> ratings;
+	private List<Integer> viewCircleIDs;
+	private List<Integer> viewUserIDs;
+	private List<Tag> tags;
+	private List<Rating> ratings;
 	private Date uploadDate;
 	
 	public Photo(String url, boolean isPrivate, int ownerId){
@@ -55,7 +56,7 @@ public class Photo {
 		this.isPrivate = isPrivate;
 	}
 
-	public ArrayList<Integer> getViewCircleIDs() {
+	public List<Integer> getViewCircleIDs() {
 		return viewCircleIDs;
 	}
 
@@ -63,7 +64,7 @@ public class Photo {
 		this.viewCircleIDs = viewCircleIDs;
 	}
 
-	public ArrayList<Integer> getViewUserIDs() {
+	public List<Integer> getViewUserIDs() {
 		return viewUserIDs;
 	}
 
@@ -102,19 +103,19 @@ public class Photo {
 		return ratings.remove(rating);
 	}
 
-	public ArrayList<Tag> getTags() {
+	public List<Tag> getTags() {
 		return tags;
 	}
 
-	public void setTags(ArrayList<Tag> tags) {
+	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
 
-	public ArrayList<Rating> getRatings() {
+	public List<Rating> getRatings() {
 		return ratings;
 	}
 
-	public void setRatings(ArrayList<Rating> ratings) {
+	public void setRatings(List<Rating> ratings) {
 		this.ratings = ratings;
 	}
 
@@ -145,6 +146,18 @@ public class Photo {
 				+ viewCircleIDs + ", viewUserIDs=" + viewUserIDs + ", tags="
 				+ tags + ", ratings=" + ratings + ", uploadDate=" + uploadDate
 				+ "]";
+	}
+	
+	public double getAverageRating(){
+		if(ratings == null || ratings.size() == 0){
+			return 0;
+		} else {
+			double sum = 0;
+			for(Rating r : ratings){
+				sum += r.getValue();
+			}
+			return sum / ((double) ratings.size());
+		}
 	}
 	
 	

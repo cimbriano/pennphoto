@@ -274,25 +274,31 @@ body{
 }
 
 .top-pics-photo{
-	height: 400px;
-	width: 200px;
+	height: 480px;
+	width: 210px;
 	
 	margin: 10px;
+	padding: 5px;
 	float: left;
 	
 	background: white;
 }
 
 .top-pics-photo .img-wrap {
-	height: 100px;
-	width: 100px;
-	
-	margin: 0 auto;
+	height: 200px;
+	width: 200px;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .top-pics-photo img{
 	max-height: 100%;
 	max-width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	vertical-align: middle;
+	display: block;
+
 }
 
 ul.rating{
@@ -382,7 +388,10 @@ ul.rating li{
 }
 
 p {
-font-family: 'Lancelot', cursive;	
+	font-family: 'Buda';
+	margin: 0px;
+	padding: 0px;
+	font-size: small;
 }
 
 .clear{

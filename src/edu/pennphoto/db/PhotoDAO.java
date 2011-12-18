@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -98,7 +97,7 @@ public class PhotoDAO {
 		PreparedStatement subStmt2 = null;
 		try {
 			if (photo.isPrivate()) {
-				ArrayList<Integer> viewCircleIDs = photo.getViewCircleIDs();
+				List<Integer> viewCircleIDs = photo.getViewCircleIDs();
 				if (viewCircleIDs.size() > 0) {
 					subStmt1 = conn
 							.prepareStatement("insert into Photo_Visible_To_Circle values(?,?)");
@@ -108,7 +107,7 @@ public class PhotoDAO {
 						subStmt1.execute();
 					}
 				}
-				ArrayList<Integer> viewUserIDs = photo.getViewUserIDs();
+				List<Integer> viewUserIDs = photo.getViewUserIDs();
 				if (viewUserIDs.size() > 0) {
 					subStmt2 = conn
 							.prepareStatement("insert into Photo_Visible_To_User values(?,?)");
@@ -569,6 +568,8 @@ public class PhotoDAO {
 			photo = new Photo(rs.getInt("id"), rs.getString("url"),
 					rs.getBoolean("is_private"), rs.getInt("owner_id"),
 					rs.getDate("upload_date"));
+			List<Rating> ratings = getPhotoRatings(photo.getPhotoId());
+			photo.setRatings(ratings);
 			photos.add(photo);
 		}
 		return photos;

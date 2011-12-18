@@ -1,6 +1,7 @@
 <%@ page import="	java.util.List, 
 					edu.pennphoto.db.PhotoDAO,
-					edu.pennphoto.db.UserDAO, 
+					edu.pennphoto.db.UserDAO,
+					edu.pennphoto.web.WebFormat, 
 					edu.pennphoto.model.User,
 					edu.pennphoto.model.Photo,
 					edu.pennphoto.model.Tag" %>
@@ -21,9 +22,8 @@ if(user != null){
 	for (Photo photo : photos) {
 		
 		int ownerId = photo.getOwnerId();	
-		User owner = UserDAO.getUserById(ownerId);
-%>
-		
+		User owner = UserDAO.getUserById(ownerId); 
+		%>		
 		<div class="top-pics-photo">
 			<p>PhotoID: <%= photo.getPhotoId() %></p>
 			<p>Posted by: <%= owner.getFirstName() %>&nbsp;<%= owner.getLastName() %></p>
@@ -50,7 +50,7 @@ if(user != null){
 				</p>
 				
 			<% int yourRating = PhotoDAO.getPhotoRatingByUser(user.getUserID(), photo.getPhotoId());%>
-			
+			<p>Average Rating: <%= WebFormat.format(photo.getAverageRating()) %></p>
 		<form action="userServlet" method="post">
 	
 			<input type="hidden" name="action" value="rating" />
