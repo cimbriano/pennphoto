@@ -162,12 +162,13 @@ public class PhotoDAO {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			String query = "insert into Rating values (?, ?, ?)";
+			String query = "insert into Rating values (?, ?, ?) on duplicate key update rating = ?";
 			conn = DBHelper.getInstance().getConnection();
 			stmt = conn.prepareStatement(query);
 			stmt.setInt(1, rating.getPhotoID());
 			stmt.setInt(2, rating.getUserID());
 			stmt.setInt(3, rating.getValue());
+			stmt.setInt(4, rating.getValue());
 			stmt.execute();
 			return true;
 		} catch (Exception ex) {
