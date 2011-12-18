@@ -22,9 +22,7 @@
 		<jsp:include page="partials/submit-photo.jsp" /> </br>	
 		
 		<jsp:include page="partials/create-circle.jsp" /> </br>
-		
-		<jsp:include page="partials/add-friend-to-circle.jsp" /> </br>	
-		
+
 		<jsp:include page="partials/add-new-friends.jsp" /> </br>	
 		
 		

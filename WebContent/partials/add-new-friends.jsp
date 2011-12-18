@@ -12,14 +12,17 @@ List<Circle> circles = user.getCircles();
 
 <div id="add-new-friends">
 
-<form id="add-friend-form" action="userServlet" method="post">
-
+<fieldset>
+	<legend>Add Friends to Circles</legend>
+	
+	<form id="add-friend-form" action="userServlet" method="post">
 	<input type="hidden" name="action" value="add-friend" />
 	<input id="add-friend-circleID" type="hidden" name="circleID" value="circleID" />
 	<input id="add-friend-friendID" type="hidden" name="friendID" value="friendID" />
-
+	
 	<fieldset>
-		<legend>Add A Suggested Friends</legend>
+		<legend>Which Circle? </legend>
+		
 		<select id="circles">
 			<option value="default">Select a Circle</option>
 		
@@ -27,6 +30,10 @@ List<Circle> circles = user.getCircles();
 			<option value="<%= circle.getCircleID() %>"><%= circle.getName() %></option>
 		<% } %>
 		</select>
+	</fieldset>
+
+	<fieldset>
+		<legend>Pick A Suggested Friend</legend>
 		
 		<% for(User friendRec : UserDAO.getFriendRecommendations(user.getUserID())) { %>		
 			<div class="friend-rec">
@@ -45,5 +52,10 @@ List<Circle> circles = user.getCircles();
 	</fieldset>
 
 </form>
+	
+	
+</fieldset>
+
+
 
 </div>

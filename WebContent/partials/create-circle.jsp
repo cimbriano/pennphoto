@@ -5,7 +5,7 @@
 		<input type="hidden" name="action" value="create-circle" />
 			
 		<fieldset>
-			<legend>Circle Name</legend>
+			<legend>Add a Circle</legend>
 			<input 	id=circle-name
 					value="Circle Name" 
 					onclick="if (this.value=='Circle Name') { this.value='' }" 
