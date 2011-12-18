@@ -200,6 +200,13 @@ public class UserServlet extends HttpServlet {
 			}
 					
 			UserDAO.addFriendToCircle(circleID, friendID);
+			//toDO - loop through circles
+			for(Circle circle : user.getCircles()){
+				if(circle.getCircleID() == circleID){
+					circle.addFriendID(friendID);
+				}
+			}
+			
 			response.sendRedirect("confirmation.jsp");
 			
 			
@@ -269,14 +276,17 @@ public class UserServlet extends HttpServlet {
 		out.flush();
 	}
 	
-	protected void handleCreateCircle(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	protected void handleCreateCircle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		int userId = user.getUserID();
 		String name = request.getParameter("circle-name");
+		
 		Circle circle = UserDAO.createCircle(userId, name);
+		
 		user.addCircle(circle);
+		
 		response.sendRedirect("confirmation.jsp");
 
 	}
