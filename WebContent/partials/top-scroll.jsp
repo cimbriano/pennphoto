@@ -9,7 +9,7 @@ if(user != null){ %>
 <div id="top-scroll">
 
 	<h3>Friend Recommendations</h3>
-	<% List<User> recs = UserDAO.getFriendsOfFriends(user.getUserID()); %>
+	<% List<User> recs = UserDAO.getFriendRecommendations(user.getUserID()); %>
 	
 	<% if(recs != null){ %>
 		<ul id="recs">
