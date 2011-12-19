@@ -204,7 +204,14 @@ body{
 /* Begin Submit Photo Form */
 
 #submit-photo-wrapper {
-	width: 400px;	
+	float: left;
+	margin: 0 15px 15px;
+	padding: 10px;
+
+	width: 350px;
+	
+	background: rgba(20, 20, 20, 0.1);
+	border-radius: 5px;	
 }
 
 #submit-photo-wrapper input#url{
@@ -225,6 +232,14 @@ body{
 
 #submit-photo-wrapper ul#ratings li {
 	float: left;
+}
+
+.submit-photo-visibility-option{
+	padding: 0 5px;
+}
+
+input.submit-photo-visibility-option{
+	margin-right: 10px;
 }
 
 /* End Submit Photo Form */
@@ -326,7 +341,7 @@ ul.rating li{
 	width: 370px;
 	min-height: 370px;
 	
-	margin: 22px 15px 0;
+	margin: 22px 15px 15px;
 	float: left;
 	
 	border-radius: 5px;
@@ -354,7 +369,6 @@ ul.rating li{
 
 #activity-feed img{
 	max-height: 100%;
-	max-width: 150%;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: auto;

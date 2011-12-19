@@ -32,6 +32,8 @@
 		<jsp:include page="partials/search-photo-form.jsp" />
 		<jsp:include page="partials/top-photos.jsp" />
 		<jsp:include page="partials/activity-feed.jsp" />
+		
+		<jsp:include page="partials/submit-photo.jsp" /> </br>	
 	
 		<div class="clear"></div>
 

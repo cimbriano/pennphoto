@@ -19,7 +19,6 @@
 	<jsp:include page="partials/top-scroll.jsp" />
 	
 	<div id="content">
-		<jsp:include page="partials/submit-photo.jsp" /> </br>	
 		
 		<jsp:include page="partials/create-circle.jsp" /> </br>
 
