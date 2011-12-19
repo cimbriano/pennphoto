@@ -55,6 +55,7 @@ public class PhotoDAO {
 			stmt.setInt(1, photo.getOwnerId());
 			stmt.setString(2, photo.getUrl());
 			stmt.setBoolean(3, photo.isPrivate());
+			System.out.println(stmt.toString());
 			stmt.execute();
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
@@ -138,6 +139,7 @@ public class PhotoDAO {
 			stmt.setInt(1, tag.getPhotoID());
 			stmt.setInt(2, tag.getUserID());
 			stmt.setString(3, tag.getTagText());
+			System.out.println("createTag: " + stmt.toString());
 			stmt.execute();
 			return true;
 		} catch (Exception ex) {
@@ -168,6 +170,7 @@ public class PhotoDAO {
 			stmt.setInt(2, rating.getUserID());
 			stmt.setInt(3, rating.getValue());
 			stmt.setInt(4, rating.getValue());
+			System.out.println("createRating: " + stmt.toString());
 			stmt.execute();
 			return true;
 		} catch (Exception ex) {
