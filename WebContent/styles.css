@@ -26,11 +26,17 @@ body{
 	width: 90%;
 	margin: 0 auto;
 	
+	position: fixed;
+	left: 10px;
+	right: 10px;
+	top: 0;
+	
 	padding: 15px 25px;
 	
-	background: black;
-	color: white;	
+	background: rgba(20, 20, 20, 0.8);
+	color: white;
 	
+	border-radius: 0 0 10px 10px;
 }
 
 #user-actions{
@@ -62,7 +68,7 @@ body{
 #wrapper{
 	height: 100%;
 	width: 1200px;
-	margin: 0 auto;
+	margin: 80px auto 0;
 	border-radius: 10px;
 }
 
@@ -257,9 +263,11 @@ body{
 #content {
 	min-height: 600px;
 	width: 1170px;
-	background: grey;
-	
+	background: lightBlue;
+
 	padding: 15px;
+	
+	border-radius: 10px 10px 0 0;
 }
 
 #top-pics{
@@ -287,7 +295,6 @@ body{
 .top-pics-photo .img-wrap {
 	height: 200px;
 	width: 200px;
-    display: table-cell;
     vertical-align: middle;
 }
 
