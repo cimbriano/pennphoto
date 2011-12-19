@@ -405,8 +405,7 @@ ul.rating li{
 
 .friendship-photo {
 	display: block;
-	height: 200px;
-	width: 200px;
+	max-width: 95%;
 	padding: 4px;
 	padding-right: 1px;
 }
