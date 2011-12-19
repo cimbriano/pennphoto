@@ -496,19 +496,6 @@ public class UserDAO {
 			if (rs.next()) {
 				boolean isProfessor = rs.getBoolean("is_professor");
 				user = createUserDataObject(rs, isProfessor);
-//				user = isProfessor ? new Professor() : new Student();
-//				user.setEmail(rs.getString("email"));
-//				user.setUserID(rs.getInt("id"));
-//				user.setFirstName(rs.getString("first_name"));
-//				user.setLastName(rs.getString("last_name"));
-//				user.setDob(rs.getDate("dob"));
-//				user.setAddress(rs.getString("street_address"));
-//				user.setStateId(rs.getInt("state_id"));
-//				user.setCity(rs.getString("city"));
-//				user.setZip(rs.getString("zip_code"));
-//				user.setGender("m".equalsIgnoreCase(rs.getString("gender")) ? Gender.MALE
-//						: Gender.FEMALE);
-
 				spStmt = conn.createStatement();
 				if (isProfessor) {
 					Professor professor = (Professor) user;
@@ -517,20 +504,15 @@ public class UserDAO {
 									+ user.getUserID());
 					if (prs.next()) {
 						populateProfessorData(prs, professor);
-//						professor.setTitle(prs.getString("title"));
-//						professor.setResearchArea(prs
-//								.getString("research_area"));
 					}
 
 				} else {
 					Student student = (Student) user;
 					ResultSet prs = spStmt
-							.executeQuery("select * from Student s left join Advises a on s.user_id=a.professor_id where user_id="
+							.executeQuery("select * from Student s left join Advises a on s.user_id=a.student_id where user_id="
 									+ user.getUserID());
 					if (prs.next()) {
 						populateStudentData(prs, student);
-//						student.setMajor(prs.getString("major"));
-//						student.setGpa(prs.getDouble("gpa"));
 					}
 				}
 				user.setState(getStateNameById(user.getStateId()));
