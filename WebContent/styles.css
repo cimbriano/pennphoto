@@ -335,12 +335,13 @@ ul.rating li{
 }
 
 .activity-feed-item{
-	width: 90%;
+	width: 95%;
 	
 	margin: 10px;
 	float: left;
 	
-	background: yellow;
+	border: 1px dashed;
+	border-radius: 5px;
 }
 
 #activity-feed .img-wrap {
@@ -348,19 +349,24 @@ ul.rating li{
 	width: 50px;
     display: table-cell;
     vertical-align: middle;
-    background: white;
     float: left;
 }
 
 #activity-feed img{
 	max-height: 100%;
-	max-width: 100%;
+	max-width: 150%;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: auto;
 	margin-bottom: auto;
 	vertical-align: middle;
 	display: block;
+}
+
+.activity-desc{
+	float: right;
+    width: 70%;
+    padding-right: 5px;
 }
 		
 #friendship-browser{

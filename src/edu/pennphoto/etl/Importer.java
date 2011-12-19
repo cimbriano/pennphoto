@@ -81,7 +81,7 @@ public class Importer {
 	private static final String STATE_17 = "tns:state";
 	private static final String ZIP_17 = "tns:zip_code";
 	
-	private static final int[] GROUP_IDS = {17};
+	private static final int[] GROUP_IDS = {8, 11, 12, 17};
 	
 	private static HashMap<Integer, User> _users;
 	private static ArrayList<Photo> _photos;
@@ -136,7 +136,6 @@ public class Importer {
 			storeUsers();
 			storePhotos();
 			storeCircles(); 
-
 			storeTagsAndRatings();
 	
 			
