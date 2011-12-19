@@ -248,7 +248,8 @@ public class UserServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		int userId = user.getUserID();
-		JSONArray json = UserDAO.getInitialBrowserFriends(userId);
+		String userName = user.getFirstName() + " " + user.getLastName(); 
+		JSONArray json = UserDAO.getInitialBrowserFriends(userId, userName);
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		out.print(json.toString());

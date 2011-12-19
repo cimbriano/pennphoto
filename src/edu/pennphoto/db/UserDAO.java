@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.pennphoto.model.Circle;
@@ -753,16 +755,19 @@ public class UserDAO {
 		}
 	}
 	
-	public static JSONArray getInitialBrowserFriends(int userId) {
-		JSONArray friends = new JSONArray();
-		String query = "select distinct F.user_id, CONCAT(first_name, ' ', last_name) as name, F.friend_id " +
+	public static JSONArray getInitialBrowserFriends(int userId, String userName) {
+		JSONArray friendsArray = new JSONArray();
+		String query = "select distinct F.user_id as user_id, CONCAT(first_name, ' ', last_name) as name, F.friend_id " +
 		"from User as U join " + 
 		"( select user_id, friend_id from Friendship_View FV1 where user_id = ? " +
-	    "UNION select FV1.user_id, FV2.friend_id from Friendship_View FV1, Friendship_View FV2 where FV1.user_id = ? and FV1.friend_id = FV2.user_id " + 
+	    "UNION select FV2.user_id, FV2.friend_id from Friendship_View FV1, Friendship_View FV2 where FV1.user_id = ? and FV1.friend_id = FV2.user_id " + 
 		"UNION select student_id as user_id, professor_id as friend_id from Advises where student_id = ? " +
 	    "UNION select professor_id as user_id, student_id as friend_id from Advises where professor_id = ? ) as F " +
-	    "on (U.id = F.user_id)";
+	    "where U.id = F.friend_id";
 
+		Map<String, List<String>> friendMap = new HashMap<String, List<String>>();				
+		Map<String, String> nameMap = new HashMap<String, String>();
+		
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -773,31 +778,24 @@ public class UserDAO {
 			stmt.setInt(3, userId);
 			stmt.setInt(4, userId);
 			ResultSet rs = stmt.executeQuery();
-			String currentId = "";
-			JSONObject user = null;
-			JSONArray adjacencies = null;
-			JSONObject to;
-			while(rs.next()){
-				if (currentId.equals(rs.getString("user_id"))) {
-					to = new JSONObject();
-					to.put("nodeTo", rs.getString("friend_id"));
-					adjacencies.put(to);
-
-				} else {
-					if (user != null) {
-						user.put("adjacencies", adjacencies);
-						friends.put(user);
-					}
-					user = new JSONObject();
-					currentId = rs.getString("user_id");
-					user.put("id", currentId);
-					user.put("name", rs.getString("name"));
-					adjacencies = new JSONArray();
+			while (rs.next()) {
+				String ownerId = rs.getString("user_id");
+				String friendId = rs.getString("friend_id");
+				String friendName = rs.getString("name");
+				
+				nameMap.put(friendId, friendName);
+				List<String> friends = friendMap.get(ownerId);
+				if (friends == null) {
+					friends = new ArrayList<String>();
 				}
+				friends.add(friendId);
+				friendMap.put(ownerId, friends);
 			}
-			if (user != null && friends != null) {
-				user.put("adjacencies", adjacencies);
-				friends.put(user);
+
+			nameMap.put(Integer.toString(userId), userName);
+			setFriendsArray(Integer.toString(userId), nameMap, friendMap, friendsArray);
+			for (String id : nameMap.keySet()) {
+				setFriendsArray(id, nameMap, friendMap, friendsArray);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -813,7 +811,25 @@ public class UserDAO {
 				e.printStackTrace();
 			}
 		}
-		return friends;
+		return friendsArray;
+	}
+	
+	private static void setFriendsArray(String userId, Map<String, String> nameMap, Map<String, List<String>> friendMap, JSONArray friendsArray) throws JSONException {
+			JSONObject user = new JSONObject();
+			user.put("id", userId);
+			user.put("name", nameMap.get(userId));
+
+			JSONArray adjacencies = new JSONArray();
+			List<String> friends = friendMap.get(userId);
+			if (friends != null) {
+				for (String friendId : friends) {
+					JSONObject to = new JSONObject();
+					to.put("nodeTo", friendId);
+					adjacencies.put(to);
+				} 
+			}	
+			user.put("adjacencies", adjacencies);
+			friendsArray.put(user);		
 	}
 	
 	public static Map<Integer, String> getProfessors() {

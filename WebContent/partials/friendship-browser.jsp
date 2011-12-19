@@ -142,7 +142,7 @@
 					}
 		});
 	    //load JSON data.
-	    ht.loadJSON(json);
+	    ht.loadJSON(json, 0);
 	    //compute positions and plot.
 	    ht.refresh();
 	    //end
