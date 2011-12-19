@@ -10,6 +10,7 @@ List<Circle> circles = user.getCircles();
 
 %>
 
+<h2>Your Circles</h2>
 
 <% for(Circle circle : circles) { %>
 
