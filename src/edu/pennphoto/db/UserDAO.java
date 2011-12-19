@@ -329,7 +329,8 @@ public class UserDAO {
 			User user =  getUser(-1, username, password);
 			if(user != null){
 				user.setCircles(UserDAO.getUserCircles(user.getUserID()));
-				
+				user.setAttendances(UserDAO.getUserAttendances(user.getUserID()));
+				user.setInterests(UserDAO.getUserInterests(user.getUserID()));
 			}
 			return user;
 		} catch (SQLException e) {
@@ -638,6 +639,71 @@ public class UserDAO {
 	
 	public static int deleteCircle(int circleId){
 		return executeDeleteStatement("delete from Circle where id="+circleId);
+	}
+	public static ArrayList<Attendance> getUserAttendances(int userId) {
+		String query = "select * from Attended a left join Institution i on a.institution_id = i.id where a.user_id="
+				+ userId;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			ArrayList<Attendance> attendances = new ArrayList<Attendance>();
+			Attendance attendance = null;
+			while (rs.next()) {
+				attendance = new Attendance(rs.getInt("id"), rs.getString("name"), rs.getInt("start_year"), rs.getInt("end_year"));
+				attendances.add(attendance);
+			}
+			return attendances;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static ArrayList<Interest> getUserInterests(int userId) {
+		String query = "select * from Interested_In i left join Interest_Desc d on i.interest_id = d.id where i.user_id="
+				+ userId;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = DBHelper.getInstance().getConnection();
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			ArrayList<Interest> interests = new ArrayList<Interest>();
+			Interest interest = null;
+			while (rs.next()) {
+				interest = new Interest(rs.getInt("id"), rs.getString("label"));
+				interests.add(interest);
+			}
+			return interests;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public static ArrayList<Circle> getUserCircles(int userId) {

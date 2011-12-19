@@ -1,26 +1,103 @@
-<%@ page import="	edu.pennphoto.db.UserDAO, 
-					edu.pennphoto.model.User,
-					edu.pennphoto.model.Professor,
-					java.util.Map,
-					java.util.Collection" %>
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
+<%@page import="edu.pennphoto.model.User.Interest"%>
+<%@page import="edu.pennphoto.model.User.Attendance"%>
+<%@page import="java.util.ArrayList"%>
+<%@ page
+	import="edu.pennphoto.db.UserDAO,edu.pennphoto.model.User,
+	edu.pennphoto.model.Professor,
+	edu.pennphoto.model.Student,
+	java.util.Map,java.util.Collection"%>
 
+<jsp:include page="partials/html-head.jsp" />
 
-<% 	User user = (User) session.getAttribute("user"); %>
-	<p><%= user.getFirstName() %></p>
-	<p><%= user.getLastName() %></p>
-	<p><%= user.getEmail() %></p>
-	<p><%= user.getAddress() %></p>
-	<p><%= user.getCity() %></p>
-	<p><%= user.getState() %></p>
-	<p><%= user.getZip() %></p>
-	<p><%= user.getDob() %></p> 
-	<% if(user instanceof Professor){ 
-			out.println("<p>Currently Advising:</p>");
-			Map<Integer, String> students = UserDAO.getStudents((Professor) user);
-			for(String name : students.values()){
-				out.println(name + "<br/>");	
-			}	%>
+<%
+	User user = (User) session.getAttribute("user");
+
+	if (user == null) {
+		response.sendRedirect("login.jsp?error=2");
+	} else {
+%>
+<div id="wrapper">
+	<div id="content">
+	<table><tr><td class="profile-field-name">First Name:</td><td><%=user.getFirstName()%></td></tr>
+		<tr><td class="profile-field-name">Last Name:</td><td><%=user.getLastName()%></td></tr>
+		<tr><td class="profile-field-name">Email:</td><td><%=user.getEmail()%></td></tr>
+		<tr><td class="profile-field-name">Address:</td><td><%=user.getAddress()%></td></tr>
+		<tr><td class="profile-field-name">City:</td><td><%=user.getCity()%></td></tr>
+		<tr><td class="profile-field-name">State:</td><td><%=user.getState()%></td></tr>
+		<tr><td class="profile-field-name">Zip:</td><td><%=user.getZip()%></td></tr>
+		<tr><td class="profile-field-name">DOB:</td><td><%=user.getDob()%></td></tr>
+		<tr><td class="profile-field-name">Gender:</td><td><%=user.getGender().toString()%></td></tr>
+		<tr><td class="profile-field-name">Attended:</td><td>
+		<%
+		 ArrayList<Attendance> attendances = user.getAttendances();
+		if(attendances != null){
+			for (Attendance attendance : attendances) {
+			%>
+			<%=attendance.getInstitution() %> <%=attendance.getStartYear() %>-<%=attendance.getEndYear() %>
+			<br/>
+			<%
+			}
+			}
+			%>
+			</td></tr>
+			<tr><td class="profile-field-name">Interests:</td><td>
+			<%
+			
+		 ArrayList<Interest> interests = user.getInterests();
+		 if(interests != null){
+				for (Interest interest : interests) {
+				%>
+				<%=interest.getLabel() %>
+				<br/>
+				<%
+				}
+				}
+				%>
 	
-	<% } else { %>
-	
-	<% } %>
+		</td></tr>
+		<%
+			if (user instanceof Professor) {
+				Professor prof = (Professor) user;
+				%>
+				<tr><td class="profile-field-name">Title:</td><td><%= prof.getTitle()%></td></tr>
+				<tr><td class="profile-field-name">Research Area:</td><td><%= prof.getResearchArea()%></td></tr>
+				<tr><td class="profile-field-name">Currently Advising:</td><td>
+				<%
+					Map<Integer, String> students = UserDAO
+							.getStudents(prof);
+					for (String name : students.values()) {
+						out.println(name + "<br/>");
+					}
+		%>
+</td></tr>
+		<%
+			} else {
+				Student student = (Student)user;
+				%>
+				
+				<tr><td class="profile-field-name">Major:</td><td><%=student.getMajor()%></td></tr>
+				<tr><td class="profile-field-name">GPA:</td><td><%= student.getGpa() %></td></tr>
+				<tr><td class="profile-field-name">Advisor:</td><td>
+				<%
+				int advisorId = student.getAdvisorId();
+				User advisor = UserDAO.getUserById(advisorId);
+				if(advisor != null){
+		 %>
+				<%=advisor.getFirstName()%> <%=advisor.getLastName()%>
+		<%
+				}
+				%>
+				&nbsp;
+				<%
+			}
+		%>
+		</table>
+	</div>
+	<!-- #content -->
+	<jsp:include page="partials/footer.jsp" />
+</div>
+<%
+	}
+%>
+

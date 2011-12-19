@@ -429,3 +429,8 @@ p {
 .inst-attended{
 	margin-top:5px;
 }
+
+.profile-field-name{
+	font-weight: bold;
+	padding: 5px 10px;
+}
