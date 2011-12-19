@@ -416,16 +416,30 @@ ul.rating li{
 
 
 #all-friends{
-
+	float: left;
+	width: 57%;
+	margin: 15px 0;
+	padding: 20px 10px;
+	background: rgba(20, 20, 20, 0.1);
+	border-radius: 5px;
 }
 
 #all-friends .circle-list{
 	float: left;
 	max-width: 250px;
+	height: 200px;
+	width: 33%;
 }
 
 #all-friends .circle-list ul{
+	list-style: none;
+	margin-left: 10px;
 	padding: 0;
+	
+}
+
+#all-friends span{
+	margin-left: 10px;
 }
 
 

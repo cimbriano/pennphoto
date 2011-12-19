@@ -24,12 +24,12 @@
 
 		<jsp:include page="partials/add-new-friends.jsp" /> </br>	
 		
-		<div class="clear"></div>
-		
 		
 		<div id="all-friends">
 			<jsp:include page="partials/circle-friend-list.jsp" /> </br>	
 		</div>
+
+		<div class="clear"></div>
 		
 	</div><!-- #content -->
 	
