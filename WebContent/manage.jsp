@@ -20,9 +20,11 @@
 	
 	<div id="content">
 		
-		<jsp:include page="partials/create-circle.jsp" /> </br>
+		<jsp:include page="partials/create-circle.jsp" />
 
 		<jsp:include page="partials/add-new-friends.jsp" /> </br>	
+		
+		<div class="clear"></div>
 		
 		
 		<div id="all-friends">

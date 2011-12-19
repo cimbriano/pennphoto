@@ -22,7 +22,7 @@ body{
 
 
 #top-bar {
-	height: 30px;
+	height: 20px;
 	width: 90%;
 	margin: 0 auto;
 	
@@ -31,7 +31,7 @@ body{
 	right: 10px;
 	top: 0;
 	
-	padding: 15px 25px;
+	padding: 10px 25px;
 	
 	background: rgba(20, 20, 20, 0.8);
 	color: white;
@@ -244,13 +244,7 @@ input.submit-photo-visibility-option{
 
 /* End Submit Photo Form */
 
-/* Begin Create Circle Form */
 
-#create-circle-wrapper{
-	width: 400px;	
-}	
-
-/* End Create Circle Form */
 	
 
 	
@@ -418,6 +412,53 @@ ul.rating li{
 }
 
 /* End Homepage */
+
+
+
+#all-friends{
+
+}
+
+#all-friends .circle-list{
+	float: left;
+	max-width: 250px;
+}
+
+#all-friends .circle-list ul{
+	padding: 0;
+}
+
+
+
+#add-new-friends{
+	width: 40%;
+	float: right;
+}
+
+.friend-rec {
+	width: 100%;
+	min-height: 10px;
+	margin-top: 5px;	
+}
+
+.friend-rec button{
+	float: right;
+}
+
+#create-circle-wrapper{
+	width: 30%;
+	float: left;
+}
+
+#create-circle-wrapper .submit{
+	float: right;
+}
+
+#create-circle-wrapper #circle-name{
+	width: 73%;
+}
+
+
 
 #footer {
 	height: 150px;
