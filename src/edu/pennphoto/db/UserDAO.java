@@ -364,12 +364,32 @@ public class UserDAO {
 	
 	public static List<User> getFriendsOfFriends(int userId){
 		String whereClause = " where u.id in (select v2.friend_id from Friendship_View v1 inner join Friendship_View v2 on v1.friend_id = v2.user_id where v1.user_id="+userId+" and v2.friend_id != v1.user_id";
-		whereClause += " and v2.friend_id not in (select friend_id from Friendship_View where user_id = "+userId+"))";
+		whereClause += " and v2.friend_id not in (select friend_id from Friendship_View where user_id = "+userId+")) limit 3";
+		return getUsersList(whereClause);
+	}
+	
+	private static List<User> geUsersWithCommonRatings(int userId, String excludeIds){
+		String whereClause = " where u.id in (select user_id from (";
+		whereClause += " select r2.user_id, sum(abs(r1.rating-r2.rating))/count(*) as diffRating from Rating r1 inner join Rating r2 on r1.photo_id=r2.photo_id"; 
+		whereClause += " where r1.user_id="+userId+" and r2.user_id !="+userId+" and r2.user_id NOT IN (select friend_id from Friendship_View where user_id="+userId+") ";
+		if(excludeIds != null){
+			whereClause += 	"and r2.user_id NOT IN ("+excludeIds+")";
+		}
+		whereClause += 	" group by r2.user_id )"; 
+		whereClause += "sub order by diffRating) limit 2";
 		return getUsersList(whereClause);
 	}
 	
 	public static List<User> getFriendRecommendations(int userID){
-		return getFriendsOfFriends(userID);
+		 List<User> recommendations = getFriendsOfFriends(userID);
+		 String excludeIds = ""; 
+		 for (User user : recommendations) {
+			 excludeIds += user.getUserID() + ",";
+		}
+		 List<User> usersWithCommonRatings = geUsersWithCommonRatings(userID, 
+				 excludeIds.length() > 1?excludeIds.substring(0,  excludeIds.length()-1):null);
+		 recommendations.addAll(usersWithCommonRatings);
+		 return recommendations;
 	}
 	
 	public static List<User> getUsersList(String whereClause){
