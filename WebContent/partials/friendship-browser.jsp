@@ -27,7 +27,7 @@
 		var target = "http://localhost:8080/pennphoto/UserServlet";
 		$.post(target, { "action": "init-friends" },
 				 function(data){
-					console.log(data);
+					//console.log(data);
 					init_JIT_callback(data);
 				 }, "json");
 	}
@@ -38,7 +38,7 @@
 		var target = "http://localhost:8080/pennphoto/UserServlet";
 		$.post(target, { "action": "browser-photos", "friend-id" : friend_id },
 			 function(data){
-				console.log(data);
+				//console.log(data);
 				browser_photo_callback(data);
 			 }, "json");		
 	}
