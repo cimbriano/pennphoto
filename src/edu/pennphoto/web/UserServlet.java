@@ -337,7 +337,7 @@ public class UserServlet extends HttpServlet {
 		String password = request.getParameter("pwd");
 		User user = UserDAO.login(email, password);
 		if (user == null) {
-			response.sendRedirect("login.jsp?error=1");
+			response.sendRedirect("login.jsp?error=bl");
 		} else {			
 			HttpSession session = request.getSession(true);
 			session.setAttribute("user", user);
