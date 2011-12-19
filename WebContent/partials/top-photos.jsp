@@ -28,7 +28,7 @@ if(user != null){
 			<p>PhotoID: <%= photo.getPhotoId() %></p>
 			<p>Posted by: <%= owner.getFirstName() %>&nbsp;<%= owner.getLastName() %></p>
 			<div class="img-wrap">
-				<img src="<%= photo.getUrl() %>" alt="Photo Submitted by user <%= owner %>"/>
+				<img src="<%= photo.getUrl() %>" alt="Photo Submitted by user <%= owner.getEmail() %>"/>
 			</div>
 			
 			<div class="photo-meta">
