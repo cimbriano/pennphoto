@@ -364,7 +364,7 @@ public class UserDAO {
 	
 	public static List<User> getFriendsOfFriends(int userId){
 		String whereClause = " where u.id in (select v2.friend_id from Friendship_View v1 inner join Friendship_View v2 on v1.friend_id = v2.user_id where v1.user_id="+userId+" and v2.friend_id != v1.user_id";
-		whereClause += " and v2.friend_id not in (select friend_id from Friendship_View where user_id = "+userId+")) limit 3";
+		whereClause += " and v2.friend_id not in (select friend_id from Friendship_View where user_id = "+userId+")) limit 7";
 		return getUsersList(whereClause);
 	}
 	
@@ -376,7 +376,7 @@ public class UserDAO {
 			whereClause += 	"and r2.user_id NOT IN ("+excludeIds+")";
 		}
 		whereClause += 	" group by r2.user_id )"; 
-		whereClause += "sub order by diffRating) limit 2";
+		whereClause += "sub order by diffRating) limit 7";
 		return getUsersList(whereClause);
 	}
 	
