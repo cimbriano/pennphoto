@@ -4,6 +4,8 @@
 
 	<div id="inner-details"></div>
 	<div id="friendship-photos"></div>
+	
+	<div class="clear"></div>
 
 </div><!-- friendship-browser -->
 

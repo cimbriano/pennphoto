@@ -37,6 +37,8 @@
 	
 		<div class="clear"></div>
 
+
+		<h2>Friendship Browser</h2>
 		<jsp:include page="partials/friendship-browser.jsp" />		
 		
 		<div class="clear"></div>
