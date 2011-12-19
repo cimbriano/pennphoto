@@ -26,11 +26,17 @@ body{
 	width: 90%;
 	margin: 0 auto;
 	
+	position: fixed;
+	left: 10px;
+	right: 10px;
+	top: 0;
+	
 	padding: 15px 25px;
 	
-	background: black;
-	color: white;	
+	background: rgba(20, 20, 20, 0.8);
+	color: white;
 	
+	border-radius: 0 0 10px 10px;
 }
 
 #user-actions{
@@ -62,7 +68,7 @@ body{
 #wrapper{
 	height: 100%;
 	width: 1200px;
-	margin: 0 auto;
+	margin: 80px auto 0;
 	border-radius: 10px;
 }
 
@@ -236,19 +242,24 @@ body{
 /* Begin Top Bar Friend recommendations */
 #top-scroll {
 	height: 90px;
-	width: 100%;
-	background: green;
+	width: 98%;
+	background: rgba(255, 185, 101, 0.8);
+	
+	margin: 20px 15px;
+	border-radius: 5px;
 }
 
 #top-scroll ul#recs {
 	list-style: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
 }
 
 #top-scroll ul#recs li{
 	float:left;	
+	padding: 5px;
 }
-
-
 
 /* End Top Bar Friend recommendations */
 
@@ -257,37 +268,37 @@ body{
 #content {
 	min-height: 600px;
 	width: 1170px;
-	background: grey;
-	
+	background: lightBlue;
+
 	padding: 15px;
+	
+	border-radius: 10px 10px 0 0;
 }
 
 #top-pics{
 	min-height: 370px;
 	width: 740px;
-	margin: 15px 30px;
+	margin: 15px;
 	
 	float: left;
-	
-	background: blue; 
-	
 }
 
 .top-pics-photo{
 	height: 480px;
 	width: 210px;
 	
-	margin: 10px;
-	padding: 5px;
+	margin: 7px;
+	padding: 10px;
 	float: left;
 	
-	background: white;
+	background: rgba(0, 0, 0, 0.1);
+	border: 1px dashed black;
+	border-radius: 5px;
 }
 
 .top-pics-photo .img-wrap {
 	height: 200px;
 	width: 200px;
-    display: table-cell;
     vertical-align: middle;
 }
 
@@ -315,9 +326,12 @@ ul.rating li{
 	width: 370px;
 	min-height: 370px;
 	
+	margin: 22px 15px 0;
 	float: left;
 	
-	background: brown;
+	border-radius: 5px;
+	
+	background: rgba(255, 185, 101, 0.8);
 }
 
 .activity-feed-item{
@@ -356,7 +370,6 @@ ul.rating li{
 }
 
 #infovis {
-  position: relative;
   width: 80%;
   height: 600px;
   margin: auto;
