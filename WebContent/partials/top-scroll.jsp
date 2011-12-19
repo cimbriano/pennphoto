@@ -14,12 +14,20 @@ if(user != null){ %>
 	<% if(recs != null){ %>
 		<ul id="recs">
 		
+		<% int count = 0; %>
 		<% for(User friendRec : recs) { %>
-			<li>
+			<% if(count < 7) { %>
+				<li>
 				<div class="recomended-friend">
-					<span><%= friendRec.getFirstName() %></span> <span><%= friendRec.getLastName() %></span>
+					<span><%= friendRec.getFirstName() %></span> <span><%= friendRec.getLastName() %></span> </br>
+					<span><%= friendRec.getEmail() %></span>
 				</div>
-			</li>
+				</li>
+			
+				<% count++; %>
+			<% } %>
+		
+			
 			
 		
 		<% }%>

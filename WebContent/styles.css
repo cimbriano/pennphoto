@@ -251,13 +251,15 @@ body{
 
 #top-scroll ul#recs {
 	list-style: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
 }
 
 #top-scroll ul#recs li{
 	float:left;	
+	padding: 5px;
 }
-
-
 
 /* End Top Bar Friend recommendations */
 
