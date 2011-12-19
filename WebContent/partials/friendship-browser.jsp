@@ -73,8 +73,9 @@
 						lineWidth : 2,
 						color : "#088"
 					},
+					offset: 0.1,
 					onBeforeCompute : function(node) {
-	//					Log.write("centering");
+					//	Log.write("centering");
 					},
 					//Attach event handlers and add text to the  
 					//labels. This method is only triggered on label  
@@ -98,7 +99,7 @@
 						if (node._depth <= 1) {
 							style.fontSize = "0.8em";
 							style.color = "#ddd";
-	
+							style.zIndex = "100";
 						} else if (node._depth == 2) {
 							style.fontSize = "0.7em";
 							style.color = "#555";
@@ -114,10 +115,7 @@
 	
 					onComplete : function() {
 						//Log.write("done");
-						
 
-						
-  
 						var node = ht.graph.getClosestNodeToOrigin("current");
 						load_browser_photos(node.id);
 						
@@ -142,7 +140,7 @@
 					}
 		});
 	    //load JSON data.
-	    ht.loadJSON(json);
+	    ht.loadJSON(json, 0);
 	    //compute positions and plot.
 	    ht.refresh();
 	    //end

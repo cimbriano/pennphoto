@@ -248,7 +248,8 @@ public class UserServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		int userId = user.getUserID();
-		JSONArray json = UserDAO.getInitialBrowserFriends(userId);
+		String userName = user.getFirstName() + " " + user.getLastName(); 
+		JSONArray json = UserDAO.getInitialBrowserFriends(userId, userName);
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		out.print(json.toString());
@@ -277,14 +278,16 @@ public class UserServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		int userId = user.getUserID();
-		boolean isPrivate = privacy.equals("private") ? true : false;
+		boolean isPrivate = privacy.equals("private");
 		boolean photo_posted = false;
 		String url = request.getParameter("url");
 
 		Photo photo = new Photo(url, isPrivate, userId);
 		String rating = request.getParameter("rating");
 		String[] circleIds = request.getParameterValues("circleIds");
-		String[] viewerIds = request.getParameterValues("userIds");
+		String[] viewerIds = request.getParameterValues("friendIds");
+		System.out.println("cricleIds:" + circleIds);
+		System.out.println("viewerIds:" + viewerIds);
 		String tagText = request.getParameter("tag");
 		
 		if(circleIds != null){

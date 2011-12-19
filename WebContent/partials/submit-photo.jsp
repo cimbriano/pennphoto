@@ -28,12 +28,12 @@ if(user != null ){ %>
 			<legend>Privacy Settings</legend>
 			<ul id="privacy-settings">
 				<li>
-					<input id=public name=privacy type=radio />
+					<input id=public name=privacy type=radio value="public" checked />
 					<label>Public</label>
 				</li>
 				
 				<li>
-					<input id=private name=privacy type=radio />
+					<input id=private name=privacy type=radio value="private"/>
 					<label>Private</label>
 				</li>
 			</ul>
