@@ -61,6 +61,10 @@ public class UserDAO {
 			String userQuery = "insert into User values ("+(user.getUserID() > 0?user.getUserID():"null")+", ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			conn = DBHelper.getInstance().getConnection();
 			conn.setAutoCommit(false);
+			int stateId = user.getStateId();
+			if(stateId <= 0){
+				stateId = UserDAO.getStateIdByAbbreviation(user.getState(), conn);
+			}
 			userStmt = conn.prepareStatement(userQuery,
 					Statement.RETURN_GENERATED_KEYS);
 			userStmt.setString(1, user.getPassword());
@@ -70,7 +74,7 @@ public class UserDAO {
 			userStmt.setDate(5, new Date(user.getDob().getTime()));
 			userStmt.setString(6, user.getAddress());
 			userStmt.setString(7, user.getCity());
-			userStmt.setInt(8, user.getStateId());
+			userStmt.setInt(8, stateId);
 			userStmt.setString(9, user.getZip());
 			userStmt.setBoolean(10, isProfessor);
 			userStmt.setString(11, user.getGender() == Gender.MALE ? "m" : "f");
@@ -132,6 +136,10 @@ public class UserDAO {
 			}
 		}
 		return success;
+	}
+	
+	private static int getStateIdByAbbreviation(String abbr, Connection conn) throws SQLException{
+		return getIdByValue("select id from State where abbreviation=?", abbr, conn);
 	}
 	
 	private static void addAdvisorAdvisee(int studentId, int professorId, Connection conn) throws SQLException{
