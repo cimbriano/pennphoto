@@ -16,10 +16,13 @@
 	if (user == null) {
 		response.sendRedirect("login.jsp?error=2");
 	} else {
+		boolean isProfessor = user instanceof Professor;
 %>
 <div id="wrapper">
 	<div id="content">
-	<table><tr><td class="profile-field-name">First Name:</td><td><%=user.getFirstName()%></td></tr>
+	<table>
+	<tr><td colspan="2" class="profile-field-name"><%= isProfessor?"PROFESSOR":"STUDENT"%></td></tr>
+	<tr><td class="profile-field-name">First Name:</td><td><%=user.getFirstName()%></td></tr>
 		<tr><td class="profile-field-name">Last Name:</td><td><%=user.getLastName()%></td></tr>
 		<tr><td class="profile-field-name">Email:</td><td><%=user.getEmail()%></td></tr>
 		<tr><td class="profile-field-name">Address:</td><td><%=user.getAddress()%></td></tr>
@@ -57,7 +60,7 @@
 	
 		</td></tr>
 		<%
-			if (user instanceof Professor) {
+			if (isProfessor) {
 				Professor prof = (Professor) user;
 				%>
 				<tr><td class="profile-field-name">Title:</td><td><%= prof.getTitle()%></td></tr>
@@ -77,7 +80,7 @@
 				%>
 				
 				<tr><td class="profile-field-name">Major:</td><td><%=student.getMajor()%></td></tr>
-				<tr><td class="profile-field-name">GPA:</td><td><%= student.getGpa() %></td></tr>
+				<tr><td class="profile-field-name">GPA:</td><td><%= student.getGpa()%></td></tr>
 				<tr><td class="profile-field-name">Advisor:</td><td>
 				<%
 				int advisorId = student.getAdvisorId();
