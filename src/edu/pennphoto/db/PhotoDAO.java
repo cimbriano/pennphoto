@@ -468,10 +468,9 @@ public class PhotoDAO {
 				"join Photo_Visible_To_Circle vcr on p.id=vcr.photo_id " +
 				"left join Photo_Visible_To_User vu on p.id=vu.photo_id " +
 				"left join In_Circle ic on vcr.circle_id = ic.circle_id " +
-				"where is_private = 0 " +
-				"or (vu.user_id = ? or ic.friend_id= ?) " +
+				"where (is_private = 0 or (vu.user_id = ? or ic.friend_id= ?)) " +
 				"and p.owner_id= ? ";
-
+		
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {

@@ -11,7 +11,7 @@ User user = (User) session.getAttribute("user");
 if (user != null) { %>
 	
 	<div id="activity-feed">
-	<span>Recent Updates</span>
+	<h3>Recent Updates</h3>
 <% 
 List<Event> events = PhotoDAO.getRecentEvents(user.getUserID());
 if(events.size() == 0){ %> 

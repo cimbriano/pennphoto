@@ -9,6 +9,8 @@ if(user != null ){ %>
 
 <div id="submit-photo-wrapper">
 
+	<h4>Submit a Photo</h4>
+
 	<form action="userServlet" method="post">
 	
 		<input type="hidden" name="action" value="photo" />
@@ -47,7 +49,10 @@ if(user != null ){ %>
 				List<Circle> circles = user.getCircles();
 				for(Circle circle : circles){
 				%>
-					<label><%= circle.getName() %></label><input type="checkbox" name="circleIds" value="<%= circle.getCircleID() %>" />
+					
+					<input class="submit-photo-visibility-option" type="checkbox" name="circleIds" value="<%= circle.getCircleID() %>" />
+					<label class="submit-photo-visibility-option"><%= circle.getName() %></label>
+					</br>
 				<% } %>
 			</fieldset>
 			
@@ -59,7 +64,9 @@ if(user != null ){ %>
 				
 				for(User friend : friends){
 				%>
-					<label><%= friend.getEmail() %></label><input type="checkbox" name="friendIds" value="<%= friend.getUserID() %>" />
+					<input class="submit-photo-visibility-option" type="checkbox" name="friendIds" value="<%= friend.getUserID() %>" />
+					<label class="submit-photo-visibility-option"><%= friend.getEmail() %></label>
+					</br>
 				<% } %>
 					
 			</fieldset>
