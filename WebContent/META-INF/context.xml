@@ -28,8 +28,8 @@
           
   <Resource name="jdbc/pennphotoDB" auth="Container" type="javax.sql.DataSource"
                maxActive="20" maxIdle="5" maxWait="10000"
-               username="imbriano" password="group17" driverClassName="com.mysql.jdbc.Driver"
-               url="jdbc:mysql://fling.seas.upenn.edu:3306/imbriano"
+               username="narine" password="group17" driverClassName="com.mysql.jdbc.Driver"
+               url="jdbc:mysql://fling.seas.upenn.edu:3306/narine"
                validationQuery="SELECT 1" testOnBorrow="true" />
  
  <!-- 

@@ -39,43 +39,49 @@ import edu.pennphoto.model.User.Gender;
 public class Importer {
 	
 	private static final String STUDENT = "student";
-	private static final String[] USERID = {"userID", "userId", "tns:accountID"};
+	private static final String[] USERID = {"userID", "userId", "tns:accountID", "tns:id"};
 	private static final String[] EMAIL = {"email", "tns:email"};
-	private static final String[] FIRST_NAME = {"tns:fname", "firstName"};
-	private static final String[] LAST_NAME = {"tns:lname", "lastName"};
+	private static final String[] FIRST_NAME = {"tns:fname", "firstName", "tns:first_name"};
+	private static final String[] LAST_NAME = {"tns:lname", "lastName", "tns:last_name"};
 	private static final String[] COMBINED_NAME = {"name"};
-	private static final String[] DOB = {"birthday", "age", "tns:birthDate"};
+	private static final String[] DOB = {"birthday", "age", "tns:birthDate", "tns:dob"};
 	private static final SimpleDateFormat DOB_FORMAT1 = new SimpleDateFormat("yyyy-MM-dd");
 	private static final SimpleDateFormat DOB_FORMAT2 = new SimpleDateFormat("MM/dd/yyyy");
 	private static final String[] GENDER = {"gender", "tns:gender"};
-	private static final String[] ADDRESS = {"address", "tns:address"};
-	private static final String[] MAJOR = {"major"};
-	private static final String[] GPA = {"GPA"};
-	private static final String[] RESEARCH_AREA = {"researchArea"};
-	private static final String[] TITLE = {"title"};
+	private static final String[] ADDRESS = {"address", "tns:address", "tns:street_address"};
+	private static final String[] MAJOR = {"major", "tns:major"};
+	private static final String[] GPA = {"GPA", "tns:gpa"};
+	private static final String[] RESEARCH_AREA = {"researchArea", "tns:researchArea"};
+	private static final String[] TITLE = {"title", "tns:title"};
 	private static final String[] INTEREST = {"interest", "tns:interest"};
-	private static final String[] ATTENDANCE = {"school", "tns:schoolsAttended"};
+	private static final String[] ATTENDANCE = {"school", "tns:schoolsAttended", "tns:attended"};
 	private static final String[] SCHOOL_NAME = {"tns:name"};
+	private static final String[] START_YEAR = {"tns:start_year"};
+	private static final String[] END_YEAR = {"tns:end_year"};
 	private static final String[] PHOTO = {"photo", "tns:photo"};
-	private static final String[] PHOTO_ID = {"photoId", "photoID", "tns:photoID"};
+	private static final String[] PHOTO_ID = {"photoId", "photoID", "tns:photoID", "tns:id"};
 	private static final String[] URL = {"url", "tns:url"};
 	private static final String[] RATING = {"tns:rating", "rating"};
-	private static final String[] RATER_ID ={"tns:raterID", "userId"};
-	private static final String[] RATING_VALUE = {"score", "tns:score"};
+	private static final String[] RATER_ID ={"tns:raterID", "userId", "tns:user_id"};
+	private static final String[] RATING_VALUE = {"score", "tns:score", "tns:value"};
 	private static final String[] TAG = {"tag", "tns:tag"};
-	private static final String[] TAG_TEXT = {"tns:text"};
+	private static final String[] TAG_TEXT = {"tns:text", "tns:tag_text"};
 	private static final String[] PHOTO_OWNER_ID = {"ownerID"};
 	private static final String[] CIRCLE = {"circle", "tns:circle"};
-	private static final String[] CIRCLE_ID = {"circleID", "circleId", "tns:circleID"};
+	private static final String[] CIRCLE_ID = {"circleID", "circleId", "tns:circleID", "tns:id"};
 	private static final String[] CIRCLE_NAME = {"name", "tns:name"};
 	private static final String[] OWNER_ID = {"ownerID"};
-	private static final String[] CONTAINS_FRIEND = {"containsFriend", "friendID", "tns:friend"};
-	private static final String[] ADVISOR = {"tns:advisor", "advisor"};
+	private static final String[] CONTAINS_FRIEND = {"containsFriend", "friendID", "tns:friend", "tns:friend_id"};
+	private static final String[] ADVISOR = {"tns:advisor", "advisor", "tns:advisor_id"};
 	private static final String PHOTO_11 = "photo";
 	private static final String CIRCLE_11 = "circle";
 	private static final String FRIEND_11 = "belongsTo";
+	private static final String STREET_ADDRESS_17 = "tns:street_address";
+	private static final String CITY_17 = "tns:city";
+	private static final String STATE_17 = "tns:state";
+	private static final String ZIP_17 = "tns:zip_code";
 	
-	private static final int[] GROUP_IDS = {11};
+	private static final int[] GROUP_IDS = {17};
 	
 	private static HashMap<Integer, User> _users;
 	private static ArrayList<Photo> _photos;
@@ -129,7 +135,9 @@ public class Importer {
 			System.out.println("writing to database");
 			storeUsers();
 			storePhotos();
-			storeCircles();
+			storeCircles(); 
+
+			storeTagsAndRatings();
 	
 			
 		} catch (Exception e) {
@@ -138,7 +146,17 @@ public class Importer {
 		
 	}
 	
-	private static void storeUsers(){
+	private static void storeUsers(){		
+		for(User user : _users.values()){
+			if(user instanceof Professor){
+				try {
+					System.out.println(user);
+					UserDAO.createUser(user);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}				
+			}
+		}
 		for(User user : _users.values()){
 			if(user instanceof Student){
 				try {
@@ -149,6 +167,7 @@ public class Importer {
 				}
 			}
 		}
+
 	}
 	
 	private static void storePhotos(){
@@ -156,14 +175,26 @@ public class Importer {
 			System.out.println(photo);
 			try {
 				PhotoDAO.postPhoto(photo);
-				for(Tag tag : photo.getTags()){
-					PhotoDAO.createTag(tag);
-				}
-				for(Rating rating: photo.getRatings()){
-					PhotoDAO.createRating(rating);
-				}
+
 			} catch (SQLException e) {
 				e.printStackTrace();
+			}
+			for(Tag tag : photo.getTags()){
+				PhotoDAO.createTag(tag);
+			}
+			for(Rating rating: photo.getRatings()){
+				PhotoDAO.createRating(rating);
+			}
+		}
+	}
+	
+	private static void storeTagsAndRatings(){
+		for(Photo photo : _photos){
+			for(Tag tag : photo.getTags()){
+				PhotoDAO.createTag(tag);
+			}
+			for(Rating rating: photo.getRatings()){
+				PhotoDAO.createRating(rating);
 			}
 		}
 	}
@@ -194,8 +225,8 @@ public class Importer {
 		for(int j = 0; j < fields.getLength(); j++){
 			Node field = fields.item(j);
 			if(nodeNameMatches(field, USERID)){
-				user.setUserID(getIntValue(field));
-				user.setPassword(getTextValue(field));
+				user.setUserID(getUniqueId(getIntValue(field)));
+				user.setPassword("changeme");
 			} else if(nodeNameMatches(field, EMAIL)){
 				user.setEmail(getTextValue(field));
 			} else if (nodeNameMatches(field, COMBINED_NAME)){
@@ -208,6 +239,14 @@ public class Importer {
 				user.setDob(getDobDateValue(field));
 			} else if (nodeNameMatches(field, GENDER)){
 				user.setGender(getGenderValue(field));
+			} else if(nodeNameMatches(field, STREET_ADDRESS_17)){
+				user.setAddress(getTextValue(field));
+			} else if(nodeNameMatches(field, CITY_17)){
+				user.setCity(getTextValue(field));
+			} else if(nodeNameMatches(field, STATE_17)){
+				user.setState(getTextValue(field));
+			} else if(nodeNameMatches(field, ZIP_17)){
+				user.setZip(getTextValue(field));
 			} else if (nodeNameMatches(field, ADDRESS)){
 				setAddress(field, user);
 			} else if (nodeNameMatches(field, INTEREST)) {
@@ -278,6 +317,11 @@ public class Importer {
 			if(element.equals(name)) return true;
 		}
 		return false;
+	}
+	
+	private static boolean nodeNameMatches(Node node, String tag){
+		String name =node.getNodeName();
+		return tag.equals(name);
 	}
 
 	private static int getIntValue(Node node){
@@ -370,7 +414,7 @@ public class Importer {
 		String nodeName = node.getNodeName();
 		if(nodeName.equals(ATTENDANCE[0])){ // team 8's <school> tag
 			user.addAttendance(new User.Attendance(getTextValue(node), 0, 0));
-		} else if (nodeName.equals(ATTENDANCE[1])){
+		} else if (nodeName.equals(ATTENDANCE[1])){ // team 12
 			NodeList nl = node.getChildNodes();
 			for(int i = 0; i < nl.getLength(); i++){
 				Node n = nl.item(i);
@@ -378,6 +422,23 @@ public class Importer {
 					user.addAttendance(new User.Attendance(getTextValue(n), 0, 0));
 				}
 			}
+		} else if (nodeName.equals(ATTENDANCE[2])){
+			NodeList nl = node.getChildNodes();
+			String institution = null;
+			Integer start = 0;;
+			Integer end = 0;
+			for(int i = 0; i < nl.getLength(); i++){
+				Node n = nl.item(i);
+				if(nodeNameMatches(n, SCHOOL_NAME)){
+					institution = getTextValue(n);
+				} else if (nodeNameMatches(n, START_YEAR)){
+					start = getIntValue(n);
+				} else if (nodeNameMatches(n, END_YEAR)){
+					end = getIntValue(n);
+				}
+			}
+			user.addAttendance(new User.Attendance(institution, start, end));
+
 		}
 	}
 	
@@ -450,6 +511,8 @@ public class Importer {
 						Node tagChild = tagChildren.item(j);
 						if(nodeNameMatches(tagChild, TAG_TEXT)){
 							tag.setTagText(getTextValue(tagChild));
+						} else if(nodeNameMatches(tagChild, RATER_ID)){
+							tag.setUserID(getUniqueId(getIntValue(tagChild)));
 						}
 					}
 				} else {
