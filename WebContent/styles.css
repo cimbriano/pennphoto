@@ -242,8 +242,11 @@ body{
 /* Begin Top Bar Friend recommendations */
 #top-scroll {
 	height: 90px;
-	width: 100%;
-	background: green;
+	width: 98%;
+	background: rgba(255, 185, 101, 0.8);
+	
+	margin: 20px 15px;
+	border-radius: 5px;
 }
 
 #top-scroll ul#recs {
@@ -326,7 +329,7 @@ ul.rating li{
 	
 	border-radius: 5px;
 	
-	background: brown;
+	background: rgba(255, 185, 101, 0.8);
 }
 
 .activity-feed-item{
