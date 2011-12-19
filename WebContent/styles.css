@@ -273,23 +273,22 @@ body{
 #top-pics{
 	min-height: 370px;
 	width: 740px;
-	margin: 15px 30px;
+	margin: 15px;
 	
 	float: left;
-	
-	background: blue; 
-	
 }
 
 .top-pics-photo{
 	height: 480px;
 	width: 210px;
 	
-	margin: 10px;
-	padding: 5px;
+	margin: 7px;
+	padding: 10px;
 	float: left;
 	
-	background: white;
+	background: rgba(0, 0, 0, 0.1);
+	border: 1px dashed black;
+	border-radius: 5px;
 }
 
 .top-pics-photo .img-wrap {
@@ -322,7 +321,10 @@ ul.rating li{
 	width: 370px;
 	min-height: 370px;
 	
+	margin: 22px 15px 0;
 	float: left;
+	
+	border-radius: 5px;
 	
 	background: brown;
 }
@@ -363,7 +365,6 @@ ul.rating li{
 }
 
 #infovis {
-  position: relative;
   width: 80%;
   height: 600px;
   margin: auto;
