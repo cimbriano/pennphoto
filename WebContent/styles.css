@@ -418,9 +418,22 @@ ul.rating li{
 	float: left;
 	width: 57%;
 	margin: 15px 0;
-	padding: 20px 10px;
+	padding: 5px 10px 20px;
 	background: rgba(20, 20, 20, 0.1);
 	border-radius: 5px;
+}
+
+#all-friends h2{
+	margin: 0;
+	font-family: 'Megrim';
+	font-size: 43px;
+	font-weight: lighter;
+}
+
+#all-friends span{
+	font-family: 'Buda', sans-serif;
+	font-size: 22px;
+	font-weight: bold;
 }
 
 #all-friends .circle-list{
