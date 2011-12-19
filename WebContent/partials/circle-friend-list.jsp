@@ -12,8 +12,12 @@ List<Circle> circles = user.getCircles();
 
 
 <% for(Circle circle : circles) { %>
-	<p><%= circle.getName() %></p>
+
+	<div class="circle-list">
+	
+	<span><%= circle.getName() %></span>
 	<ul>
+		
 		<% List<Integer> friends = circle.getFriendIDs(); %>
 		
 		<% if(friends != null && friends.size() > 0) { %>
@@ -26,4 +30,6 @@ List<Circle> circles = user.getCircles();
 			<li>Empty Circle</li>
 		<% } %>
 	</ul>
+	
+	</div><!-- .circle-list -->
 <% } %>

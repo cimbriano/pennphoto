@@ -19,9 +19,8 @@
 	<jsp:include page="partials/top-scroll.jsp" />
 	
 	<div id="content">
-		<jsp:include page="partials/submit-photo.jsp" /> </br>	
 		
-		<jsp:include page="partials/create-circle.jsp" /> </br>
+		<jsp:include page="partials/create-circle.jsp" />
 
 		<jsp:include page="partials/add-new-friends.jsp" /> </br>	
 		
@@ -29,6 +28,8 @@
 		<div id="all-friends">
 			<jsp:include page="partials/circle-friend-list.jsp" /> </br>	
 		</div>
+
+		<div class="clear"></div>
 		
 	</div><!-- #content -->
 	

@@ -22,7 +22,7 @@ body{
 
 
 #top-bar {
-	height: 30px;
+	height: 20px;
 	width: 90%;
 	margin: 0 auto;
 	
@@ -31,7 +31,7 @@ body{
 	right: 10px;
 	top: 0;
 	
-	padding: 15px 25px;
+	padding: 10px 25px;
 	
 	background: rgba(20, 20, 20, 0.8);
 	color: white;
@@ -204,7 +204,14 @@ body{
 /* Begin Submit Photo Form */
 
 #submit-photo-wrapper {
-	width: 400px;	
+	float: left;
+	margin: 0 15px 15px;
+	padding: 10px;
+
+	width: 350px;
+	
+	background: rgba(20, 20, 20, 0.1);
+	border-radius: 5px;	
 }
 
 #submit-photo-wrapper input#url{
@@ -227,15 +234,17 @@ body{
 	float: left;
 }
 
+.submit-photo-visibility-option{
+	padding: 0 5px;
+}
+
+input.submit-photo-visibility-option{
+	margin-right: 10px;
+}
+
 /* End Submit Photo Form */
 
-/* Begin Create Circle Form */
 
-#create-circle-wrapper{
-	width: 400px;	
-}	
-
-/* End Create Circle Form */
 	
 
 	
@@ -326,7 +335,7 @@ ul.rating li{
 	width: 370px;
 	min-height: 370px;
 	
-	margin: 22px 15px 0;
+	margin: 22px 15px 15px;
 	float: left;
 	
 	border-radius: 5px;
@@ -354,7 +363,6 @@ ul.rating li{
 
 #activity-feed img{
 	max-height: 100%;
-	max-width: 150%;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: auto;
@@ -403,6 +411,67 @@ ul.rating li{
 }
 
 /* End Homepage */
+
+
+
+#all-friends{
+	float: left;
+	width: 57%;
+	margin: 15px 0;
+	padding: 20px 10px;
+	background: rgba(20, 20, 20, 0.1);
+	border-radius: 5px;
+}
+
+#all-friends .circle-list{
+	float: left;
+	max-width: 250px;
+	height: 200px;
+	width: 33%;
+}
+
+#all-friends .circle-list ul{
+	list-style: none;
+	margin-left: 10px;
+	padding: 0;
+	
+}
+
+#all-friends span{
+	margin-left: 10px;
+}
+
+
+
+#add-new-friends{
+	width: 40%;
+	float: right;
+}
+
+.friend-rec {
+	width: 100%;
+	min-height: 10px;
+	margin-top: 5px;	
+}
+
+.friend-rec button{
+	float: right;
+}
+
+#create-circle-wrapper{
+	width: 30%;
+	float: left;
+}
+
+#create-circle-wrapper .submit{
+	float: right;
+}
+
+#create-circle-wrapper #circle-name{
+	width: 73%;
+}
+
+
 
 #footer {
 	height: 150px;
