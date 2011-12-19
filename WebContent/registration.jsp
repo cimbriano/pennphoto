@@ -115,7 +115,7 @@ var interstAreaNum = 1;
 					<option value="F">Student</option>
 				</select><br/>
 				
-				<div id="professor-fields" class="hidden">
+				<div id="professor-fields" class="hidden" style="display:block">
 					<input type="text" name="research-area" placeholder="Research Area"/><br/>
 					<input type="text" name="title" placeholder="Title"/><br/>
 				</div>
