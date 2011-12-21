@@ -249,13 +249,16 @@ input.submit-photo-visibility-option{
 
 	
 /* Begin Top Bar Friend recommendations */
-#top-scroll {
-	height: 90px;
-	width: 98%;
+#top-scroll {	
+	padding-left: 20px;
+    padding-top: 1px;
+    padding-bottom: 10px;
+	width: 96%;
 	background: rgba(255, 185, 101, 0.8);
 	
 	margin: 20px 15px;
 	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(20, 20, 20, 0.4);
 }
 
 #top-scroll ul#recs {
@@ -267,7 +270,7 @@ input.submit-photo-visibility-option{
 
 #top-scroll ul#recs li{
 	float:left;	
-	padding: 5px;
+	padding: 0 15px;
 }
 
 /* End Top Bar Friend recommendations */
@@ -278,7 +281,7 @@ input.submit-photo-visibility-option{
 	min-height: 600px;
 	width: 1170px;
 	background: lightBlue;
-
+	box-shadow: 0 0 15px black;
 	padding: 15px;
 	
 	border-radius: 10px 10px 0 0;
@@ -303,6 +306,7 @@ input.submit-photo-visibility-option{
 	background: rgba(0, 0, 0, 0.1);
 	border: 1px dashed black;
 	border-radius: 5px;
+	box-shadow: 0 0 20px rgba(20, 20, 20, 0.4);
 }
 
 .top-pics-photo .img-wrap {
@@ -341,6 +345,7 @@ ul.rating li{
 	border-radius: 5px;
 	
 	background: rgba(255, 185, 101, 0.8);
+	box-shadow: 1px 1px 10px rgba(20, 20, 20, 0.4);
 }
 
 .activity-feed-item{
